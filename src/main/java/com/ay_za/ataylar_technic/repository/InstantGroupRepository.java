@@ -2,11 +2,7 @@ package com.ay_za.ataylar_technic.repository;
 
 import com.ay_za.ataylar_technic.entity.InstantGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface InstantGroupRepository extends JpaRepository<InstantGroup, String> {
