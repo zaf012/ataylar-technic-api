@@ -2,6 +2,10 @@ package com.ay_za.ataylar_technic.controller;
 
 import com.ay_za.ataylar_technic.entity.InstantAccount;
 import com.ay_za.ataylar_technic.service.base.InstantAccountServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +24,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/instant-accounts")
 @CrossOrigin(origins = "*")
+@Tag(name = "Instant Account", description = "Cari hesap yönetimi API'leri")
 public class InstantAccountController {
 
     private final InstantAccountServiceImpl instantAccountService;
@@ -31,6 +36,12 @@ public class InstantAccountController {
     /**
      * Yeni hesap oluştur
      */
+    @Operation(summary = "Yeni hesap oluştur", description = "Yeni bir cari hesap oluşturur")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Hesap başarıyla oluşturuldu"),
+            @ApiResponse(responseCode = "400", description = "Geçersiz veri veya hesap zaten mevcut"),
+            @ApiResponse(responseCode = "500", description = "Sunucu hatası")
+    })
     @PostMapping
     public ResponseEntity<Map<String, Object>> createAccount(@RequestBody Map<String, Object> request) {
         Map<String, Object> response = new HashMap<>();
@@ -60,6 +71,12 @@ public class InstantAccountController {
     /**
      * Hesap bilgilerini güncelle
      */
+    @Operation(summary = "Hesap güncelle", description = "Mevcut hesap bilgilerini günceller")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Hesap başarıyla güncellendi"),
+            @ApiResponse(responseCode = "400", description = "Geçersiz veri veya hesap bulunamadı"),
+            @ApiResponse(responseCode = "500", description = "Sunucu hatası")
+    })
     @PutMapping("/{accountId}")
     public ResponseEntity<Map<String, Object>> updateAccount(
             @PathVariable String accountId,

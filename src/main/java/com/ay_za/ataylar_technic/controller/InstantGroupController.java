@@ -3,6 +3,10 @@ package com.ay_za.ataylar_technic.controller;
 
 import com.ay_za.ataylar_technic.entity.InstantGroup;
 import com.ay_za.ataylar_technic.service.base.InstantGroupServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +19,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/instant-groups")
 @CrossOrigin(origins = "*")
+@Tag(name = "Instant Group", description = "Cari grup yönetimi API'leri")
 public class InstantGroupController {
 
     private final InstantGroupServiceImpl instantGroupService;
@@ -26,6 +31,12 @@ public class InstantGroupController {
     /**
      * Yeni grup oluştur
      */
+    @Operation(summary = "Yeni grup oluştur", description = "Yeni bir cari grup oluşturur")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Grup başarıyla oluşturuldu"),
+            @ApiResponse(responseCode = "400", description = "Geçersiz istek veya grup zaten mevcut"),
+            @ApiResponse(responseCode = "500", description = "Sunucu hatası")
+    })
     @PostMapping("/create-group")
     public ResponseEntity<Map<String, Object>> createGroup(@RequestBody Map<String, String> request) {
         Map<String, Object> response = new HashMap<>();
@@ -207,6 +218,12 @@ public class InstantGroupController {
     /**
      * ID'ye göre grup getir
      */
+    @Operation(summary = "Grup getir", description = "ID'ye göre grup bilgilerini getirir")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Grup bulundu"),
+            @ApiResponse(responseCode = "404", description = "Grup bulunamadı"),
+            @ApiResponse(responseCode = "500", description = "Sunucu hatası")
+    })
     @GetMapping("/get-group-by-id/{groupId}")
     public ResponseEntity<Map<String, Object>> getGroupById(@PathVariable String groupId) {
         Map<String, Object> response = new HashMap<>();
@@ -259,6 +276,11 @@ public class InstantGroupController {
     /**
      * Tüm aktif grupları getir
      */
+    @Operation(summary = "Aktif grupları listele", description = "Tüm aktif grupları alfabetik sırayla getirir")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Gruplar başarıyla getirildi"),
+            @ApiResponse(responseCode = "500", description = "Sunucu hatası")
+    })
     @GetMapping("/get-all-active-groups")
     public ResponseEntity<Map<String, Object>> getAllActiveGroups() {
         Map<String, Object> response = new HashMap<>();
