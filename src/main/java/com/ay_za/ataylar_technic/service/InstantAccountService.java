@@ -4,6 +4,7 @@ import com.ay_za.ataylar_technic.entity.InstantAccount;
 import com.ay_za.ataylar_technic.repository.InstantAccountRepository;
 import com.ay_za.ataylar_technic.repository.InstantGroupRepository;
 import com.ay_za.ataylar_technic.service.base.InstantAccountServiceImpl;
+import com.ay_za.ataylar_technic.service.base.InstantGroupServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +18,11 @@ public class InstantAccountService implements InstantAccountServiceImpl {
 
 
     private final InstantAccountRepository instantAccountRepository;
-    private final InstantGroupRepository instantGroupRepository;
+    private final InstantGroupServiceImpl instantGroupServiceImpl;
 
-    public InstantAccountService(InstantAccountRepository instantAccountRepository, InstantGroupRepository instantGroupRepository) {
+    public InstantAccountService(InstantAccountRepository instantAccountRepository, InstantGroupServiceImpl instantGroupServiceImpl) {
         this.instantAccountRepository = instantAccountRepository;
-        this.instantGroupRepository = instantGroupRepository;
+        this.instantGroupServiceImpl = instantGroupServiceImpl;
     }
 
     /**
@@ -30,43 +31,9 @@ public class InstantAccountService implements InstantAccountServiceImpl {
     @Transactional
     @Override
     public InstantAccount createAccount(InstantAccount accountData, String createdBy) {
+
         // Temel validasyonlar
         validateAccountData(accountData);
-
-        // Cari grup var mı kontrol et
-        if (accountData.getAccountGroupId() != null) {
-            if (!instantGroupRepository.existsById(accountData.getAccountGroupId())) {
-                throw new IllegalArgumentException("Belirtilen cari grup bulunamadı");
-            }
-        }
-
-        // Username benzersizlik kontrolü
-        if (accountData.getUsername() != null && !accountData.getUsername().trim().isEmpty()) {
-            if (instantAccountRepository.findByUsernameAndIsActiveTrue(accountData.getUsername().trim()).isPresent()) {
-                throw new IllegalArgumentException("Bu kullanıcı adı zaten kullanılıyor");
-            }
-        }
-
-        // Email benzersizlik kontrolü
-        if (accountData.getEmail() != null && !accountData.getEmail().trim().isEmpty()) {
-            if (instantAccountRepository.findByEmailAndIsActiveTrue(accountData.getEmail().trim()).isPresent()) {
-                throw new IllegalArgumentException("Bu email adresi zaten kullanılıyor");
-            }
-        }
-
-        // TC Kimlik No benzersizlik kontrolü
-        if (accountData.getTcIdentityNo() != null && !accountData.getTcIdentityNo().trim().isEmpty()) {
-            if (instantAccountRepository.findByTcIdentityNoAndIsActiveTrue(accountData.getTcIdentityNo().trim()).isPresent()) {
-                throw new IllegalArgumentException("Bu TC Kimlik No zaten kayıtlı");
-            }
-        }
-
-        // Vergi No benzersizlik kontrolü
-        if (accountData.getTaxNumber() != null && !accountData.getTaxNumber().trim().isEmpty()) {
-            if (instantAccountRepository.findByTaxNumberAndIsActiveTrue(accountData.getTaxNumber().trim()).isPresent()) {
-                throw new IllegalArgumentException("Bu Vergi No zaten kayıtlı");
-            }
-        }
 
         // ID ve audit alanlarını set et
         accountData.setId(UUID.randomUUID().toString());
@@ -93,45 +60,6 @@ public class InstantAccountService implements InstantAccountServiceImpl {
 
         // Temel validasyonlar
         validateAccountData(updatedData);
-
-        // Cari grup var mı kontrol et
-        if (updatedData.getAccountGroupId() != null) {
-            if (!instantGroupRepository.existsById(updatedData.getAccountGroupId())) {
-                throw new IllegalArgumentException("Belirtilen cari grup bulunamadı");
-            }
-        }
-
-        // Username benzersizlik kontrolü (kendisi hariç)
-        if (updatedData.getUsername() != null && !updatedData.getUsername().trim().isEmpty()) {
-            Optional<InstantAccount> existingByUsername = instantAccountRepository.findByUsernameAndIsActiveTrue(updatedData.getUsername().trim());
-            if (existingByUsername.isPresent() && !existingByUsername.get().getId().equals(accountId)) {
-                throw new IllegalArgumentException("Bu kullanıcı adı zaten kullanılıyor");
-            }
-        }
-
-        // Email benzersizlik kontrolü (kendisi hariç)
-        if (updatedData.getEmail() != null && !updatedData.getEmail().trim().isEmpty()) {
-            Optional<InstantAccount> existingByEmail = instantAccountRepository.findByEmailAndIsActiveTrue(updatedData.getEmail().trim());
-            if (existingByEmail.isPresent() && !existingByEmail.get().getId().equals(accountId)) {
-                throw new IllegalArgumentException("Bu email adresi zaten kullanılıyor");
-            }
-        }
-
-        // TC Kimlik No benzersizlik kontrolü (kendisi hariç)
-        if (updatedData.getTcIdentityNo() != null && !updatedData.getTcIdentityNo().trim().isEmpty()) {
-            Optional<InstantAccount> existingByTc = instantAccountRepository.findByTcIdentityNoAndIsActiveTrue(updatedData.getTcIdentityNo().trim());
-            if (existingByTc.isPresent() && !existingByTc.get().getId().equals(accountId)) {
-                throw new IllegalArgumentException("Bu TC Kimlik No zaten kayıtlı");
-            }
-        }
-
-        // Vergi No benzersizlik kontrolü (kendisi hariç)
-        if (updatedData.getTaxNumber() != null && !updatedData.getTaxNumber().trim().isEmpty()) {
-            Optional<InstantAccount> existingByTax = instantAccountRepository.findByTaxNumberAndIsActiveTrue(updatedData.getTaxNumber().trim());
-            if (existingByTax.isPresent() && !existingByTax.get().getId().equals(accountId)) {
-                throw new IllegalArgumentException("Bu Vergi No zaten kayıtlı");
-            }
-        }
 
         // Güncellenebilir alanları kopyala
         updateAccountFields(existingAccount, updatedData);
@@ -335,6 +263,18 @@ public class InstantAccountService implements InstantAccountServiceImpl {
     private void validateAccountData(InstantAccount account) {
         if (account == null) {
             throw new IllegalArgumentException("Hesap bilgileri boş olamaz");
+        }
+
+        // Cari grup var mı kontrol et
+        if (account.getAccountGroupId() != null) {
+
+            try {
+                if (!instantGroupServiceImpl.checkGroupById(account.getAccountGroupId())) {
+                    throw new IllegalArgumentException("Belirtilen cari grup bulunamadı");
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
+            }
         }
 
         // Username kontrolü
