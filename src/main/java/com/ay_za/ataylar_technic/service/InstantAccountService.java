@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,15 +36,44 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         // Temel validasyonlar
         validateAccountData(accountData);
 
-        // ID ve audit alanlarını set et
         accountData.setId(UUID.randomUUID().toString());
         accountData.setCreatedBy(createdBy);
         accountData.setIsActive(true);
-
-        // Default değerler
-        if (accountData.getUserStatus() == null) {
-            accountData.setUserStatus(true);
-        }
+        accountData.setAccountGroupId(accountData.getAccountGroupId());
+        accountData.setSite(accountData.getSite());
+        accountData.setUserType(accountData.getUserType());
+        accountData.setUsername(accountData.getUsername());
+        accountData.setPassword(accountData.getPassword());
+        accountData.setName(accountData.getName());
+        accountData.setSurname(accountData.getSurname());
+        accountData.setCompanyName(accountData.getCompanyName());
+        accountData.setCompanyShortName(accountData.getCompanyShortName());
+        accountData.setAuthorizedPerson(accountData.getAuthorizedPerson());
+        accountData.setPhoneCountryCode(accountData.getPhoneCountryCode());
+        accountData.setPhone(accountData.getPhone());
+        accountData.setGsmCountryCode(accountData.getGsmCountryCode());
+        accountData.setGsm(accountData.getGsm());
+        accountData.setCity(accountData.getCity());
+        accountData.setActive(true);
+        accountData.setAddress(accountData.getAddress());
+        accountData.setProvince(accountData.getProvince());
+        accountData.setDistrict(accountData.getDistrict());
+        accountData.setNeighborhood(accountData.getNeighborhood());
+        accountData.setFax(accountData.getFax());
+        accountData.setEmail(accountData.getEmail());
+        accountData.setPttBox(accountData.getPttBox());
+        accountData.setPostalCode(accountData.getPostalCode());
+        accountData.setTaxOffice(accountData.getTaxOffice());
+        accountData.setTaxNumber(accountData.getTaxNumber());
+        accountData.setTcIdentityNo(accountData.getTcIdentityNo());
+        accountData.setBankAddress(accountData.getBankAddress());
+        accountData.setRiskLimit(accountData.getRiskLimit());
+        accountData.setRiskLimitExplanation(accountData.getRiskLimitExplanation());
+        accountData.setUserStatus(accountData.getUserStatus());
+        accountData.setSignatureImage(accountData.getSignatureImage());
+        accountData.setCreatedDate(LocalDateTime.now());
+        accountData.setUpdatedDate(null);
+        accountData.setUpdatedBy(null);
 
         return instantAccountRepository.save(accountData);
     }
