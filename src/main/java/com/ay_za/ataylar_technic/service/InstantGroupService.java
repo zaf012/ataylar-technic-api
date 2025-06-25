@@ -170,6 +170,14 @@ public class InstantGroupService implements InstantGroupServiceImpl {
     }
 
     /**
+     * Grup varlık kontrolü
+     */
+    @Override
+    public Boolean checkGroupById(String id) {
+        return instantGroupRepository.existsById(id);
+    }
+
+    /**
      * Grup adına göre arama
      */
     @Override

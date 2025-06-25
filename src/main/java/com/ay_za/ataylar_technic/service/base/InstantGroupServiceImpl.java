@@ -33,6 +33,8 @@ public interface InstantGroupServiceImpl {
 
     List<InstantGroup> getAllGroups();
 
+    Boolean checkGroupById(String id);
+
     List<InstantGroup> searchGroupsByName(String searchTerm);
 
     Integer getActiveGroupCount();
