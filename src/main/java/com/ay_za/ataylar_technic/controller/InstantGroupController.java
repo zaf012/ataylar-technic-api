@@ -361,38 +361,38 @@ public class InstantGroupController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-//
-//    /**
-//     * Varsayılan grupları oluştur
-//     */
-//    @PostMapping("/create-defaults-za")
-//    public ResponseEntity<Map<String, Object>> createDefaultGroups(@RequestBody Map<String, String> request) {
-//        Map<String, Object> response = new HashMap<>();
-//        try {
-//            String createdBy = request.get("createdBy");
-//
-//            if (createdBy == null || createdBy.trim().isEmpty()) {
-//                response.put("success", false);
-//                response.put("message", "createdBy alanı boş olamaz");
-//                return ResponseEntity.badRequest().body(response);
-//            }
-//
-//            List<InstantGroup> createdGroups = instantGroupService.createDefaultGroups(createdBy);
-//
-//            response.put("success", true);
-//            response.put("message", createdGroups.size() + " varsayılan grup başarıyla oluşturuldu");
-//            response.put("data", createdGroups);
-//            response.put("count", createdGroups.size());
-//
-//            return ResponseEntity.ok(response);
-//        } catch (IllegalArgumentException e) {
-//            response.put("success", false);
-//            response.put("message", e.getMessage());
-//            return ResponseEntity.badRequest().body(response);
-//        } catch (Exception e) {
-//            response.put("success", false);
-//            response.put("message", "Varsayılan gruplar oluşturulurken bir hata oluştu");
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-//        }
-//    }
+
+    /**
+     * Varsayılan grupları oluştur
+     */
+    @PostMapping("/create-defaults-za")
+    public ResponseEntity<Map<String, Object>> createDefaultGroups(@RequestBody Map<String, String> request) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            String createdBy = request.get("createdBy");
+
+            if (createdBy == null || createdBy.trim().isEmpty()) {
+                response.put("success", false);
+                response.put("message", "createdBy alanı boş olamaz");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            List<InstantGroup> createdGroups = instantGroupService.createDefaultGroups(createdBy);
+
+            response.put("success", true);
+            response.put("message", createdGroups.size() + " varsayılan grup başarıyla oluşturuldu");
+            response.put("data", createdGroups);
+            response.put("count", createdGroups.size());
+
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Varsayılan gruplar oluşturulurken bir hata oluştu");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 }
