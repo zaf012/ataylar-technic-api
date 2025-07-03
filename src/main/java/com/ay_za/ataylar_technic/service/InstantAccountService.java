@@ -7,10 +7,12 @@ import com.ay_za.ataylar_technic.service.base.InstantAccountServiceImpl;
 import com.ay_za.ataylar_technic.service.base.InstantGroupServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,7 +33,9 @@ public class InstantAccountService implements InstantAccountServiceImpl {
      */
     @Transactional
     @Override
-    public InstantAccount createAccount(InstantAccount accountData, String createdBy) {
+    public InstantAccount createAccount(@RequestBody Map<String, Object> request, String createdBy) {
+
+        InstantAccount accountData = mapToInstantAccount(request);
 
         // Temel validasyonlar
         validateAccountData(accountData);
@@ -76,6 +80,55 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         accountData.setUpdatedBy(null);
 
         return instantAccountRepository.save(accountData);
+    }
+
+    // Helper method - Request body'den InstantAccount objesi oluştur
+    private InstantAccount mapToInstantAccount(Map<String, Object> request) {
+        InstantAccount account = new InstantAccount();
+
+        account.setAccountGroupId((String) request.get("accountGroupId"));
+        account.setSite((String) request.get("site"));
+        account.setUserType((String) request.get("userType"));
+        account.setUsername((String) request.get("username"));
+        account.setPassword((String) request.get("password"));
+        account.setName((String) request.get("name"));
+        account.setSurname((String) request.get("surname"));
+        account.setCompanyName((String) request.get("companyName"));
+        account.setCompanyShortName((String) request.get("companyShortName"));
+        account.setAuthorizedPerson((String) request.get("authorizedPerson"));
+        account.setPhoneCountryCode((String) request.get("phoneCountryCode"));
+        account.setPhone((String) request.get("phone"));
+        account.setGsmCountryCode((String) request.get("gsmCountryCode"));
+        account.setGsm((String) request.get("gsm"));
+        account.setCity((String) request.get("city"));
+        account.setActive(true);
+        account.setAddress((String) request.get("address"));
+        account.setProvince((String) request.get("province"));
+        account.setDistrict((String) request.get("district"));
+        account.setNeighborhood((String) request.get("neighborhood"));
+        account.setFax((String) request.get("fax"));
+        account.setEmail((String) request.get("email"));
+        account.setPttBox((String) request.get("pttBox"));
+        account.setPostalCode((String) request.get("postalCode"));
+        account.setTaxOffice((String) request.get("taxOffice"));
+        account.setTaxNumber((String) request.get("taxNumber"));
+        account.setTcIdentityNo((String) request.get("tcIdentityNo"));
+        account.setBankAddress((String) request.get("bankAddress"));
+        account.setRiskLimit(BigDecimal.ZERO);
+        account.setRiskLimitExplanation((String) request.get("riskLimitExplanation"));
+        account.setUserStatus(true);
+        account.setSignatureImage((String) request.get("signatureImage"));
+
+
+        // Boolean alanlar
+        if (request.get("userStatus") != null) {
+            account.setUserStatus((Boolean) request.get("userStatus"));
+        }
+        if (request.get("isActive") != null) {
+            account.setIsActive((Boolean) request.get("isActive"));
+        }
+
+        return account;
     }
 
     /**
