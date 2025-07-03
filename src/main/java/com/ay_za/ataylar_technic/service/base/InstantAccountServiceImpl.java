@@ -1,5 +1,6 @@
 package com.ay_za.ataylar_technic.service.base;
 
+import com.ay_za.ataylar_technic.dto.InstantAccountDto;
 import com.ay_za.ataylar_technic.entity.InstantAccount;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,10 +9,10 @@ import java.util.Optional;
 
 public interface InstantAccountServiceImpl {
     @Transactional
-    InstantAccount createAccount(InstantAccount accountData, String createdBy);
+    InstantAccount createAccount(InstantAccountDto accountData);
 
     @Transactional
-    InstantAccount updateAccount(String accountId, InstantAccount updatedData, String updatedBy);
+    InstantAccount updateAccount(String accountId, InstantAccountDto updatedData, String updatedBy);
 
     @Transactional
     InstantAccount toggleAccountStatus(String accountId, String updatedBy);
