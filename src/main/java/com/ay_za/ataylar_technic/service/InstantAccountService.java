@@ -1,6 +1,7 @@
 package com.ay_za.ataylar_technic.service;
 
 import com.ay_za.ataylar_technic.entity.InstantAccount;
+import com.ay_za.ataylar_technic.entity.InstantGroup;
 import com.ay_za.ataylar_technic.repository.InstantAccountRepository;
 import com.ay_za.ataylar_technic.repository.InstantGroupRepository;
 import com.ay_za.ataylar_technic.service.base.InstantAccountServiceImpl;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.*;
 
 @Service
 public class InstantAccountService implements InstantAccountServiceImpl {
@@ -22,10 +24,12 @@ public class InstantAccountService implements InstantAccountServiceImpl {
 
     private final InstantAccountRepository instantAccountRepository;
     private final InstantGroupServiceImpl instantGroupServiceImpl;
+    private final InstantGroupRepository instantGroupRepository;
 
-    public InstantAccountService(InstantAccountRepository instantAccountRepository, InstantGroupServiceImpl instantGroupServiceImpl) {
+    public InstantAccountService(InstantAccountRepository instantAccountRepository, InstantGroupServiceImpl instantGroupServiceImpl, InstantGroupRepository instantGroupRepository) {
         this.instantAccountRepository = instantAccountRepository;
         this.instantGroupServiceImpl = instantGroupServiceImpl;
+        this.instantGroupRepository = instantGroupRepository;
     }
 
     /**
@@ -450,5 +454,202 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         existing.setRiskLimitExplanation(updated.getRiskLimitExplanation());
         existing.setUserStatus(updated.getUserStatus());
         existing.setSignatureImage(updated.getSignatureImage());
+    }
+
+
+    /**
+     * Dummy data ile hesap oluştur (Test amaçlı) - Güncellenmiş versiyon
+     */
+    @Transactional
+    public InstantAccount createAccount2(String createdBy) {
+        // Önce rastgele bir aktif grup ID'si alalım
+        List<InstantGroup> activeGroups = instantGroupRepository.findByIsActiveTrueOrderByGroupNameAsc();
+        String groupId = activeGroups.isEmpty() ? "default-group-id" : activeGroups.get(0).getId();
+
+        // Rastgele kullanıcı adı ve email oluştur
+        String randomNumber = String.valueOf(System.currentTimeMillis()).substring(7);
+
+        // Kişisel bilgiler
+        String[] firstNames = {"Ahmet", "Mehmet", "Ali", "Veli", "Hasan", "Hüseyin", "İbrahim", "Mustafa", "Osman", "Ömer"};
+        String[] lastNames = {"Yılmaz", "Kaya", "Demir", "Şahin", "Çelik", "Aydın", "Özkan", "Arslan", "Doğan", "Kılıç"};
+
+        int firstIndex = (int) (Math.random() * firstNames.length);
+        int lastIndex = (int) (Math.random() * lastNames.length);
+
+        String firstName = firstNames[firstIndex];
+        String lastName = lastNames[lastIndex];
+
+        // Şirket bilgileri
+        String[] companyNames = {
+                "ZIRVE ELEKTRİK BOBİNAJ HİDROFOR POMPA SİSTEMLERİ",
+                "Kentplus Centrum Site Yönetimi",
+                "Atayıldız Plaza Yönetimi",
+                "TEM 34 ESENYURT 2 SİTE YÖNETİMİ",
+                "Tom 34 Esenyurt Site Yönetimi",
+                "Nurol Kalman Site Yönetimi",
+                "İNNOVA DEPARTMANLAR DAİRE B C BLOK SİTE YÖNETİMİ",
+                "İlke Park Evleri Site Yönetimi",
+                "Esas Flora Evleri Site Yönetimi"
+        };
+
+        int companyIndex = (int) (Math.random() * companyNames.length);
+        String companyName = companyNames[companyIndex];
+
+        // Request Map oluştur
+        Map<String, Object> request = new HashMap<>();
+
+        // Temel bilgiler
+        request.put("accountGroupId", groupId);
+        request.put("site", "Ana Kullanıcı");
+        request.put("userType", "Müşteri");
+        request.put("username", "user" + randomNumber + "@example.com");
+        request.put("password", "password123");
+        request.put("name", firstName);
+        request.put("surname", lastName);
+
+        // Şirket bilgileri
+        request.put("companyName", companyName);
+        request.put("companyShortName", companyName.length() > 20 ? companyName.substring(0, 20) : companyName);
+        request.put("authorizedPerson", firstName + " " + lastName);
+
+        // İletişim bilgileri
+        request.put("phoneCountryCode", "+90");
+        request.put("phone", "212" + String.format("%07d", (int) (Math.random() * 10000000)));
+        request.put("gsmCountryCode", "+90");
+        request.put("gsm", "5" + String.format("%09d", (int) (Math.random() * 1000000000)));
+        request.put("email", "user" + randomNumber + "@example.com");
+
+        // Adres bilgileri
+        String[] cities = {"İstanbul", "Ankara", "İzmir", "Bursa", "Antalya"};
+        String[] districts = {"Şişli", "Beşiktaş", "Kadıköy", "Üsküdar", "Fatih", "Beyoğlu", "Bakırköy"};
+        String[] neighborhoods = {"Merkez", "Çamlık", "Yenimahalle", "Kocatepe", "Bahçelievler"};
+
+        String city = cities[(int) (Math.random() * cities.length)];
+        String province = districts[(int) (Math.random() * districts.length)];
+        String district = districts[(int) (Math.random() * districts.length)];
+        String neighborhood = neighborhoods[(int) (Math.random() * neighborhoods.length)];
+
+        request.put("city", city);
+        request.put("province", province);
+        request.put("district", district);
+        request.put("neighborhood", neighborhood);
+        request.put("address", neighborhood + " Mahallesi " +
+                (int)(Math.random() * 100 + 1) + ". Sokak No:" +
+                (int)(Math.random() * 50 + 1) + "/" +
+                (int)(Math.random() * 20 + 1));
+
+        // Diğer iletişim bilgileri
+        request.put("fax", "212" + String.format("%07d", (int) (Math.random() * 10000000)));
+        request.put("pttBox", "PK " + (int)(Math.random() * 9999 + 1));
+        request.put("postalCode", String.format("%05d", (int) (Math.random() * 99999 + 1)));
+
+        // Vergi bilgileri
+        String[] taxOffices = {"Şişli", "Beşiktaş", "Kadıköy", "Üsküdar", "Fatih", "Beyoğlu", "Bakırköy"};
+        request.put("taxOffice", taxOffices[(int) (Math.random() * taxOffices.length)] + " Vergi Dairesi");
+        request.put("taxNumber", String.format("%010d", (int) (Math.random() * 9999999999L + 1)));
+        request.put("tcIdentityNo", String.format("%011d", (int) (Math.random() * 99999999999L + 1)));
+
+        // Banka bilgileri
+        String[] banks = {"Ziraat Bankası", "İş Bankası", "Garanti BBVA", "Akbank", "Yapı Kredi"};
+        request.put("bankAddress", banks[(int) (Math.random() * banks.length)] + " " + city + " " + province + " Şubesi");
+
+        // Risk bilgileri
+        request.put("riskLimitExplanation", "Otomatik oluşturulan risk limiti");
+
+        // Durum bilgileri
+        request.put("userStatus", true);
+        request.put("isActive", true);
+
+        // Dummy base64 imza
+        request.put("signatureImage", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==");
+
+        InstantAccount instantAccount = mapToInstantAccount(request);
+
+        // createAccount metodunu kullan
+        return createAccount(instantAccount, createdBy);
+    }
+
+    /**
+     * Bulk dummy hesap oluştur - Güncellenmiş versiyon
+     */
+    @Transactional
+    @Override
+    public List<InstantAccount> createDummyAccounts(int count, String createdBy) {
+        List<InstantAccount> accounts = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+            try {
+                InstantAccount account = createAccount2(createdBy);
+                accounts.add(account);
+
+                // Aynı kullanıcı adı çakışmasını önlemek için kısa bekleme
+                Thread.sleep(1);
+            } catch (Exception e) {
+                // Hata durumunda devam et
+                System.err.println("Dummy hesap oluşturulurken hata: " + e.getMessage());
+            }
+        }
+
+        return accounts;
+    }
+
+    // Helper method - Request body'den InstantAccount objesi oluştur
+    private InstantAccount mapToInstantAccount(Map<String, Object> request) {
+        InstantAccount account = new InstantAccount();
+
+        // String alanlar
+        account.setAccountGroupId((String) request.get("accountGroupId"));
+        account.setSite((String) request.get("site"));
+        account.setUserType((String) request.get("userType"));
+        account.setUsername((String) request.get("username"));
+        account.setPassword((String) request.get("password"));
+        account.setName((String) request.get("name"));
+        account.setSurname((String) request.get("surname"));
+        account.setCompanyName((String) request.get("companyName"));
+        account.setCompanyShortName((String) request.get("companyShortName"));
+        account.setAuthorizedPerson((String) request.get("authorizedPerson"));
+        account.setPhoneCountryCode((String) request.get("phoneCountryCode"));
+        account.setPhone((String) request.get("phone"));
+        account.setGsmCountryCode((String) request.get("gsmCountryCode"));
+        account.setGsm((String) request.get("gsm"));
+        account.setAddress((String) request.get("address"));
+        account.setCity((String) request.get("city"));
+        account.setProvince((String) request.get("province"));
+        account.setDistrict((String) request.get("district"));
+        account.setNeighborhood((String) request.get("neighborhood"));
+        account.setFax((String) request.get("fax"));
+        account.setEmail((String) request.get("email"));
+        account.setPttBox((String) request.get("pttBox"));
+        account.setPostalCode((String) request.get("postalCode"));
+        account.setTaxOffice((String) request.get("taxOffice"));
+        account.setTaxNumber((String) request.get("taxNumber"));
+        account.setTcIdentityNo((String) request.get("tcIdentityNo"));
+        account.setBankAddress((String) request.get("bankAddress"));
+        account.setRiskLimitExplanation((String) request.get("riskLimitExplanation"));
+        account.setSignatureImage((String) request.get("signatureImage"));
+
+        // Boolean alanlar
+        if (request.get("userStatus") != null) {
+            account.setUserStatus((Boolean) request.get("userStatus"));
+        }
+        if (request.get("isActive") != null) {
+            account.setIsActive((Boolean) request.get("isActive"));
+        }
+
+        // BigDecimal alan
+        if (request.get("riskLimit") != null) {
+            Object riskLimitObj = request.get("riskLimit");
+            if (riskLimitObj instanceof Number) {
+                account.setRiskLimit(BigDecimal.valueOf(((Number) riskLimitObj).doubleValue()));
+            } else if (riskLimitObj instanceof String) {
+                try {
+                    account.setRiskLimit(new BigDecimal((String) riskLimitObj));
+                } catch (NumberFormatException e) {
+                    // Invalid number format, ignore
+                }
+            }
+        }
+
+        return account;
     }
 }

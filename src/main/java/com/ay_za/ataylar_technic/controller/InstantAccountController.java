@@ -66,6 +66,29 @@ public class InstantAccountController {
         }
     }
 
+    @PostMapping("/create-test-accounts")
+    public ResponseEntity<Map<String, Object>> createAccountTest() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+
+            List<InstantAccount> accounts = instantAccountService.createDummyAccounts(5, "admin");
+
+            response.put("success", true);
+            response.put("message", "Hesap başarıyla oluşturuldu");
+            response.put("data", accounts);
+
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Hesap oluşturulurken bir hata oluştu");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
     /**
      * Hesap bilgilerini güncelle
      */

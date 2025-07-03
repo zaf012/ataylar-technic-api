@@ -39,4 +39,7 @@ public interface InstantAccountServiceImpl {
 
     @Transactional
     InstantAccount updatePassword(String accountId, String newPassword, String updatedBy);
+
+    @Transactional
+    List<InstantAccount> createDummyAccounts(int count, String createdBy);
 }

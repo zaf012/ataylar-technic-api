@@ -39,6 +39,6 @@ public interface InstantGroupServiceImpl {
 
     Integer getActiveGroupCount();
 
-//    @Transactional
-//    List<InstantGroup> createDefaultGroups(String createdBy);
+   @Transactional
+   List<InstantGroup> createDefaultGroups(String createdBy);
 }

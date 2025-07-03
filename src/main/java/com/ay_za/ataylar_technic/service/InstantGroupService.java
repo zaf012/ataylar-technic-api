@@ -218,74 +218,74 @@ public class InstantGroupService implements InstantGroupServiceImpl {
         return instantGroupRepository.countActiveGroups();
     }
 
-//    /**
-//     * Bulk grup oluştur - Birden fazla grubu tek seferde oluştur
-//     */
-//    @Transactional
-//    public List<InstantGroup> createBulkGroups(List<String> groupNames, String createdBy) {
-//        if (groupNames == null || groupNames.isEmpty()) {
-//            throw new IllegalArgumentException("Grup listesi boş olamaz");
-//        }
-//
-//        List<InstantGroup> createdGroups = new ArrayList<>();
-//        List<String> errors = new ArrayList<>();
-//
-//        for (String groupName : groupNames) {
-//            try {
-//                // Grup adı kontrolü
-//                if (groupName == null || groupName.trim().isEmpty()) {
-//                    errors.add("Boş grup adı atlandı");
-//                    continue;
-//                }
-//
-//                // Aynı isimde grup var mı kontrol et
-//                if (instantGroupRepository.existsByGroupNameIgnoreCaseAndIsActiveTrue(groupName.trim())) {
-//                    errors.add("'" + groupName + "' isimli grup zaten mevcut");
-//                    continue;
-//                }
-//
-//                InstantGroup group = new InstantGroup();
-//                group.setId(UUID.randomUUID().toString());
-//                group.setGroupName(groupName.trim());
-//                group.setCreatedBy(createdBy);
-//                group.setIsActive(true);
-//
-//                InstantGroup savedGroup = instantGroupRepository.save(group);
-//                createdGroups.add(savedGroup);
-//
-//            } catch (Exception e) {
-//                errors.add("'" + groupName + "' oluşturulurken hata: " + e.getMessage());
-//            }
-//        }
-//
-//        // Eğer hiç grup oluşturulamadıysa hata fırlat
-//        if (createdGroups.isEmpty()) {
-//            throw new IllegalArgumentException("Hiçbir grup oluşturulamadı. Hatalar: " + String.join(", ", errors));
-//        }
-//
-//        return createdGroups;
-//    }
-//
-//    /**
-//     * Varsayılan grupları oluştur
-//     */
-//    @Transactional
-//    @Override
-//    public List<InstantGroup> createDefaultGroups(String createdBy) {
-//        List<String> defaultGroupNames = Arrays.asList(
-//                "Muhasebe/Finans",
-//                "Personel",
-//                "Teknik Müdür Yardımcısı",
-//                "Teknik Müdür",
-//                "Genel Kordinatör",
-//                "Araçlar",
-//                "Personeller",
-//                "Kat Sakinleri",
-//                "Müşteri/Tedarikçi",
-//                "Tedarikçi",
-//                "Müşteri"
-//        );
-//
-//        return createBulkGroups(defaultGroupNames, createdBy);
-//    }
+    /**
+     * Bulk grup oluştur - Birden fazla grubu tek seferde oluştur
+     */
+    @Transactional
+    public List<InstantGroup> createBulkGroups(List<String> groupNames, String createdBy) {
+        if (groupNames == null || groupNames.isEmpty()) {
+            throw new IllegalArgumentException("Grup listesi boş olamaz");
+        }
+
+        List<InstantGroup> createdGroups = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
+
+        for (String groupName : groupNames) {
+            try {
+                // Grup adı kontrolü
+                if (groupName == null || groupName.trim().isEmpty()) {
+                    errors.add("Boş grup adı atlandı");
+                    continue;
+                }
+
+                // Aynı isimde grup var mı kontrol et
+                if (instantGroupRepository.existsByGroupNameIgnoreCaseAndIsActiveTrue(groupName.trim())) {
+                    errors.add("'" + groupName + "' isimli grup zaten mevcut");
+                    continue;
+                }
+
+                InstantGroup group = new InstantGroup();
+                group.setId(UUID.randomUUID().toString());
+                group.setGroupName(groupName.trim());
+                group.setCreatedBy(createdBy);
+                group.setIsActive(true);
+
+                InstantGroup savedGroup = instantGroupRepository.save(group);
+                createdGroups.add(savedGroup);
+
+            } catch (Exception e) {
+                errors.add("'" + groupName + "' oluşturulurken hata: " + e.getMessage());
+            }
+        }
+
+        // Eğer hiç grup oluşturulamadıysa hata fırlat
+        if (createdGroups.isEmpty()) {
+            throw new IllegalArgumentException("Hiçbir grup oluşturulamadı. Hatalar: " + String.join(", ", errors));
+        }
+
+        return createdGroups;
+    }
+
+    /**
+     * Varsayılan grupları oluştur
+     */
+    @Transactional
+    @Override
+    public List<InstantGroup> createDefaultGroups(String createdBy) {
+        List<String> defaultGroupNames = Arrays.asList(
+                "Muhasebe/Finans",
+                "Personel",
+                "Teknik Müdür Yardımcısı",
+                "Teknik Müdür",
+                "Genel Kordinatör",
+                "Araçlar",
+                "Personeller",
+                "Kat Sakinleri",
+                "Müşteri/Tedarikçi",
+                "Tedarikçi",
+                "Müşteri"
+        );
+
+        return createBulkGroups(defaultGroupNames, createdBy);
+    }
 }
