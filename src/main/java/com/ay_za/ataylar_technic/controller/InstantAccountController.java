@@ -46,11 +46,9 @@ public class InstantAccountController {
     public ResponseEntity<Map<String, Object>> createAccount(@RequestBody Map<String, Object> request) {
         Map<String, Object> response = new HashMap<>();
         try {
-            // Request body'den InstantAccount objesi oluştur
-            InstantAccount accountData = mapToInstantAccount(request);
             String createdBy = (String) request.get("createdBy");
 
-            InstantAccount account = instantAccountService.createAccount(accountData, createdBy);
+            InstantAccount account = instantAccountService.createAccount(request, createdBy);
 
             response.put("success", true);
             response.put("message", "Hesap başarıyla oluşturuldu");
