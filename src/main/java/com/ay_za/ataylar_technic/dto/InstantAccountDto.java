@@ -1,185 +1,49 @@
-package com.ay_za.ataylar_technic.entity;
-
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+package com.ay_za.ataylar_technic.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-@Entity
-@Table(name = "instant_accounts")
-public class InstantAccount {
+public class InstantAccountDto {
 
-    @Id
-    @Column(name = "id", length = 36)
     private String id;
-
-    // Cari Grup Id
-    @Column(name = "account_group_id", length = 36)
     private String accountGroupId;
-
-    @Column(name = "account_group_name", length = 100)
     private String accountGroupName;
-
-    @Column(name = "site", length = 100)
     private String site;
-
-    @Column(name = "user_type", length = 100)
     private String userType;
-
-    //email and username
-    @Column(name = "username", length = 100)
     private String username;
-
-    @Column(name = "password", length = 255)
     private String password;
-
-    @Column(name = "name", length = 100)
     private String name;
-
-    @Column(name = "surname", length = 100)
     private String surname;
-
-    @Column(name = "company_name", length = 200)
     private String companyName;
-
-    @Column(name = "company_short_name", length = 100)
     private String companyShortName;
-
-    @Column(name = "authorized_person", length = 100)
     private String authorizedPerson;
-
-    @Column(name = "phone_country_code", length = 10)
     private String phoneCountryCode;
-
-    @Column(name = "phone", length = 20)
     private String phone;
-
-    @Column(name = "gsm_country_code", length = 10)
     private String gsmCountryCode;
-
-    @Column(name = "gsm", length = 20)
     private String gsm;
-
-    @Column(name = "address", length = 500)
     private String address;
-
-    @Column(name = "city", length = 100)
     private String city;
-
-    @Column(name = "province", length = 100)
     private String province;
-
-    @Column(name = "district", length = 100)
     private String district;
-
-    @Column(name = "neighborhood", length = 100)
     private String neighborhood;
-
-    @Column(name = "fax", length = 20)
     private String fax;
-
-    @Column(name = "email", length = 100)
     private String email;
-
-    @Column(name = "ptt_box", length = 20)
     private String pttBox;
-
-    @Column(name = "postal_code", length = 10)
     private String postalCode;
-
-    @Column(name = "tax_office", length = 100)
     private String taxOffice;
-
-    @Column(name = "tax_number", length = 20)
     private String taxNumber;
-
-    @Column(name = "tc_identity_no", length = 11)
     private String tcIdentityNo;
-
-    @Column(name = "bank_address", length = 200)
     private String bankAddress;
-
-    @Column(name = "risk_limit", precision = 15, scale = 2)
     private BigDecimal riskLimit;
-
-    @Column(name = "risk_limit_explanation", length = 200)
     private String riskLimitExplanation;
-
-    @Column(name = "user_status")
-    private Boolean userStatus = true;
-
-    // İmza için base64 string
-    @Lob
-    @Column(name = "signature_image")
+    private Boolean userStatus;
     private String signatureImage;
-
-    @CreationTimestamp
-    @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;
-
-    @UpdateTimestamp
-    @Column(name = "updated_date")
     private LocalDateTime updatedDate;
-
-    @Column(name = "created_by", length = 50)
     private String createdBy;
-
-    @Column(name = "updated_by", length = 50)
     private String updatedBy;
+    private Boolean isActive;
 
-    @Column(name = "is_active")
-    private Boolean isActive = true;
-
-    // Default constructor
-    public InstantAccount() {
-    }
-
-    // Constructor with required fields
-    public InstantAccount(String id, String accountGroupId, String accountGroupName, String site, String userType, String username, String password, String name, String surname, String companyName, String companyShortName, String authorizedPerson, String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address, String city, String province, String district, String neighborhood, String fax, String email, String pttBox, String postalCode, String taxOffice, String taxNumber, String tcIdentityNo, String bankAddress, BigDecimal riskLimit, String riskLimitExplanation, Boolean userStatus, String signatureImage, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
-        this.id = id;
-        this.accountGroupId = accountGroupId;
-        this.accountGroupName = accountGroupName;
-        this.site = site;
-        this.userType = userType;
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.companyName = companyName;
-        this.companyShortName = companyShortName;
-        this.authorizedPerson = authorizedPerson;
-        this.phoneCountryCode = phoneCountryCode;
-        this.phone = phone;
-        this.gsmCountryCode = gsmCountryCode;
-        this.gsm = gsm;
-        this.address = address;
-        this.city = city;
-        this.province = province;
-        this.district = district;
-        this.neighborhood = neighborhood;
-        this.fax = fax;
-        this.email = email;
-        this.pttBox = pttBox;
-        this.postalCode = postalCode;
-        this.taxOffice = taxOffice;
-        this.taxNumber = taxNumber;
-        this.tcIdentityNo = tcIdentityNo;
-        this.bankAddress = bankAddress;
-        this.riskLimit = riskLimit;
-        this.riskLimitExplanation = riskLimitExplanation;
-        this.userStatus = userStatus;
-        this.signatureImage = signatureImage;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
-        this.createdBy = createdBy;
-        this.updatedBy = updatedBy;
-        this.isActive = isActive;
-    }
-
-    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -308,28 +172,20 @@ public class InstantAccount {
         this.gsm = gsm;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
-
     public String getAddress() {
         return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getProvince() {
@@ -484,38 +340,55 @@ public class InstantAccount {
         this.updatedBy = updatedBy;
     }
 
-    public Boolean getIsActive() {
+    public Boolean getActive() {
         return isActive;
     }
 
-    public void setIsActive(Boolean isActive) {
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public InstantAccountDto() {
+    }
+
+    public InstantAccountDto(String id, String accountGroupId, String accountGroupName, String site, String userType, String username, String password, String name, String surname, String companyName, String companyShortName, String authorizedPerson, String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address, String city, String province, String district, String neighborhood, String fax, String email, String pttBox, String postalCode, String taxOffice, String taxNumber, String tcIdentityNo, String bankAddress, BigDecimal riskLimit, String riskLimitExplanation, Boolean userStatus, String signatureImage, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
+        this.id = id;
+        this.accountGroupId = accountGroupId;
+        this.accountGroupName = accountGroupName;
+        this.site = site;
+        this.userType = userType;
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.surname = surname;
+        this.companyName = companyName;
+        this.companyShortName = companyShortName;
+        this.authorizedPerson = authorizedPerson;
+        this.phoneCountryCode = phoneCountryCode;
+        this.phone = phone;
+        this.gsmCountryCode = gsmCountryCode;
+        this.gsm = gsm;
+        this.address = address;
+        this.city = city;
+        this.province = province;
+        this.district = district;
+        this.neighborhood = neighborhood;
+        this.fax = fax;
+        this.email = email;
+        this.pttBox = pttBox;
+        this.postalCode = postalCode;
+        this.taxOffice = taxOffice;
+        this.taxNumber = taxNumber;
+        this.tcIdentityNo = tcIdentityNo;
+        this.bankAddress = bankAddress;
+        this.riskLimit = riskLimit;
+        this.riskLimitExplanation = riskLimitExplanation;
+        this.userStatus = userStatus;
+        this.signatureImage = signatureImage;
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
         this.isActive = isActive;
-    }
-
-    @Override
-    public String toString() {
-        return "InstantAccount{" +
-                "id='" + id + '\'' +
-                ", accountGroupId='" + accountGroupId + '\'' +
-                ", username='" + username + '\'' +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", companyName='" + companyName + '\'' +
-                ", email='" + email + '\'' +
-                ", isActive=" + isActive +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        InstantAccount that = (InstantAccount) o;
-        return id != null && id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 }

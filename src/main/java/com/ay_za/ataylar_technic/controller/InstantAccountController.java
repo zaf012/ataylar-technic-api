@@ -1,5 +1,6 @@
 package com.ay_za.ataylar_technic.controller;
 
+import com.ay_za.ataylar_technic.dto.InstantAccountDto;
 import com.ay_za.ataylar_technic.entity.InstantAccount;
 import com.ay_za.ataylar_technic.service.base.InstantAccountServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,14 +44,11 @@ public class InstantAccountController {
             @ApiResponse(responseCode = "500", description = "Sunucu hatası")
     })
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createAccount(@RequestBody Map<String, Object> request) {
+    public ResponseEntity<Map<String, Object>> createAccount(@RequestBody InstantAccountDto request) {
         Map<String, Object> response = new HashMap<>();
         try {
-            // Request body'den InstantAccount objesi oluştur
-            InstantAccount accountData = mapToInstantAccount(request);
-            String createdBy = (String) request.get("createdBy");
 
-            InstantAccount account = instantAccountService.createAccount(accountData, createdBy);
+            InstantAccount account = instantAccountService.createAccount(request);
 
             response.put("success", true);
             response.put("message", "Hesap başarıyla oluşturuldu");
@@ -103,13 +101,11 @@ public class InstantAccountController {
     @PutMapping("/{accountId}")
     public ResponseEntity<Map<String, Object>> updateAccount(
             @PathVariable String accountId,
-            @RequestBody Map<String, Object> request) {
+            @RequestBody InstantAccountDto request) {
         Map<String, Object> response = new HashMap<>();
         try {
-            InstantAccount updatedData = mapToInstantAccount(request);
-            String updatedBy = (String) request.get("updatedBy");
 
-            InstantAccount account = instantAccountService.updateAccount(accountId, updatedData, updatedBy);
+            InstantAccount account = instantAccountService.updateAccount(accountId, request, "admin");
 
             response.put("success", true);
             response.put("message", "Hesap başarıyla güncellendi");
@@ -398,63 +394,4 @@ public class InstantAccountController {
         }
     }
 
-    // Helper method - Request body'den InstantAccount objesi oluştur
-    private InstantAccount mapToInstantAccount(Map<String, Object> request) {
-        InstantAccount account = new InstantAccount();
-
-        // String alanlar
-        account.setAccountGroupId((String) request.get("accountGroupId"));
-        account.setSite((String) request.get("site"));
-        account.setUserType((String) request.get("userType"));
-        account.setUsername((String) request.get("username"));
-        account.setPassword((String) request.get("password"));
-        account.setName((String) request.get("name"));
-        account.setSurname((String) request.get("surname"));
-        account.setCompanyName((String) request.get("companyName"));
-        account.setCompanyShortName((String) request.get("companyShortName"));
-        account.setAuthorizedPerson((String) request.get("authorizedPerson"));
-        account.setPhoneCountryCode((String) request.get("phoneCountryCode"));
-        account.setPhone((String) request.get("phone"));
-        account.setGsmCountryCode((String) request.get("gsmCountryCode"));
-        account.setGsm((String) request.get("gsm"));
-        account.setAddress((String) request.get("address"));
-        account.setCity((String) request.get("city"));
-        account.setProvince((String) request.get("province"));
-        account.setDistrict((String) request.get("district"));
-        account.setNeighborhood((String) request.get("neighborhood"));
-        account.setFax((String) request.get("fax"));
-        account.setEmail((String) request.get("email"));
-        account.setPttBox((String) request.get("pttBox"));
-        account.setPostalCode((String) request.get("postalCode"));
-        account.setTaxOffice((String) request.get("taxOffice"));
-        account.setTaxNumber((String) request.get("taxNumber"));
-        account.setTcIdentityNo((String) request.get("tcIdentityNo"));
-        account.setBankAddress((String) request.get("bankAddress"));
-        account.setRiskLimitExplanation((String) request.get("riskLimitExplanation"));
-        account.setSignatureImage((String) request.get("signatureImage"));
-
-        // Boolean alanlar
-        if (request.get("userStatus") != null) {
-            account.setUserStatus((Boolean) request.get("userStatus"));
-        }
-        if (request.get("isActive") != null) {
-            account.setIsActive((Boolean) request.get("isActive"));
-        }
-
-        // BigDecimal alan
-        if (request.get("riskLimit") != null) {
-            Object riskLimitObj = request.get("riskLimit");
-            if (riskLimitObj instanceof Number) {
-                account.setRiskLimit(BigDecimal.valueOf(((Number) riskLimitObj).doubleValue()));
-            } else if (riskLimitObj instanceof String) {
-                try {
-                    account.setRiskLimit(new BigDecimal((String) riskLimitObj));
-                } catch (NumberFormatException e) {
-                    // Invalid number format, ignore
-                }
-            }
-        }
-
-        return account;
-    }
 }
