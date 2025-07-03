@@ -4,12 +4,11 @@ import com.ay_za.ataylar_technic.entity.InstantAccount;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface InstantAccountServiceImpl {
     @Transactional
-    InstantAccount createAccount(Map<String, Object> request, String createdBy);
+    InstantAccount createAccount(InstantAccount accountData, String createdBy);
 
     @Transactional
     InstantAccount updateAccount(String accountId, InstantAccount updatedData, String updatedBy);
