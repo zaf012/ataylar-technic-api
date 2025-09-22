@@ -35,20 +35,17 @@ public class InstantGroup {
     @Column(name = "updated_by", length = 100)
     private String updatedBy;
 
-    @Column(name = "is_active")
-    private Boolean isActive = true;
-
     // Default constructor
-    public InstantGroup() {}
+    public InstantGroup() {
+    }
 
-    public InstantGroup(String id, String groupName, LocalDateTime createdDate , LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
+    public InstantGroup(String id, String groupName, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy) {
         this.id = UUID.randomUUID().toString();
         this.groupName = groupName;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
-        this.isActive = isActive;
     }
 
     // Getters and Setters
@@ -100,14 +97,6 @@ public class InstantGroup {
         this.updatedBy = updatedBy;
     }
 
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
-
     @Override
     public String toString() {
         return "InstantGroup{" +
@@ -117,7 +106,6 @@ public class InstantGroup {
                 ", updatedDate=" + updatedDate +
                 ", createdBy='" + createdBy + '\'' +
                 ", updatedBy='" + updatedBy + '\'' +
-                ", isActive=" + isActive +
                 '}';
     }
 

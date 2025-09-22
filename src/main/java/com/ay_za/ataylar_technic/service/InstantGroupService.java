@@ -1,6 +1,8 @@
 package com.ay_za.ataylar_technic.service;
 
+import com.ay_za.ataylar_technic.dto.InstantGroupDto;
 import com.ay_za.ataylar_technic.entity.InstantGroup;
+import com.ay_za.ataylar_technic.mapper.InstantGroupMapper;
 import com.ay_za.ataylar_technic.repository.InstantGroupRepository;
 import com.ay_za.ataylar_technic.service.base.InstantGroupServiceImpl;
 import org.springframework.stereotype.Service;
@@ -12,9 +14,11 @@ import java.util.*;
 public class InstantGroupService implements InstantGroupServiceImpl {
 
     private final InstantGroupRepository instantGroupRepository;
+    private final InstantGroupMapper instantGroupMapper;
 
-    public InstantGroupService(InstantGroupRepository instantGroupRepository) {
+    public InstantGroupService(InstantGroupRepository instantGroupRepository, InstantGroupMapper instantGroupMapper) {
         this.instantGroupRepository = instantGroupRepository;
+        this.instantGroupMapper = instantGroupMapper;
     }
 
     /**
@@ -22,14 +26,14 @@ public class InstantGroupService implements InstantGroupServiceImpl {
      */
     @Transactional
     @Override
-    public InstantGroup createGroup(String groupName, String createdBy) {
+    public InstantGroupDto createGroup(String groupName, String createdBy) {
         // Grup adı kontrolü
         if (groupName == null || groupName.trim().isEmpty()) {
             throw new IllegalArgumentException("Grup adı boş olamaz");
         }
 
         // Aynı isimde grup var mı kontrol et
-        if (instantGroupRepository.existsByGroupNameIgnoreCaseAndIsActiveTrue(groupName.trim())) {
+        if (instantGroupRepository.existsByGroupNameIgnoreCase(groupName.trim())) {
             throw new IllegalArgumentException("Bu isimde bir grup zaten mevcut");
         }
 
@@ -37,9 +41,9 @@ public class InstantGroupService implements InstantGroupServiceImpl {
         group.setId(UUID.randomUUID().toString());
         group.setGroupName(groupName.trim());
         group.setCreatedBy(createdBy);
-        group.setIsActive(true);
+        InstantGroup saved = instantGroupRepository.save(group);
+        return instantGroupMapper.convertToDTO(saved);
 
-        return instantGroupRepository.save(group);
     }
 
     /**
@@ -47,18 +51,18 @@ public class InstantGroupService implements InstantGroupServiceImpl {
      */
     @Transactional
     @Override
-    public InstantGroup updateGroupName(String groupId, String newGroupName, String updatedBy) {
+    public InstantGroupDto updateGroupName(String groupId, String newGroupName, String updatedBy) {
         // Parametreler kontrolü
         if (newGroupName == null || newGroupName.trim().isEmpty()) {
             throw new IllegalArgumentException("Grup adı boş olamaz");
         }
 
         // Grup var mı kontrol et
-        InstantGroup group = instantGroupRepository.findByIdAndIsActiveTrue(groupId)
+        InstantGroup group = instantGroupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("Grup bulunamadı"));
 
         // Aynı isimde başka grup var mı kontrol et (kendisi hariç)
-        Optional<InstantGroup> existingGroup = instantGroupRepository.findByGroupNameIgnoreCaseAndIsActiveTrue(newGroupName.trim());
+        Optional<InstantGroup> existingGroup = instantGroupRepository.findByGroupNameIgnoreCase(newGroupName.trim());
         if (existingGroup.isPresent() && !existingGroup.get().getId().equals(groupId)) {
             throw new IllegalArgumentException("Bu isimde başka bir grup zaten mevcut");
         }
@@ -66,22 +70,8 @@ public class InstantGroupService implements InstantGroupServiceImpl {
         group.setGroupName(newGroupName.trim());
         group.setUpdatedBy(updatedBy);
 
-        return instantGroupRepository.save(group);
-    }
-
-    /**
-     * Grubu aktif/pasif yap
-     */
-    @Transactional
-    @Override
-    public InstantGroup toggleGroupStatus(String groupId, String updatedBy) {
-        InstantGroup group = instantGroupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException("Grup bulunamadı"));
-
-        group.setIsActive(!group.getIsActive());
-        group.setUpdatedBy(updatedBy);
-
-        return instantGroupRepository.save(group);
+        InstantGroup savedGroup = instantGroupRepository.save(group);
+        return instantGroupMapper.convertToDTO(savedGroup);
     }
 
     /**
@@ -99,74 +89,21 @@ public class InstantGroupService implements InstantGroupServiceImpl {
     }
 
     /**
-     * Grubu pasif yap (soft delete)
-     */
-    @Transactional
-    @Override
-    public InstantGroup deactivateGroup(String groupId, String updatedBy) {
-        InstantGroup group = instantGroupRepository.findByIdAndIsActiveTrue(groupId)
-                .orElseThrow(() -> new IllegalArgumentException("Aktif grup bulunamadı"));
-
-        group.setIsActive(false);
-        group.setUpdatedBy(updatedBy);
-
-        return instantGroupRepository.save(group);
-    }
-
-    /**
-     * Grubu aktif yap
-     */
-    @Transactional
-    @Override
-    public InstantGroup activateGroup(String groupId, String updatedBy) {
-        InstantGroup group = instantGroupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException("Grup bulunamadı"));
-
-        if (group.getIsActive()) {
-            throw new IllegalArgumentException("Grup zaten aktif");
-        }
-
-        // Aktif yaparken isim çakışması kontrol et
-        if (instantGroupRepository.existsByGroupNameIgnoreCaseAndIsActiveTrue(group.getGroupName())) {
-            throw new IllegalArgumentException("Bu isimde aktif bir grup zaten mevcut");
-        }
-
-        group.setIsActive(true);
-        group.setUpdatedBy(updatedBy);
-
-        return instantGroupRepository.save(group);
-    }
-
-    /**
      * ID'ye göre grup getir
      */
     @Override
-    public Optional<InstantGroup> getGroupById(String groupId) {
-        return instantGroupRepository.findById(groupId);
+    public Optional<InstantGroupDto> getGroupById(String groupId) {
+        Optional<InstantGroup> group = instantGroupRepository.findById(groupId);
+        return group.map(instantGroupMapper::convertToDTO);
     }
 
     /**
-     * Aktif grup getir
+     * Tüm grupları getir
      */
     @Override
-    public Optional<InstantGroup> getActiveGroupById(String groupId) {
-        return instantGroupRepository.findByIdAndIsActiveTrue(groupId);
-    }
-
-    /**
-     * Tüm aktif grupları getir (alfabetik sıralı)
-     */
-    @Override
-    public List<InstantGroup> getAllActiveGroups() {
-        return instantGroupRepository.findByIsActiveTrueOrderByGroupNameAsc();
-    }
-
-    /**
-     * Tüm grupları getir (aktif + pasif)
-     */
-    @Override
-    public List<InstantGroup> getAllGroups() {
-        return instantGroupRepository.findAll();
+    public List<InstantGroupDto> getAllGroups() {
+        List<InstantGroup> groups = instantGroupRepository.findAll();
+        return instantGroupMapper.convertAllToDTO(groups);
     }
 
     /**
@@ -181,11 +118,14 @@ public class InstantGroupService implements InstantGroupServiceImpl {
      * Grup adına göre arama
      */
     @Override
-    public List<InstantGroup> searchGroupsByName(String searchTerm) {
+    public List<InstantGroupDto> searchGroupsByName(String searchTerm) {
+        List<InstantGroup> groups;
         if (searchTerm == null || searchTerm.trim().isEmpty()) {
-            return getAllActiveGroups();
+            groups = instantGroupRepository.findAll();
+        } else {
+            groups = instantGroupRepository.findByGroupNameContainingIgnoreCase(searchTerm.trim());
         }
-        return instantGroupRepository.findByGroupNameContainingIgnoreCaseAndIsActiveTrue(searchTerm.trim());
+        return instantGroupMapper.convertAllToDTO(groups);
     }
 
     /**
@@ -195,7 +135,7 @@ public class InstantGroupService implements InstantGroupServiceImpl {
         if (groupName == null || groupName.trim().isEmpty()) {
             return false;
         }
-        return !instantGroupRepository.existsByGroupNameIgnoreCaseAndIsActiveTrue(groupName.trim());
+        return !instantGroupRepository.existsByGroupNameIgnoreCase(groupName.trim());
     }
 
     /**
@@ -206,23 +146,36 @@ public class InstantGroupService implements InstantGroupServiceImpl {
             return false;
         }
 
-        Optional<InstantGroup> existingGroup = instantGroupRepository.findByGroupNameIgnoreCaseAndIsActiveTrue(groupName.trim());
+        Optional<InstantGroup> existingGroup = instantGroupRepository.findByGroupNameIgnoreCase(groupName.trim());
         return existingGroup.isEmpty() || existingGroup.get().getId().equals(groupId);
     }
 
     /**
-     * Aktif grup sayısını getir
+     * Random grup getir
      */
     @Override
-    public Integer getActiveGroupCount() {
-        return instantGroupRepository.countActiveGroups();
+    public Optional<InstantGroup> getRandomGroup() {
+        List<InstantGroup> allGroups = instantGroupRepository.findAllGroups();
+        if (allGroups.isEmpty()) {
+            return Optional.empty();
+        }
+        Random random = new Random();
+        return Optional.of(allGroups.get(random.nextInt(allGroups.size())));
+    }
+
+    /**
+     * Grup sayısını getir
+     */
+    @Override
+    public Integer getGroupCount() {
+        return instantGroupRepository.countGroups();
     }
 
     /**
      * Bulk grup oluştur - Birden fazla grubu tek seferde oluştur
      */
     @Transactional
-    public List<InstantGroup> createBulkGroups(List<String> groupNames, String createdBy) {
+    public List<InstantGroupDto> createBulkGroups(List<String> groupNames, String createdBy) {
         if (groupNames == null || groupNames.isEmpty()) {
             throw new IllegalArgumentException("Grup listesi boş olamaz");
         }
@@ -239,7 +192,7 @@ public class InstantGroupService implements InstantGroupServiceImpl {
                 }
 
                 // Aynı isimde grup var mı kontrol et
-                if (instantGroupRepository.existsByGroupNameIgnoreCaseAndIsActiveTrue(groupName.trim())) {
+                if (instantGroupRepository.existsByGroupNameIgnoreCase(groupName.trim())) {
                     errors.add("'" + groupName + "' isimli grup zaten mevcut");
                     continue;
                 }
@@ -248,7 +201,6 @@ public class InstantGroupService implements InstantGroupServiceImpl {
                 group.setId(UUID.randomUUID().toString());
                 group.setGroupName(groupName.trim());
                 group.setCreatedBy(createdBy);
-                group.setIsActive(true);
 
                 InstantGroup savedGroup = instantGroupRepository.save(group);
                 createdGroups.add(savedGroup);
@@ -263,7 +215,7 @@ public class InstantGroupService implements InstantGroupServiceImpl {
             throw new IllegalArgumentException("Hiçbir grup oluşturulamadı. Hatalar: " + String.join(", ", errors));
         }
 
-        return createdGroups;
+        return instantGroupMapper.convertAllToDTO(createdGroups);
     }
 
     /**
@@ -271,7 +223,7 @@ public class InstantGroupService implements InstantGroupServiceImpl {
      */
     @Transactional
     @Override
-    public List<InstantGroup> createDefaultGroups(String createdBy) {
+    public List<InstantGroupDto> createDefaultGroups(String createdBy) {
         List<String> defaultGroupNames = Arrays.asList(
                 "Muhasebe/Finans",
                 "Personel",

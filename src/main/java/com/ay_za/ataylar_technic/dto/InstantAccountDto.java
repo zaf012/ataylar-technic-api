@@ -9,40 +9,82 @@ public class InstantAccountDto {
     private String accountGroupId;
     private String accountGroupName;
     private String site;
-    private String userType;
+    private Integer userTypeId;
+    private String userTypeName;
     private String username;
     private String password;
-    private String name;
-    private String surname;
     private String companyName;
+    private String projectName;
+    private String authorizedPersonnel;
     private String companyShortName;
-    private String authorizedPerson;
     private String phoneCountryCode;
     private String phone;
     private String gsmCountryCode;
     private String gsm;
     private String address;
-    private String city;
-    private String province;
-    private String district;
-    private String neighborhood;
     private String fax;
     private String email;
     private String pttBox;
     private String postalCode;
-    private String taxOffice;
     private String taxNumber;
     private String tcIdentityNo;
     private String bankAddress;
     private BigDecimal riskLimit;
     private String riskLimitExplanation;
     private Boolean userStatus;
-    private String signatureImage;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private String createdBy;
     private String updatedBy;
     private Boolean isActive;
+
+    public InstantAccountDto() {
+    }
+
+    public InstantAccountDto(String id, String accountGroupId, String accountGroupName, String site,
+                             Integer userTypeId, String userTypeName, String username, String password,
+                             String companyName, String projectName, String authorizedPersonnel,
+                             String companyShortName, String phoneCountryCode, String phone,
+                             String gsmCountryCode, String gsm, String address, String fax, String email, String pttBox,
+                             String postalCode, String taxNumber, String tcIdentityNo, String bankAddress,
+                             BigDecimal riskLimit, String riskLimitExplanation, Boolean userStatus,
+                             LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy,
+                             Boolean isActive) {
+        this.id = id;
+        this.accountGroupId = accountGroupId;
+        this.accountGroupName = accountGroupName;
+        this.site = site;
+        this.userTypeId = userTypeId;
+        this.userTypeName = userTypeName;
+        this.username = username;
+        this.password = password;
+        this.companyName = companyName;
+        this.projectName = projectName;
+        this.authorizedPersonnel = authorizedPersonnel;
+        this.companyShortName = companyShortName;
+        this.phoneCountryCode = phoneCountryCode;
+        this.phone = phone;
+        this.gsmCountryCode = gsmCountryCode;
+        this.gsm = gsm;
+        this.address = address;
+        this.fax = fax;
+        this.email = email;
+        this.pttBox = pttBox;
+        this.postalCode = postalCode;
+        this.taxNumber = taxNumber;
+        this.tcIdentityNo = tcIdentityNo;
+        this.bankAddress = bankAddress;
+        this.riskLimit = riskLimit;
+        this.riskLimitExplanation = riskLimitExplanation;
+        this.userStatus = userStatus;
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
+        this.isActive = isActive;
+    }
+
+    // Getters and Setters
 
     public String getId() {
         return id;
@@ -76,12 +118,20 @@ public class InstantAccountDto {
         this.site = site;
     }
 
-    public String getUserType() {
-        return userType;
+    public Integer getUserTypeId() {
+        return userTypeId;
     }
 
-    public void setUserType(String userType) {
-        this.userType = userType;
+    public void setUserTypeId(Integer userTypeId) {
+        this.userTypeId = userTypeId;
+    }
+
+    public String getUserTypeName() {
+        return userTypeName;
+    }
+
+    public void setUserTypeName(String userTypeName) {
+        this.userTypeName = userTypeName;
     }
 
     public String getUsername() {
@@ -100,22 +150,6 @@ public class InstantAccountDto {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
     public String getCompanyName() {
         return companyName;
     }
@@ -124,20 +158,28 @@ public class InstantAccountDto {
         this.companyName = companyName;
     }
 
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getAuthorizedPersonnel() {
+        return authorizedPersonnel;
+    }
+
+    public void setAuthorizedPersonnel(String authorizedPersonnel) {
+        this.authorizedPersonnel = authorizedPersonnel;
+    }
+
     public String getCompanyShortName() {
         return companyShortName;
     }
 
     public void setCompanyShortName(String companyShortName) {
         this.companyShortName = companyShortName;
-    }
-
-    public String getAuthorizedPerson() {
-        return authorizedPerson;
-    }
-
-    public void setAuthorizedPerson(String authorizedPerson) {
-        this.authorizedPerson = authorizedPerson;
     }
 
     public String getPhoneCountryCode() {
@@ -180,38 +222,6 @@ public class InstantAccountDto {
         this.address = address;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
-
-    public String getNeighborhood() {
-        return neighborhood;
-    }
-
-    public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
-    }
-
     public String getFax() {
         return fax;
     }
@@ -242,14 +252,6 @@ public class InstantAccountDto {
 
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
-    }
-
-    public String getTaxOffice() {
-        return taxOffice;
-    }
-
-    public void setTaxOffice(String taxOffice) {
-        this.taxOffice = taxOffice;
     }
 
     public String getTaxNumber() {
@@ -300,14 +302,6 @@ public class InstantAccountDto {
         this.userStatus = userStatus;
     }
 
-    public String getSignatureImage() {
-        return signatureImage;
-    }
-
-    public void setSignatureImage(String signatureImage) {
-        this.signatureImage = signatureImage;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
@@ -346,49 +340,5 @@ public class InstantAccountDto {
 
     public void setActive(Boolean active) {
         isActive = active;
-    }
-
-    public InstantAccountDto() {
-    }
-
-    public InstantAccountDto(String id, String accountGroupId, String accountGroupName, String site, String userType, String username, String password, String name, String surname, String companyName, String companyShortName, String authorizedPerson, String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address, String city, String province, String district, String neighborhood, String fax, String email, String pttBox, String postalCode, String taxOffice, String taxNumber, String tcIdentityNo, String bankAddress, BigDecimal riskLimit, String riskLimitExplanation, Boolean userStatus, String signatureImage, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
-        this.id = id;
-        this.accountGroupId = accountGroupId;
-        this.accountGroupName = accountGroupName;
-        this.site = site;
-        this.userType = userType;
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.companyName = companyName;
-        this.companyShortName = companyShortName;
-        this.authorizedPerson = authorizedPerson;
-        this.phoneCountryCode = phoneCountryCode;
-        this.phone = phone;
-        this.gsmCountryCode = gsmCountryCode;
-        this.gsm = gsm;
-        this.address = address;
-        this.city = city;
-        this.province = province;
-        this.district = district;
-        this.neighborhood = neighborhood;
-        this.fax = fax;
-        this.email = email;
-        this.pttBox = pttBox;
-        this.postalCode = postalCode;
-        this.taxOffice = taxOffice;
-        this.taxNumber = taxNumber;
-        this.tcIdentityNo = tcIdentityNo;
-        this.bankAddress = bankAddress;
-        this.riskLimit = riskLimit;
-        this.riskLimitExplanation = riskLimitExplanation;
-        this.userStatus = userStatus;
-        this.signatureImage = signatureImage;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
-        this.createdBy = createdBy;
-        this.updatedBy = updatedBy;
-        this.isActive = isActive;
     }
 }

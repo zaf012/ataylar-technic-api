@@ -37,42 +37,21 @@ public interface InstantAccountRepository extends JpaRepository<InstantAccount, 
     // Vergi numarasına göre arama
     Optional<InstantAccount> findByTaxNumberAndIsActiveTrue(String taxNumber);
 
-    // Site'e göre hesapları getir
-    List<InstantAccount> findBySiteAndIsActiveTrue(String site);
-
-    // Kullanıcı tipine göre hesapları getir
-    List<InstantAccount> findByUserTypeAndIsActiveTrue(String userType);
-
-    // İl ve ilçeye göre hesapları getir
-    List<InstantAccount> findByCityAndProvinceAndIsActiveTrue(String city, String province);
-
-    // Kullanıcı durumuna göre hesapları getir
-    List<InstantAccount> findByUserStatusAndIsActiveTrue(Boolean userStatus);
-
     // Kullanıcı adı veya email'e göre arama
     @Query("SELECT a FROM InstantAccount a WHERE (a.username = :identifier OR a.email = :identifier) AND a.isActive = true")
     Optional<InstantAccount> findByUsernameOrEmail(@Param("identifier") String identifier);
 
-    // Şirket adı, ad veya soyada göre arama
+    // Şirket adına göre arama
     @Query("SELECT a FROM InstantAccount a WHERE " +
-            "(UPPER(a.companyName) LIKE UPPER(CONCAT('%', :searchTerm, '%')) OR " +
-            "UPPER(a.name) LIKE UPPER(CONCAT('%', :searchTerm, '%')) OR " +
-            "UPPER(a.surname) LIKE UPPER(CONCAT('%', :searchTerm, '%'))) AND " +
+            "(UPPER(a.companyName) LIKE UPPER(CONCAT('%', :searchTerm, '%'))) OR " +
             "a.isActive = true")
-    List<InstantAccount> searchByNameOrCompany(@Param("searchTerm") String searchTerm);
-
-    // Cari grup ve site'e göre hesapları getir
-    List<InstantAccount> findByAccountGroupIdAndSiteAndIsActiveTrue(String accountGroupId, String site);
-
-    // Risk limiti olan hesapları getir
-    @Query("SELECT a FROM InstantAccount a WHERE a.riskLimit IS NOT NULL AND a.riskLimit > 0 AND a.isActive = true")
-    List<InstantAccount> findAccountsWithRiskLimit();
+    List<InstantAccount> searchByCompany(@Param("searchTerm") String searchTerm);
 
     // Eksik bilgili hesapları getir (telefon veya email eksik)
     @Query("SELECT a FROM InstantAccount a WHERE (a.phone IS NULL OR a.phone = '' OR a.email IS NULL OR a.email = '') AND a.isActive = true")
     List<InstantAccount> findAccountsWithMissingContactInfo();
 
     // Yetkili kişiye göre hesapları getir
-    List<InstantAccount> findByAuthorizedPersonContainingIgnoreCaseAndIsActiveTrue(String authorizedPerson);
+    List<InstantAccount> findByAuthorizedPersonnelContainingIgnoreCaseAndIsActiveTrue(String authorizedPerson);
 
 }

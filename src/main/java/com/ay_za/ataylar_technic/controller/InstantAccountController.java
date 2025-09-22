@@ -7,16 +7,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +42,7 @@ public class InstantAccountController {
         Map<String, Object> response = new HashMap<>();
         try {
 
-            InstantAccount account = instantAccountService.createAccount(request);
+            InstantAccountDto account = instantAccountService.createAccount(request);
 
             response.put("success", true);
             response.put("message", "Hesap başarıyla oluşturuldu");
@@ -71,7 +65,7 @@ public class InstantAccountController {
         Map<String, Object> response = new HashMap<>();
         try {
 
-            List<InstantAccount> accounts = instantAccountService.createDummyAccounts(5, "admin");
+            List<InstantAccountDto> accounts = instantAccountService.createDummyAccounts(5, "admin");
 
             response.put("success", true);
             response.put("message", "Hesap başarıyla oluşturuldu");
@@ -105,7 +99,7 @@ public class InstantAccountController {
         Map<String, Object> response = new HashMap<>();
         try {
 
-            InstantAccount account = instantAccountService.updateAccount(accountId, request, "admin");
+            InstantAccountDto account = instantAccountService.updateAccount(accountId, request, "admin");
 
             response.put("success", true);
             response.put("message", "Hesap başarıyla güncellendi");
@@ -134,7 +128,7 @@ public class InstantAccountController {
         try {
             String updatedBy = request.get("updatedBy");
 
-            InstantAccount account = instantAccountService.toggleAccountStatus(accountId, updatedBy);
+            InstantAccountDto account = instantAccountService.toggleAccountStatus(accountId, updatedBy);
 
             response.put("success", true);
             response.put("message", "Hesap durumu başarıyla değiştirildi");
@@ -163,7 +157,7 @@ public class InstantAccountController {
         try {
             String updatedBy = request.get("updatedBy");
 
-            InstantAccount account = instantAccountService.toggleUserStatus(accountId, updatedBy);
+            InstantAccountDto account = instantAccountService.toggleUserStatus(accountId, updatedBy);
 
             response.put("success", true);
             response.put("message", "Kullanıcı durumu başarıyla değiştirildi");
@@ -192,7 +186,7 @@ public class InstantAccountController {
         try {
             String updatedBy = request.get("updatedBy");
 
-            InstantAccount account = instantAccountService.activateAccount(accountId, updatedBy);
+            InstantAccountDto account = instantAccountService.activateAccount(accountId, updatedBy);
 
             response.put("success", true);
             response.put("message", "Hesap başarıyla aktif edildi");
@@ -221,7 +215,7 @@ public class InstantAccountController {
         try {
             String updatedBy = request.get("updatedBy");
 
-            InstantAccount account = instantAccountService.deactivateAccount(accountId, updatedBy);
+            InstantAccountDto account = instantAccountService.deactivateAccount(accountId, updatedBy);
 
             response.put("success", true);
             response.put("message", "Hesap başarıyla pasif edildi");
@@ -281,7 +275,7 @@ public class InstantAccountController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            InstantAccount account = instantAccountService.updatePassword(accountId, newPassword, updatedBy);
+            InstantAccountDto account = instantAccountService.updatePassword(accountId, newPassword, updatedBy);
 
             response.put("success", true);
             response.put("message", "Şifre başarıyla güncellendi");
@@ -358,7 +352,7 @@ public class InstantAccountController {
     public ResponseEntity<Map<String, Object>> getAllActiveAccounts() {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<InstantAccount> accounts = instantAccountService.getAllActiveAccounts();
+            List<InstantAccountDto> accounts = instantAccountService.getAllActiveAccounts();
 
             response.put("success", true);
             response.put("data", accounts);
@@ -379,7 +373,7 @@ public class InstantAccountController {
     public ResponseEntity<Map<String, Object>> getAccountsByGroup(@PathVariable String groupId) {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<InstantAccount> accounts = instantAccountService.getAccountsByGroup(groupId);
+            List<InstantAccountDto> accounts = instantAccountService.getAccountsByGroup(groupId);
 
             response.put("success", true);
             response.put("data", accounts);

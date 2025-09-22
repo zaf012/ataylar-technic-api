@@ -1,5 +1,6 @@
 package com.ay_za.ataylar_technic.service.base;
 
+import com.ay_za.ataylar_technic.dto.InstantGroupDto;
 import com.ay_za.ataylar_technic.entity.InstantGroup;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,37 +9,26 @@ import java.util.Optional;
 
 public interface InstantGroupServiceImpl {
     @Transactional
-    InstantGroup createGroup(String groupName, String createdBy);
+    InstantGroupDto createGroup(String groupName, String createdBy);
 
     @Transactional
-    InstantGroup updateGroupName(String groupId, String newGroupName, String updatedBy);
-
-    @Transactional
-    InstantGroup toggleGroupStatus(String groupId, String updatedBy);
+    InstantGroupDto updateGroupName(String groupId, String newGroupName, String updatedBy);
 
     @Transactional
     void deleteGroup(String groupId);
 
-    @Transactional
-    InstantGroup deactivateGroup(String groupId, String updatedBy);
+    Optional<InstantGroupDto> getGroupById(String groupId);
 
-    @Transactional
-    InstantGroup activateGroup(String groupId, String updatedBy);
-
-    Optional<InstantGroup> getGroupById(String groupId);
-
-    Optional<InstantGroup> getActiveGroupById(String groupId);
-
-    List<InstantGroup> getAllActiveGroups();
-
-    List<InstantGroup> getAllGroups();
+    List<InstantGroupDto> getAllGroups();
 
     Boolean checkGroupById(String id);
 
-    List<InstantGroup> searchGroupsByName(String searchTerm);
+    List<InstantGroupDto> searchGroupsByName(String searchTerm);
 
-    Integer getActiveGroupCount();
+    Optional<InstantGroup> getRandomGroup();
 
-   @Transactional
-   List<InstantGroup> createDefaultGroups(String createdBy);
+    Integer getGroupCount();
+
+    @Transactional
+    List<InstantGroupDto> createDefaultGroups(String createdBy);
 }

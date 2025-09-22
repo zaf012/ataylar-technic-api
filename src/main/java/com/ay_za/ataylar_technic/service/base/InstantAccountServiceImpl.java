@@ -9,37 +9,37 @@ import java.util.Optional;
 
 public interface InstantAccountServiceImpl {
     @Transactional
-    InstantAccount createAccount(InstantAccountDto accountData);
+    InstantAccountDto createAccount(InstantAccountDto accountData);
 
     @Transactional
-    InstantAccount updateAccount(String accountId, InstantAccountDto updatedData, String updatedBy);
+    InstantAccountDto updateAccount(String accountId, InstantAccountDto updatedData, String updatedBy);
 
     @Transactional
-    InstantAccount toggleAccountStatus(String accountId, String updatedBy);
+    InstantAccountDto toggleAccountStatus(String accountId, String updatedBy);
 
     @Transactional
-    InstantAccount toggleUserStatus(String accountId, String updatedBy);
+    InstantAccountDto toggleUserStatus(String accountId, String updatedBy);
 
     @Transactional
     void deleteAccount(String accountId);
 
     @Transactional
-    InstantAccount deactivateAccount(String accountId, String updatedBy);
+    InstantAccountDto deactivateAccount(String accountId, String updatedBy);
 
     @Transactional
-    InstantAccount activateAccount(String accountId, String updatedBy);
+    InstantAccountDto activateAccount(String accountId, String updatedBy);
 
     Optional<InstantAccount> getAccountById(String accountId);
 
     Optional<InstantAccount> getActiveAccountById(String accountId);
 
-    List<InstantAccount> getAllActiveAccounts();
+    List<InstantAccountDto> getAllActiveAccounts();
 
-    List<InstantAccount> getAccountsByGroup(String groupId);
-
-    @Transactional
-    InstantAccount updatePassword(String accountId, String newPassword, String updatedBy);
+    List<InstantAccountDto> getAccountsByGroup(String groupId);
 
     @Transactional
-    List<InstantAccount> createDummyAccounts(int count, String createdBy);
+    InstantAccountDto updatePassword(String accountId, String newPassword, String updatedBy);
+
+    @Transactional
+    List<InstantAccountDto> createDummyAccounts(int count, String createdBy);
 }

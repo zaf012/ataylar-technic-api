@@ -3,11 +3,13 @@ package com.ay_za.ataylar_technic.service;
 import com.ay_za.ataylar_technic.dto.InstantAccountDto;
 import com.ay_za.ataylar_technic.entity.InstantAccount;
 import com.ay_za.ataylar_technic.entity.InstantGroup;
+import com.ay_za.ataylar_technic.entity.UserType;
 import com.ay_za.ataylar_technic.mapper.InstantAccountMapper;
 import com.ay_za.ataylar_technic.repository.InstantAccountRepository;
 import com.ay_za.ataylar_technic.repository.InstantGroupRepository;
 import com.ay_za.ataylar_technic.service.base.InstantAccountServiceImpl;
 import com.ay_za.ataylar_technic.service.base.InstantGroupServiceImpl;
+import com.ay_za.ataylar_technic.service.base.UserTypeServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +25,14 @@ public class InstantAccountService implements InstantAccountServiceImpl {
     private final InstantGroupServiceImpl instantGroupServiceImpl;
     private final InstantGroupRepository instantGroupRepository;
     private final InstantAccountMapper instantAccountMapper;
+    private final UserTypeServiceImpl userTypeServiceImpl;
 
-    public InstantAccountService(InstantAccountRepository instantAccountRepository, InstantGroupServiceImpl instantGroupServiceImpl, InstantGroupRepository instantGroupRepository, InstantAccountMapper instantAccountMapper) {
+    public InstantAccountService(InstantAccountRepository instantAccountRepository, InstantGroupServiceImpl instantGroupServiceImpl, InstantGroupRepository instantGroupRepository, InstantAccountMapper instantAccountMapper, UserTypeServiceImpl userTypeServiceImpl) {
         this.instantAccountRepository = instantAccountRepository;
         this.instantGroupServiceImpl = instantGroupServiceImpl;
         this.instantGroupRepository = instantGroupRepository;
         this.instantAccountMapper = instantAccountMapper;
+        this.userTypeServiceImpl = userTypeServiceImpl;
     }
 
     /**
@@ -36,7 +40,7 @@ public class InstantAccountService implements InstantAccountServiceImpl {
      */
     @Transactional
     @Override
-    public InstantAccount createAccount(InstantAccountDto accountData) {
+    public InstantAccountDto createAccount(InstantAccountDto accountData) {
 
         // Temel validasyonlar
         validateAccountData(accountData);
@@ -47,43 +51,37 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         accountData.setAccountGroupId(accountData.getAccountGroupId());
         accountData.setAccountGroupName(accountData.getAccountGroupName());
         accountData.setSite(accountData.getSite());
-        accountData.setUserType(accountData.getUserType());
+        accountData.setUserTypeId(accountData.getUserTypeId());
+        accountData.setUserTypeName(accountData.getUserTypeName());
         accountData.setUsername(accountData.getUsername());
         accountData.setPassword(accountData.getPassword());
-        accountData.setName(accountData.getName());
-        accountData.setSurname(accountData.getSurname());
         accountData.setCompanyName(accountData.getCompanyName());
+        accountData.setProjectName(accountData.getProjectName());
         accountData.setCompanyShortName(accountData.getCompanyShortName());
-        accountData.setAuthorizedPerson(accountData.getAuthorizedPerson());
         accountData.setPhoneCountryCode(accountData.getPhoneCountryCode());
         accountData.setPhone(accountData.getPhone());
         accountData.setGsmCountryCode(accountData.getGsmCountryCode());
         accountData.setGsm(accountData.getGsm());
-        accountData.setCity(accountData.getCity());
         accountData.setActive(true);
         accountData.setAddress(accountData.getAddress());
-        accountData.setProvince(accountData.getProvince());
-        accountData.setDistrict(accountData.getDistrict());
-        accountData.setNeighborhood(accountData.getNeighborhood());
         accountData.setFax(accountData.getFax());
         accountData.setEmail(accountData.getEmail());
         accountData.setPttBox(accountData.getPttBox());
         accountData.setPostalCode(accountData.getPostalCode());
-        accountData.setTaxOffice(accountData.getTaxOffice());
         accountData.setTaxNumber(accountData.getTaxNumber());
         accountData.setTcIdentityNo(accountData.getTcIdentityNo());
         accountData.setBankAddress(accountData.getBankAddress());
         accountData.setRiskLimit(accountData.getRiskLimit());
         accountData.setRiskLimitExplanation(accountData.getRiskLimitExplanation());
         accountData.setUserStatus(accountData.getUserStatus());
-        accountData.setSignatureImage(accountData.getSignatureImage());
         accountData.setCreatedDate(LocalDateTime.now());
         accountData.setUpdatedDate(null);
         accountData.setUpdatedBy(null);
 
         InstantAccount instantAccount = instantAccountMapper.convertToEntity(accountData);
+        InstantAccount saved = instantAccountRepository.save(instantAccount);
 
-        return instantAccountRepository.save(instantAccount);
+        return instantAccountMapper.convertToDTO(saved);
     }
 
     /**
@@ -91,7 +89,7 @@ public class InstantAccountService implements InstantAccountServiceImpl {
      */
     @Transactional
     @Override
-    public InstantAccount updateAccount(String accountId, InstantAccountDto updatedData, String updatedBy) {
+    public InstantAccountDto updateAccount(String accountId, InstantAccountDto updatedData, String updatedBy) {
         // Mevcut hesabı getir
         InstantAccount existingAccount = instantAccountRepository.findByIdAndIsActiveTrue(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("Hesap bulunamadı"));
@@ -103,7 +101,9 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         updateAccountFields(existingAccount, updatedData);
         existingAccount.setUpdatedBy(updatedBy);
 
-        return instantAccountRepository.save(existingAccount);
+        InstantAccount updated = instantAccountRepository.save(existingAccount);
+
+        return instantAccountMapper.convertToDTO(updated);
     }
 
     /**
@@ -111,14 +111,15 @@ public class InstantAccountService implements InstantAccountServiceImpl {
      */
     @Transactional
     @Override
-    public InstantAccount toggleAccountStatus(String accountId, String updatedBy) {
+    public InstantAccountDto toggleAccountStatus(String accountId, String updatedBy) {
         InstantAccount account = instantAccountRepository.findById(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("Hesap bulunamadı"));
 
-        account.setIsActive(!account.getIsActive());
+        account.setActive(!account.getActive());
         account.setUpdatedBy(updatedBy);
 
-        return instantAccountRepository.save(account);
+        InstantAccount updatedStatusData = instantAccountRepository.save(account);
+        return instantAccountMapper.convertToDTO(updatedStatusData);
     }
 
     /**
@@ -126,14 +127,16 @@ public class InstantAccountService implements InstantAccountServiceImpl {
      */
     @Transactional
     @Override
-    public InstantAccount toggleUserStatus(String accountId, String updatedBy) {
+    public InstantAccountDto toggleUserStatus(String accountId, String updatedBy) {
         InstantAccount account = instantAccountRepository.findByIdAndIsActiveTrue(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("Aktif hesap bulunamadı"));
 
         account.setUserStatus(!account.getUserStatus());
         account.setUpdatedBy(updatedBy);
 
-        return instantAccountRepository.save(account);
+        InstantAccount updatedUserStatusData = instantAccountRepository.save(account);
+
+        return instantAccountMapper.convertToDTO(updatedUserStatusData);
     }
 
     /**
@@ -153,14 +156,16 @@ public class InstantAccountService implements InstantAccountServiceImpl {
      */
     @Transactional
     @Override
-    public InstantAccount deactivateAccount(String accountId, String updatedBy) {
+    public InstantAccountDto deactivateAccount(String accountId, String updatedBy) {
         InstantAccount account = instantAccountRepository.findByIdAndIsActiveTrue(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("Aktif hesap bulunamadı"));
 
-        account.setIsActive(false);
+        account.setActive(false);
         account.setUpdatedBy(updatedBy);
 
-        return instantAccountRepository.save(account);
+        InstantAccount updatedAccountStatus = instantAccountRepository.save(account);
+
+        return instantAccountMapper.convertToDTO(updatedAccountStatus);
     }
 
     /**
@@ -168,21 +173,23 @@ public class InstantAccountService implements InstantAccountServiceImpl {
      */
     @Transactional
     @Override
-    public InstantAccount activateAccount(String accountId, String updatedBy) {
+    public InstantAccountDto activateAccount(String accountId, String updatedBy) {
         InstantAccount account = instantAccountRepository.findById(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("Hesap bulunamadı"));
 
-        if (account.getIsActive()) {
+        if (account.getActive()) {
             throw new IllegalArgumentException("Hesap zaten aktif");
         }
 
         // Aktif yaparken benzersizlik kontrolleri
         validateUniqueFieldsForActivation(account, accountId);
 
-        account.setIsActive(true);
+        account.setActive(true);
         account.setUpdatedBy(updatedBy);
 
-        return instantAccountRepository.save(account);
+        InstantAccount updatedAccountStatusData = instantAccountRepository.save(account);
+
+        return instantAccountMapper.convertToDTO(updatedAccountStatusData);
     }
 
     /**
@@ -205,30 +212,18 @@ public class InstantAccountService implements InstantAccountServiceImpl {
      * Tüm aktif hesapları getir
      */
     @Override
-    public List<InstantAccount> getAllActiveAccounts() {
-        return instantAccountRepository.findByIsActiveTrue();
+    public List<InstantAccountDto> getAllActiveAccounts() {
+        List<InstantAccount> byIsActiveTrue = instantAccountRepository.findByIsActiveTrue();
+        return instantAccountMapper.convertAllToDTO(byIsActiveTrue);
     }
 
     /**
      * Cari gruba göre hesapları getir
      */
     @Override
-    public List<InstantAccount> getAccountsByGroup(String groupId) {
-        return instantAccountRepository.findByAccountGroupIdAndIsActiveTrue(groupId);
-    }
-
-    /**
-     * Site'e göre hesapları getir
-     */
-    public List<InstantAccount> getAccountsBySite(String site) {
-        return instantAccountRepository.findBySiteAndIsActiveTrue(site);
-    }
-
-    /**
-     * Kullanıcı tipine göre hesapları getir
-     */
-    public List<InstantAccount> getAccountsByUserType(String userType) {
-        return instantAccountRepository.findByUserTypeAndIsActiveTrue(userType);
+    public List<InstantAccountDto> getAccountsByGroup(String groupId) {
+        List<InstantAccount> byAccountGroupIdAndIsActiveTrue = instantAccountRepository.findByAccountGroupIdAndIsActiveTrue(groupId);
+        return instantAccountMapper.convertAllToDTO(byAccountGroupIdAndIsActiveTrue);
     }
 
     /**
@@ -241,11 +236,12 @@ public class InstantAccountService implements InstantAccountServiceImpl {
     /**
      * Ad, soyad veya şirket adında arama
      */
-    public List<InstantAccount> searchAccounts(String searchTerm) {
+    public List<InstantAccountDto> searchAccounts(String searchTerm) {
         if (searchTerm == null || searchTerm.trim().isEmpty()) {
             return getAllActiveAccounts();
         }
-        return instantAccountRepository.searchByNameOrCompany(searchTerm.trim());
+        List<InstantAccount> instantAccounts = instantAccountRepository.searchByCompany(searchTerm.trim());
+        return instantAccountMapper.convertAllToDTO(instantAccounts);
     }
 
     /**
@@ -253,7 +249,7 @@ public class InstantAccountService implements InstantAccountServiceImpl {
      */
     @Transactional
     @Override
-    public InstantAccount updatePassword(String accountId, String newPassword, String updatedBy) {
+    public InstantAccountDto updatePassword(String accountId, String newPassword, String updatedBy) {
         InstantAccount account = instantAccountRepository.findByIdAndIsActiveTrue(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("Aktif hesap bulunamadı"));
 
@@ -264,37 +260,23 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         account.setPassword(newPassword);
         account.setUpdatedBy(updatedBy);
 
-        return instantAccountRepository.save(account);
+        InstantAccount saved = instantAccountRepository.save(account);
+        return instantAccountMapper.convertToDTO(saved);
     }
 
-    /**
-     * Risk limiti güncelle
-     */
-    @Transactional
-    public InstantAccount updateRiskLimit(String accountId, BigDecimal riskLimit, String explanation, String updatedBy) {
-        InstantAccount account = instantAccountRepository.findByIdAndIsActiveTrue(accountId)
-                .orElseThrow(() -> new IllegalArgumentException("Aktif hesap bulunamadı"));
-
-        account.setRiskLimit(riskLimit);
-        account.setRiskLimitExplanation(explanation);
-        account.setUpdatedBy(updatedBy);
-
-        return instantAccountRepository.save(account);
-    }
-
-    /**
-     * İmza güncelle
-     */
-    @Transactional
-    public InstantAccount updateSignature(String accountId, String signatureBase64, String updatedBy) {
-        InstantAccount account = instantAccountRepository.findByIdAndIsActiveTrue(accountId)
-                .orElseThrow(() -> new IllegalArgumentException("Aktif hesap bulunamadı"));
-
-        account.setSignatureImage(signatureBase64);
-        account.setUpdatedBy(updatedBy);
-
-        return instantAccountRepository.save(account);
-    }
+//    /**
+//     * İmza güncelle
+//     */
+//    @Transactional
+//    public InstantAccount updateSignature(String accountId, String signatureBase64, String updatedBy) {
+//        InstantAccount account = instantAccountRepository.findByIdAndIsActiveTrue(accountId)
+//                .orElseThrow(() -> new IllegalArgumentException("Aktif hesap bulunamadı"));
+//
+//        account.setSignatureImage(signatureBase64);
+//        account.setUpdatedBy(updatedBy);
+//
+//        return instantAccountRepository.save(account);
+//    }
 
     // Private helper metodlar
 
@@ -377,35 +359,28 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         existing.setAccountGroupId(updated.getAccountGroupId());
         existing.setAccountGroupName(updated.getAccountGroupName());
         existing.setSite(updated.getSite());
-        existing.setUserType(updated.getUserType());
+        existing.setUserTypeId(updated.getUserTypeId());
+        existing.setUserTypeName(updated.getUserTypeName());
         existing.setUsername(updated.getUsername());
         existing.setPassword(updated.getPassword());
-        existing.setName(updated.getName());
-        existing.setSurname(updated.getSurname());
         existing.setCompanyName(updated.getCompanyName());
+        existing.setProjectName(updated.getProjectName());
         existing.setCompanyShortName(updated.getCompanyShortName());
-        existing.setAuthorizedPerson(updated.getAuthorizedPerson());
         existing.setPhoneCountryCode(updated.getPhoneCountryCode());
         existing.setPhone(updated.getPhone());
         existing.setGsmCountryCode(updated.getGsmCountryCode());
         existing.setGsm(updated.getGsm());
         existing.setAddress(updated.getAddress());
-        existing.setCity(updated.getCity());
-        existing.setProvince(updated.getProvince());
-        existing.setDistrict(updated.getDistrict());
-        existing.setNeighborhood(updated.getNeighborhood());
         existing.setFax(updated.getFax());
         existing.setEmail(updated.getEmail());
         existing.setPttBox(updated.getPttBox());
         existing.setPostalCode(updated.getPostalCode());
-        existing.setTaxOffice(updated.getTaxOffice());
         existing.setTaxNumber(updated.getTaxNumber());
         existing.setTcIdentityNo(updated.getTcIdentityNo());
         existing.setBankAddress(updated.getBankAddress());
         existing.setRiskLimit(updated.getRiskLimit());
         existing.setRiskLimitExplanation(updated.getRiskLimitExplanation());
         existing.setUserStatus(updated.getUserStatus());
-        existing.setSignatureImage(updated.getSignatureImage());
     }
 
 
@@ -413,10 +388,25 @@ public class InstantAccountService implements InstantAccountServiceImpl {
      * Dummy data ile hesap oluştur (Test amaçlı) - Güncellenmiş versiyon
      */
     @Transactional
-    public InstantAccount createAccount2(String createdBy) {
+    public InstantAccountDto createAccount2(String createdBy) {
         // Önce rastgele bir aktif grup ID'si alalım
-        List<InstantGroup> activeGroups = instantGroupRepository.findByIsActiveTrueOrderByGroupNameAsc();
-        String groupId = activeGroups.isEmpty() ? "default-group-id" : activeGroups.get(0).getId();
+        Optional<InstantGroup> randomGroup = instantGroupServiceImpl.getRandomGroup();
+        if (randomGroup.isPresent()) {
+            InstantGroup group = randomGroup.get();
+            System.out.println("Random Group: " + group.getGroupName());
+        } else {
+            System.out.println("Hiç grup bulunamadı");
+        }
+
+        Optional<UserType> randomUserType = userTypeServiceImpl.getRandomUserType();
+        if (randomUserType.isPresent()) {
+            UserType type = randomUserType.get();
+            System.out.println("Random Tip: " + type.getUserTypeName());
+        } else {
+            System.out.println("Hiç tip bulunamadı");
+        }
+        List<InstantGroup> activeGroups = instantGroupRepository.findByOrderByGroupNameAsc();
+        String groupId = activeGroups.isEmpty() ? "default-group-id" : activeGroups.getFirst().getId();
 
         // Rastgele kullanıcı adı ve email oluştur
         String randomNumber = String.valueOf(System.currentTimeMillis()).substring(7);
@@ -449,16 +439,17 @@ public class InstantAccountService implements InstantAccountServiceImpl {
 
         InstantAccountDto instantAccountDto = new InstantAccountDto();
 
-        instantAccountDto.setAccountGroupId(groupId);
+        instantAccountDto.setAccountGroupId(randomGroup.get().getId());
+        instantAccountDto.setAccountGroupName(randomGroup.get().getGroupName());
+        instantAccountDto.setUserTypeId(randomUserType.get().getId());
+        instantAccountDto.setUserTypeName(randomUserType.get().getUserTypeName());
         instantAccountDto.setSite("Ana Kullanıcı");
-        instantAccountDto.setUserType("Müşteri");
         instantAccountDto.setUsername("user" + randomNumber + "@example.com");
         instantAccountDto.setPassword("password123");
-        instantAccountDto.setName(firstName);
-        instantAccountDto.setSurname(lastName);
+        instantAccountDto.setAuthorizedPersonnel("user authorized");
         instantAccountDto.setCompanyName(companyName);
+        instantAccountDto.setProjectName(companyName + " Projesi");
         instantAccountDto.setCompanyShortName(companyName.substring(0, 5));
-        instantAccountDto.setAuthorizedPerson(firstName + " " + lastName);
         instantAccountDto.setPhoneCountryCode("+90");
         instantAccountDto.setPhone("212" + String.format("%07d", (int) (Math.random() * 10000000)));
         instantAccountDto.setGsmCountryCode("+90");
@@ -477,10 +468,6 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         String district = districts[(int) (Math.random() * districts.length)];
         String neighborhood = neighborhoods[(int) (Math.random() * neighborhoods.length)];
 
-        instantAccountDto.setCity(city);
-        instantAccountDto.setProvince(province);
-        instantAccountDto.setDistrict(district);
-        instantAccountDto.setNeighborhood(neighborhood);
         instantAccountDto.setAddress(neighborhood + " Mahallesi " +
                 (int) (Math.random() * 100 + 1) + ". Sokak No:" +
                 (int) (Math.random() * 50 + 1) + "/" +
@@ -488,8 +475,6 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         instantAccountDto.setFax("212" + String.format("%07d", (int) (Math.random() * 10000000)));
         instantAccountDto.setPttBox("PK " + (int) (Math.random() * 9999 + 1));
         instantAccountDto.setPostalCode(String.format("%05d", (int) (Math.random() * 99999 + 1)));
-        String[] taxOffices = {"Şişli", "Beşiktaş", "Kadıköy", "Üsküdar", "Fatih", "Beyoğlu", "Bakırköy"};
-        instantAccountDto.setTaxOffice(taxOffices[(int) (Math.random() * taxOffices.length)] + " Vergi Dairesi");
         instantAccountDto.setTaxNumber(String.format("%010d", (int) (Math.random() * 9999999999L + 1)));
         instantAccountDto.setTcIdentityNo(String.format("%011d", (int) (Math.random() * 99999999999L + 1)));
         String[] banks = {"Ziraat Bankası", "İş Bankası", "Garanti BBVA", "Akbank", "Yapı Kredi"};
@@ -498,8 +483,6 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         instantAccountDto.setRiskLimitExplanation("dummy data");
         instantAccountDto.setUserStatus(true);
         instantAccountDto.setActive(true);
-
-        instantAccountDto.setSignatureImage("null");
 
         // createAccount metodunu kullan
         return createAccount(instantAccountDto);
@@ -510,13 +493,13 @@ public class InstantAccountService implements InstantAccountServiceImpl {
      */
     @Transactional
     @Override
-    public List<InstantAccount> createDummyAccounts(int count, String createdBy) {
-        List<InstantAccount> accounts = new ArrayList<>();
+    public List<InstantAccountDto> createDummyAccounts(int count, String createdBy) {
+        List<InstantAccountDto> accounts = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
             try {
-                InstantAccount account = createAccount2(createdBy);
-                accounts.add(account);
+                InstantAccountDto accountDto = createAccount2(createdBy);
+                accounts.add(accountDto);
 
                 // Aynı kullanıcı adı çakışmasını önlemek için kısa bekleme
                 Thread.sleep(1);
@@ -536,40 +519,33 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         // String alanlar
         account.setAccountGroupId((String) request.get("accountGroupId"));
         account.setSite((String) request.get("site"));
-        account.setUserType((String) request.get("userType"));
+        account.setUserTypeId((Integer) request.get("userTypeId"));
+        account.setUserTypeName((String) request.get("userTypeName"));
         account.setUsername((String) request.get("username"));
         account.setPassword((String) request.get("password"));
-        account.setName((String) request.get("name"));
-        account.setSurname((String) request.get("surname"));
         account.setCompanyName((String) request.get("companyName"));
         account.setCompanyShortName((String) request.get("companyShortName"));
-        account.setAuthorizedPerson((String) request.get("authorizedPerson"));
+        account.setAuthorizedPersonnel((String) request.get("authorizedPersonnel"));
         account.setPhoneCountryCode((String) request.get("phoneCountryCode"));
         account.setPhone((String) request.get("phone"));
         account.setGsmCountryCode((String) request.get("gsmCountryCode"));
         account.setGsm((String) request.get("gsm"));
         account.setAddress((String) request.get("address"));
-        account.setCity((String) request.get("city"));
-        account.setProvince((String) request.get("province"));
-        account.setDistrict((String) request.get("district"));
-        account.setNeighborhood((String) request.get("neighborhood"));
         account.setFax((String) request.get("fax"));
         account.setEmail((String) request.get("email"));
         account.setPttBox((String) request.get("pttBox"));
         account.setPostalCode((String) request.get("postalCode"));
-        account.setTaxOffice((String) request.get("taxOffice"));
         account.setTaxNumber((String) request.get("taxNumber"));
         account.setTcIdentityNo((String) request.get("tcIdentityNo"));
         account.setBankAddress((String) request.get("bankAddress"));
         account.setRiskLimitExplanation((String) request.get("riskLimitExplanation"));
-        account.setSignatureImage((String) request.get("signatureImage"));
 
         // Boolean alanlar
         if (request.get("userStatus") != null) {
             account.setUserStatus((Boolean) request.get("userStatus"));
         }
         if (request.get("isActive") != null) {
-            account.setIsActive((Boolean) request.get("isActive"));
+            account.setActive((Boolean) request.get("isActive"));
         }
 
         // BigDecimal alan

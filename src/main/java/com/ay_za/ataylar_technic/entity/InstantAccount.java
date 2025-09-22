@@ -6,7 +6,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "instant_accounts")
@@ -26,8 +25,11 @@ public class InstantAccount {
     @Column(name = "site", length = 100)
     private String site;
 
-    @Column(name = "user_type", length = 100)
-    private String userType;
+    @Column(name = "user_type_id", length = 100)
+    private Integer userTypeId;
+
+    @Column(name = "user_type_name", length = 100)
+    private String userTypeName;
 
     //email and username
     @Column(name = "username", length = 100)
@@ -36,20 +38,17 @@ public class InstantAccount {
     @Column(name = "password", length = 255)
     private String password;
 
-    @Column(name = "name", length = 100)
-    private String name;
-
-    @Column(name = "surname", length = 100)
-    private String surname;
-
     @Column(name = "company_name", length = 200)
     private String companyName;
 
+    @Column(name = "project_name", length = 200)
+    private String projectName;
+
+    @Column(name = "authorized_personnel", length = 200)
+    private String authorizedPersonnel;
+
     @Column(name = "company_short_name", length = 100)
     private String companyShortName;
-
-    @Column(name = "authorized_person", length = 100)
-    private String authorizedPerson;
 
     @Column(name = "phone_country_code", length = 10)
     private String phoneCountryCode;
@@ -66,18 +65,6 @@ public class InstantAccount {
     @Column(name = "address", length = 500)
     private String address;
 
-    @Column(name = "city", length = 100)
-    private String city;
-
-    @Column(name = "province", length = 100)
-    private String province;
-
-    @Column(name = "district", length = 100)
-    private String district;
-
-    @Column(name = "neighborhood", length = 100)
-    private String neighborhood;
-
     @Column(name = "fax", length = 20)
     private String fax;
 
@@ -89,9 +76,6 @@ public class InstantAccount {
 
     @Column(name = "postal_code", length = 10)
     private String postalCode;
-
-    @Column(name = "tax_office", length = 100)
-    private String taxOffice;
 
     @Column(name = "tax_number", length = 20)
     private String taxNumber;
@@ -111,11 +95,6 @@ public class InstantAccount {
     @Column(name = "user_status")
     private Boolean userStatus = true;
 
-    // İmza için base64 string
-    @Lob
-    @Column(name = "signature_image")
-    private String signatureImage;
-
     @CreationTimestamp
     @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;
@@ -124,7 +103,7 @@ public class InstantAccount {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    @Column(name = "created_by", length = 50)
+    @Column(name = "created_by", length = 50, updatable = false)
     private String createdBy;
 
     @Column(name = "updated_by", length = 50)
@@ -138,40 +117,42 @@ public class InstantAccount {
     }
 
     // Constructor with required fields
-    public InstantAccount(String id, String accountGroupId, String accountGroupName, String site, String userType, String username, String password, String name, String surname, String companyName, String companyShortName, String authorizedPerson, String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address, String city, String province, String district, String neighborhood, String fax, String email, String pttBox, String postalCode, String taxOffice, String taxNumber, String tcIdentityNo, String bankAddress, BigDecimal riskLimit, String riskLimitExplanation, Boolean userStatus, String signatureImage, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
+
+    public InstantAccount(String id, String accountGroupId, String accountGroupName, String site, Integer userTypeId,
+                          String userTypeName, String username, String password, String companyName, String projectName,
+                          String authorizedPersonnel, String companyShortName, String phoneCountryCode,
+                          String phone, String gsmCountryCode, String gsm, String address, String fax, String email,
+                          String pttBox, String postalCode, String taxNumber, String tcIdentityNo, String bankAddress,
+                          BigDecimal riskLimit, String riskLimitExplanation, Boolean userStatus,
+                          LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy,
+                          Boolean isActive) {
         this.id = id;
         this.accountGroupId = accountGroupId;
         this.accountGroupName = accountGroupName;
         this.site = site;
-        this.userType = userType;
+        this.userTypeId = userTypeId;
+        this.userTypeName = userTypeName;
         this.username = username;
         this.password = password;
-        this.name = name;
-        this.surname = surname;
         this.companyName = companyName;
+        this.projectName = projectName;
+        this.authorizedPersonnel = authorizedPersonnel;
         this.companyShortName = companyShortName;
-        this.authorizedPerson = authorizedPerson;
         this.phoneCountryCode = phoneCountryCode;
         this.phone = phone;
         this.gsmCountryCode = gsmCountryCode;
         this.gsm = gsm;
         this.address = address;
-        this.city = city;
-        this.province = province;
-        this.district = district;
-        this.neighborhood = neighborhood;
         this.fax = fax;
         this.email = email;
         this.pttBox = pttBox;
         this.postalCode = postalCode;
-        this.taxOffice = taxOffice;
         this.taxNumber = taxNumber;
         this.tcIdentityNo = tcIdentityNo;
         this.bankAddress = bankAddress;
         this.riskLimit = riskLimit;
         this.riskLimitExplanation = riskLimitExplanation;
         this.userStatus = userStatus;
-        this.signatureImage = signatureImage;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.createdBy = createdBy;
@@ -180,6 +161,7 @@ public class InstantAccount {
     }
 
     // Getters and Setters
+
     public String getId() {
         return id;
     }
@@ -212,12 +194,20 @@ public class InstantAccount {
         this.site = site;
     }
 
-    public String getUserType() {
-        return userType;
+    public Integer getUserTypeId() {
+        return userTypeId;
     }
 
-    public void setUserType(String userType) {
-        this.userType = userType;
+    public void setUserTypeId(Integer userTypeId) {
+        this.userTypeId = userTypeId;
+    }
+
+    public String getUserTypeName() {
+        return userTypeName;
+    }
+
+    public void setUserTypeName(String userTypeName) {
+        this.userTypeName = userTypeName;
     }
 
     public String getUsername() {
@@ -236,22 +226,6 @@ public class InstantAccount {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
     public String getCompanyName() {
         return companyName;
     }
@@ -260,20 +234,28 @@ public class InstantAccount {
         this.companyName = companyName;
     }
 
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getAuthorizedPersonnel() {
+        return authorizedPersonnel;
+    }
+
+    public void setAuthorizedPersonnel(String authorizedPersonnel) {
+        this.authorizedPersonnel = authorizedPersonnel;
+    }
+
     public String getCompanyShortName() {
         return companyShortName;
     }
 
     public void setCompanyShortName(String companyShortName) {
         this.companyShortName = companyShortName;
-    }
-
-    public String getAuthorizedPerson() {
-        return authorizedPerson;
-    }
-
-    public void setAuthorizedPerson(String authorizedPerson) {
-        this.authorizedPerson = authorizedPerson;
     }
 
     public String getPhoneCountryCode() {
@@ -308,52 +290,12 @@ public class InstantAccount {
         this.gsm = gsm;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
-
     public String getAddress() {
         return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
-
-    public String getNeighborhood() {
-        return neighborhood;
-    }
-
-    public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
     }
 
     public String getFax() {
@@ -386,14 +328,6 @@ public class InstantAccount {
 
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
-    }
-
-    public String getTaxOffice() {
-        return taxOffice;
-    }
-
-    public void setTaxOffice(String taxOffice) {
-        this.taxOffice = taxOffice;
     }
 
     public String getTaxNumber() {
@@ -444,14 +378,6 @@ public class InstantAccount {
         this.userStatus = userStatus;
     }
 
-    public String getSignatureImage() {
-        return signatureImage;
-    }
-
-    public void setSignatureImage(String signatureImage) {
-        this.signatureImage = signatureImage;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
@@ -484,38 +410,11 @@ public class InstantAccount {
         this.updatedBy = updatedBy;
     }
 
-    public Boolean getIsActive() {
+    public Boolean getActive() {
         return isActive;
     }
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    @Override
-    public String toString() {
-        return "InstantAccount{" +
-                "id='" + id + '\'' +
-                ", accountGroupId='" + accountGroupId + '\'' +
-                ", username='" + username + '\'' +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", companyName='" + companyName + '\'' +
-                ", email='" + email + '\'' +
-                ", isActive=" + isActive +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        InstantAccount that = (InstantAccount) o;
-        return id != null && id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 }

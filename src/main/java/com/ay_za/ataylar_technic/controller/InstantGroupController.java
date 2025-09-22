@@ -1,7 +1,7 @@
 package com.ay_za.ataylar_technic.controller;
 
 
-import com.ay_za.ataylar_technic.entity.InstantGroup;
+import com.ay_za.ataylar_technic.dto.InstantGroupDto;
 import com.ay_za.ataylar_technic.service.base.InstantGroupServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -50,7 +50,7 @@ public class InstantGroupController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            InstantGroup group = instantGroupService.createGroup(groupName, createdBy);
+            InstantGroupDto group = instantGroupService.createGroup(groupName, createdBy);
 
             response.put("success", true);
             response.put("message", "Grup başarıyla oluşturuldu");
@@ -86,7 +86,7 @@ public class InstantGroupController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            InstantGroup group = instantGroupService.updateGroupName(groupId, newGroupName, updatedBy);
+            InstantGroupDto group = instantGroupService.updateGroupName(groupId, newGroupName, updatedBy);
 
             response.put("success", true);
             response.put("message", "Grup adı başarıyla güncellendi");
@@ -100,93 +100,6 @@ public class InstantGroupController {
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Grup güncellenirken bir hata oluştu");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
-    /**
-     * Grup durumunu aktif/pasif yap
-     */
-    @PutMapping("/toggle-status/{groupId}")
-    public ResponseEntity<Map<String, Object>> toggleGroupStatus(
-            @PathVariable String groupId,
-            @RequestBody Map<String, String> request) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            String updatedBy = request.get("updatedBy");
-
-            InstantGroup group = instantGroupService.toggleGroupStatus(groupId, updatedBy);
-
-            response.put("success", true);
-            response.put("message", "Grup durumu başarıyla değiştirildi");
-            response.put("data", group);
-
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Grup durumu değiştirilirken bir hata oluştu");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
-    /**
-     * Grubu aktif yap
-     */
-    @PutMapping("/activate-group/{groupId}")
-    public ResponseEntity<Map<String, Object>> activateGroup(
-            @PathVariable String groupId,
-            @RequestBody Map<String, String> request) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            String updatedBy = request.get("updatedBy");
-
-            InstantGroup group = instantGroupService.activateGroup(groupId, updatedBy);
-
-            response.put("success", true);
-            response.put("message", "Grup başarıyla aktif edildi");
-            response.put("data", group);
-
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Grup aktif edilirken bir hata oluştu");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
-    /**
-     * Grubu pasif yap (soft delete)
-     */
-    @PutMapping("/deactivate/{groupId}")
-    public ResponseEntity<Map<String, Object>> deactivateGroup(
-            @PathVariable String groupId,
-            @RequestBody Map<String, String> request) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            String updatedBy = request.get("updatedBy");
-
-            InstantGroup group = instantGroupService.deactivateGroup(groupId, updatedBy);
-
-            response.put("success", true);
-            response.put("message", "Grup başarıyla pasif edildi");
-            response.put("data", group);
-
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Grup pasif edilirken bir hata oluştu");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -228,7 +141,7 @@ public class InstantGroupController {
     public ResponseEntity<Map<String, Object>> getGroupById(@PathVariable String groupId) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Optional<InstantGroup> group = instantGroupService.getGroupById(groupId);
+            Optional<InstantGroupDto> group = instantGroupService.getGroupById(groupId);
 
             if (group.isPresent()) {
                 response.put("success", true);
@@ -248,33 +161,7 @@ public class InstantGroupController {
     }
 
     /**
-     * Aktif grup getir
-     */
-    @GetMapping("/get-active-group-by-id/{groupId}")
-    public ResponseEntity<Map<String, Object>> getActiveGroupById(@PathVariable String groupId) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            Optional<InstantGroup> group = instantGroupService.getActiveGroupById(groupId);
-
-            if (group.isPresent()) {
-                response.put("success", true);
-                response.put("data", group.get());
-            } else {
-                response.put("success", false);
-                response.put("message", "Aktif grup bulunamadı");
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Grup getirilirken bir hata oluştu");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
-    /**
-     * Tüm aktif grupları getir
+     * Tüm grupları getir
      */
     @Operation(summary = "Aktif grupları listele", description = "Tüm aktif grupları alfabetik sırayla getirir")
     @ApiResponses(value = {
@@ -285,7 +172,7 @@ public class InstantGroupController {
     public ResponseEntity<Map<String, Object>> getAllActiveGroups() {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<InstantGroup> groups = instantGroupService.getAllActiveGroups();
+            List<InstantGroupDto> groups = instantGroupService.getAllGroups();
 
             response.put("success", true);
             response.put("data", groups);
@@ -306,7 +193,7 @@ public class InstantGroupController {
     public ResponseEntity<Map<String, Object>> getAllGroups() {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<InstantGroup> groups = instantGroupService.getAllGroups();
+            List<InstantGroupDto> groups = instantGroupService.getAllGroups();
 
             response.put("success", true);
             response.put("data", groups);
@@ -327,7 +214,7 @@ public class InstantGroupController {
     public ResponseEntity<Map<String, Object>> searchGroupsByName(@RequestParam String searchTerm) {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<InstantGroup> groups = instantGroupService.searchGroupsByName(searchTerm);
+            List<InstantGroupDto> groups = instantGroupService.searchGroupsByName(searchTerm);
 
             response.put("success", true);
             response.put("data", groups);
@@ -343,13 +230,13 @@ public class InstantGroupController {
     }
 
     /**
-     * Aktif grup sayısını getir
+     * Grup sayısını getir
      */
     @GetMapping("/get-count-active-groups")
     public ResponseEntity<Map<String, Object>> getActiveGroupCount() {
         Map<String, Object> response = new HashMap<>();
         try {
-            Integer count = instantGroupService.getActiveGroupCount();
+            Integer count = instantGroupService.getGroupCount();
 
             response.put("success", true);
             response.put("count", count);
@@ -377,7 +264,7 @@ public class InstantGroupController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            List<InstantGroup> createdGroups = instantGroupService.createDefaultGroups(createdBy);
+            List<InstantGroupDto> createdGroups = instantGroupService.createDefaultGroups(createdBy);
 
             response.put("success", true);
             response.put("message", createdGroups.size() + " varsayılan grup başarıyla oluşturuldu");
