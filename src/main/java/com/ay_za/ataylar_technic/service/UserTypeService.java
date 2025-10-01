@@ -114,15 +114,15 @@ public class UserTypeService implements UserTypeServiceImpl {
     }
 
     /**
-     * Random tip getir
+     * Rastgele bir UserType getir (güvenli yaklaşım)
      */
     @Override
     public Optional<UserType> getRandomUserType() {
-        List<UserType> allTypes = userTypeRepository.findAllTypes();
-        if (allTypes.isEmpty()) {
+        List<UserType> allUserTypes = userTypeRepository.findAll();
+        if (allUserTypes.isEmpty()) {
             return Optional.empty();
         }
         Random random = new Random();
-        return Optional.of(allTypes.get(random.nextInt(allTypes.size())));
+        return Optional.of(allUserTypes.get(random.nextInt(allUserTypes.size())));
     }
 }
