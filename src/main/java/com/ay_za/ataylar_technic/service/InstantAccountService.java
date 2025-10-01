@@ -1,6 +1,7 @@
 package com.ay_za.ataylar_technic.service;
 
 import com.ay_za.ataylar_technic.dto.InstantAccountDto;
+import com.ay_za.ataylar_technic.dto.UserTypeDto;
 import com.ay_za.ataylar_technic.entity.InstantAccount;
 import com.ay_za.ataylar_technic.entity.InstantGroup;
 import com.ay_za.ataylar_technic.entity.UserType;
@@ -389,24 +390,24 @@ public class InstantAccountService implements InstantAccountServiceImpl {
      */
     @Transactional
     public InstantAccountDto createAccount2(String createdBy) {
-        // Önce rastgele bir aktif grup ID'si alalım
-        Optional<InstantGroup> randomGroup = instantGroupServiceImpl.getRandomGroup();
-        if (randomGroup.isPresent()) {
-            InstantGroup group = randomGroup.get();
-            System.out.println("Random Group: " + group.getGroupName());
-        } else {
-            System.out.println("Hiç grup bulunamadı");
-        }
+        createdBy = "admin";
 
-        Optional<UserType> randomUserType = userTypeServiceImpl.getRandomUserType();
-        if (randomUserType.isPresent()) {
-            UserType type = randomUserType.get();
-            System.out.println("Random Tip: " + type.getUserTypeName());
-        } else {
-            System.out.println("Hiç tip bulunamadı");
+        // Önce default veriler yoksa oluştur
+        ensureDefaultDataExists();
+
+        // Rastgele bir aktif grup ID'si al - güvenli yaklaşım
+        Optional<InstantGroup> randomGroupOpt = instantGroupServiceImpl.getRandomGroup();
+        if (randomGroupOpt.isEmpty()) {
+            throw new RuntimeException("Hiç grup bulunamadı. Önce grup oluşturun.");
         }
-        List<InstantGroup> activeGroups = instantGroupRepository.findByOrderByGroupNameAsc();
-        String groupId = activeGroups.isEmpty() ? "default-group-id" : activeGroups.getFirst().getId();
+        InstantGroup randomGroup = randomGroupOpt.get();
+
+        // Rastgele UserType al - güvenli yaklaşım
+        Optional<UserType> randomUserTypeOpt = userTypeServiceImpl.getRandomUserType();
+        if (randomUserTypeOpt.isEmpty()) {
+            throw new RuntimeException("Hiç kullanıcı tipi bulunamadı. Önce user type oluşturun.");
+        }
+        UserType randomUserType = randomUserTypeOpt.get();
 
         // Rastgele kullanıcı adı ve email oluştur
         String randomNumber = String.valueOf(System.currentTimeMillis()).substring(7);
@@ -439,14 +440,14 @@ public class InstantAccountService implements InstantAccountServiceImpl {
 
         InstantAccountDto instantAccountDto = new InstantAccountDto();
 
-        instantAccountDto.setAccountGroupId(randomGroup.get().getId());
-        instantAccountDto.setAccountGroupName(randomGroup.get().getGroupName());
-        instantAccountDto.setUserTypeId(randomUserType.get().getId());
-        instantAccountDto.setUserTypeName(randomUserType.get().getUserTypeName());
+        instantAccountDto.setAccountGroupId(randomGroup.getId());
+        instantAccountDto.setAccountGroupName(randomGroup.getGroupName());
+        instantAccountDto.setUserTypeId(randomUserType.getId());
+        instantAccountDto.setUserTypeName(randomUserType.getUserTypeName());
         instantAccountDto.setSite("Ana Kullanıcı");
         instantAccountDto.setUsername("user" + randomNumber + "@example.com");
         instantAccountDto.setPassword("password123");
-        instantAccountDto.setAuthorizedPersonnel("user authorized");
+        instantAccountDto.setAuthorizedPersonnel(firstName + " " + lastName);
         instantAccountDto.setCompanyName(companyName);
         instantAccountDto.setProjectName(companyName + " Projesi");
         instantAccountDto.setCompanyShortName(companyName.substring(0, 5));
@@ -563,5 +564,26 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         }
 
         return account;
+    }
+
+    /**
+     * Default verilerin varlığını kontrol et ve yoksa oluştur
+     */
+    private void ensureDefaultDataExists() {
+        try {
+            // Default grupları kontrol et ve oluştur
+            List<InstantGroup> groups = instantGroupRepository.findAll();
+            if (groups.isEmpty()) {
+                instantGroupServiceImpl.createDefaultGroups("System Admin");
+            }
+
+            // Default user type'ları kontrol et ve oluştur
+            List<UserTypeDto> userTypeDtos = userTypeServiceImpl.getAllUserTypes();
+            if (userTypeDtos == null || userTypeDtos.isEmpty()) {
+                userTypeServiceImpl.createDefaultUserTypes();
+            }
+        } catch (Exception e) {
+            System.err.println("Default veriler oluşturulurken hata: " + e.getMessage());
+        }
     }
 }
