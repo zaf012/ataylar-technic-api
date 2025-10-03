@@ -1,4 +1,4 @@
-package com.ay_za.ataylar_technic.mapper;
+package com.ay_za.ataylar_technic.mapper.base;
 
 import java.util.List;
 
