@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -223,5 +224,286 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         return allRecords.stream()
                 .map(systemInfoMapper::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    // ===== DUMMY DATA METHODS =====
+
+    public String createDefaultSystemsAndData() {
+        try {
+            List<SystemInfoDto> createdSystems = createDefaultSystems();
+            createDefaultChecklistsAndFaults(createdSystems);
+
+            return "Dummy veriler başarıyla oluşturuldu! " +
+                    "Toplam " + createdSystems.size() + " sistem ve " +
+                    "her sistem için örnek çeklist ve arıza maddeleri eklendi.";
+        } catch (Exception e) {
+            return "Dummy veri oluşturulurken hata: " + e.getMessage();
+        }
+    }
+
+    private List<SystemInfoDto> createDefaultSystems() {
+        List<SystemInfoDto> systems = new ArrayList<>();
+
+        // 1. Su Arıtma Sistemi
+        SystemInfoDto suAritma = new SystemInfoDto();
+        suAritma.setSystemName("Su Arıtmaları");
+        suAritma.setSystemOrderNo(500);
+        suAritma.setIsActive(true);
+        suAritma.setCreatedBy("System");
+        systems.add(this.createSystem(suAritma));
+
+        // 2. Hava Perdesi Sistemi
+        SystemInfoDto havaPerdesi = new SystemInfoDto();
+        havaPerdesi.setSystemName("Hava Perdeleri");
+        havaPerdesi.setSystemOrderNo(490);
+        havaPerdesi.setIsActive(true);
+        havaPerdesi.setCreatedBy("System");
+        systems.add(this.createSystem(havaPerdesi));
+
+        // 3. Isı Geri Kazanım Sistemi
+        SystemInfoDto isiGeriKazanim = new SystemInfoDto();
+        isiGeriKazanim.setSystemName("Isı Geri Kazanım Taze Hava Fanları");
+        isiGeriKazanim.setSystemOrderNo(480);
+        isiGeriKazanim.setIsActive(true);
+        isiGeriKazanim.setCreatedBy("System");
+        systems.add(this.createSystem(isiGeriKazanim));
+
+        // 4. Isı Geri Kazanım Cihazları
+        SystemInfoDto isiGeriKazanimCihazlari = new SystemInfoDto();
+        isiGeriKazanimCihazlari.setSystemName("Isı Geri kazanım Cihazları");
+        isiGeriKazanimCihazlari.setSystemOrderNo(470);
+        isiGeriKazanimCihazlari.setIsActive(true);
+        isiGeriKazanimCihazlari.setCreatedBy("System");
+        systems.add(this.createSystem(isiGeriKazanimCihazlari));
+
+        // 5. Osmoz Cihazları
+        SystemInfoDto osmozCihazlari = new SystemInfoDto();
+        osmozCihazlari.setSystemName("Osmoz Cihazları");
+        osmozCihazlari.setSystemOrderNo(510);
+        osmozCihazlari.setIsActive(true);
+        osmozCihazlari.setCreatedBy("System");
+        systems.add(this.createSystem(osmozCihazlari));
+
+        // 6. İntercomlar
+        SystemInfoDto intercomlar = new SystemInfoDto();
+        intercomlar.setSystemName("İntercomlar");
+        intercomlar.setSystemOrderNo(520);
+        intercomlar.setIsActive(true);
+        intercomlar.setCreatedBy("System");
+        systems.add(this.createSystem(intercomlar));
+
+        // 7. Blok Yağ Pislik Tutucuları
+        SystemInfoDto blokYagPislik = new SystemInfoDto();
+        blokYagPislik.setSystemName("Blok Yağ Pislik Tutucuları");
+        blokYagPislik.setSystemOrderNo(530);
+        blokYagPislik.setIsActive(true);
+        blokYagPislik.setCreatedBy("System");
+        systems.add(this.createSystem(blokYagPislik));
+
+        return systems;
+    }
+
+    private void createDefaultChecklistsAndFaults(List<SystemInfoDto> systems) {
+        for (SystemInfoDto system : systems) {
+            createChecklistsForSystem(system);
+            createFaultsForSystem(system);
+        }
+    }
+
+    private void createChecklistsForSystem(SystemInfoDto system) {
+        String systemName = system.getSystemName();
+        String systemId = system.getId();
+
+        switch (systemName) {
+            case "Su Arıtmaları":
+                createSuAritmaChecklists(systemId);
+                break;
+            case "Hava Perdeleri":
+                createHavaPerdeleriChecklists(systemId);
+                break;
+            case "Isı Geri Kazanım Taze Hava Fanları":
+                createIsiGeriKazanimChecklists(systemId);
+                break;
+            case "Isı Geri kazanım Cihazları":
+                createIsiGeriKazanimCihazlariChecklists(systemId);
+                break;
+            case "Osmoz Cihazları":
+                createOsmozCihazlariChecklists(systemId);
+                break;
+            case "İntercomlar":
+                createIntercomlarChecklists(systemId);
+                break;
+            case "Blok Yağ Pislik Tutucuları":
+                createBlokYagPislikChecklists(systemId);
+                break;
+        }
+    }
+
+    private void createFaultsForSystem(SystemInfoDto system) {
+        String systemName = system.getSystemName();
+        String systemId = system.getId();
+
+        switch (systemName) {
+            case "Su Arıtmaları":
+                createSuAritmaFaults(systemId);
+                break;
+            case "Hava Perdeleri":
+                createHavaPerdeseriFaults(systemId);
+                break;
+            case "Isı Geri Kazanım Taze Hava Fanları":
+                createIsiGeriKazanimFaults(systemId);
+                break;
+            case "Isı Geri kazanım Cihazları":
+                createIsiGeriKazanimCihazlariFaults(systemId);
+                break;
+            case "Osmoz Cihazları":
+                createOsmozCihazlariFaults(systemId);
+                break;
+            case "İntercomlar":
+                createIntercomlarFaults(systemId);
+                break;
+            case "Blok Yağ Pislik Tutucuları":
+                createBlokYagPislikFaults(systemId);
+                break;
+        }
+    }
+
+    // Su Arıtmaları Çeklist Maddeleri
+    private void createSuAritmaChecklists(String systemId) {
+        createChecklistItem(systemId, "Sistemde periyodik bakım yapılacağı projeye bilgi verildi mi ?", 10);
+        createChecklistItem(systemId, "Bakım öncesi tüm vanalar kapatıldı mı ?", 20);
+        createChecklistItem(systemId, "Filtrelerin içinde bulunduğu aksamların açılması ve bol su ile temizlenmesi yapıldı mı ?", 30);
+        createChecklistItem(systemId, "Yeni filtrelerin aksamlara tekrar yerleştirilmesi ve hava almayacak şekilde kapatılması yapıldı mı ?", 40);
+        createChecklistItem(systemId, "Tatlandırıcının değiştirilmesi yapıldı mı ?", 50);
+    }
+
+    // Su Arıtmaları Arıza Maddeleri
+    private void createSuAritmaFaults(String systemId) {
+        createFaultItem(systemId, "Su arıtma cihazlarının elektrik fişleri kontrol edildi mi ?", 10);
+        createFaultItem(systemId, "Su arıtma cihazları çalışır durumda mı ?", 20);
+        createFaultItem(systemId, "Su arıtma cihazları temiz mi ?", 30);
+    }
+
+    // Hava Perdeleri Çeklist Maddeleri
+    private void createHavaPerdeleriChecklists(String systemId) {
+        createChecklistItem(systemId, "Hava perdesi fan motorları kontrol edildi mi ?", 10);
+        createChecklistItem(systemId, "Hava perdesi elektrik bağlantıları kontrol edildi mi ?", 20);
+        createChecklistItem(systemId, "Hava perdesi filtreler temizlendi mi ?", 30);
+    }
+
+    // Hava Perdeleri Arıza Maddeleri
+    private void createHavaPerdeseriFaults(String systemId) {
+        createFaultItem(systemId, "Hava perdesi çalışmıyor", 10);
+        createFaultItem(systemId, "Hava perdesi ses yapıyor", 20);
+        createFaultItem(systemId, "Hava perdesi titreşim yapıyor", 30);
+    }
+
+    // Isı Geri Kazanım Taze Hava Fanları Çeklist
+    private void createIsiGeriKazanimChecklists(String systemId) {
+        createChecklistItem(systemId, "Fan motorları kontrol edildi mi ?", 10);
+        createChecklistItem(systemId, "Kayış gerginlik kontrolleri yapıldı mı ?", 20);
+        createChecklistItem(systemId, "Filtreler temizlendi mi ?", 30);
+    }
+
+    // Isı Geri Kazanım Taze Hava Fanları Arıza
+    private void createIsiGeriKazanimFaults(String systemId) {
+        createFaultItem(systemId, "Fan çalışmıyor", 10);
+        createFaultItem(systemId, "Kayış kopmuş", 20);
+        createFaultItem(systemId, "Aşırı titreşim var", 30);
+    }
+
+    // Isı Geri Kazanım Cihazları Çeklist
+    private void createIsiGeriKazanimCihazlariChecklists(String systemId) {
+        createChecklistItem(systemId, "Cihaz temizliği yapıldı mı ?", 10);
+        createChecklistItem(systemId, "Elektriksel kontroller yapıldı mı ?", 20);
+        createChecklistItem(systemId, "Performans ölçümleri alındı mı ?", 30);
+    }
+
+    // Isı Geri Kazanım Cihazları Arıza
+    private void createIsiGeriKazanimCihazlariFaults(String systemId) {
+        createFaultItem(systemId, "Cihaz çalışmıyor", 10);
+        createFaultItem(systemId, "Verimlilik düşük", 20);
+        createFaultItem(systemId, "Elektrik arızası", 30);
+    }
+
+    // Osmoz Cihazları Çeklist
+    private void createOsmozCihazlariChecklists(String systemId) {
+        createChecklistItem(systemId, "Membran temizliği yapıldı mı ?", 10);
+        createChecklistItem(systemId, "Su basıncı kontrol edildi mi ?", 20);
+        createChecklistItem(systemId, "Filtreler değiştirildi mi ?", 30);
+    }
+
+    // Osmoz Cihazları Arıza
+    private void createOsmozCihazlariFaults(String systemId) {
+        createFaultItem(systemId, "Su akışı yok", 10);
+        createFaultItem(systemId, "Düşük basınç", 20);
+        createFaultItem(systemId, "Membran tıkalı", 30);
+    }
+
+    // İntercomlar Çeklist
+    private void createIntercomlarChecklists(String systemId) {
+        createChecklistItem(systemId, "Ses kalitesi kontrol edildi mi ?", 10);
+        createChecklistItem(systemId, "Buton çalışmaları test edildi mi ?", 20);
+        createChecklistItem(systemId, "Bağlantı kabloları kontrol edildi mi ?", 30);
+    }
+
+    // İntercomlar Arıza
+    private void createIntercomlarFaults(String systemId) {
+        createFaultItem(systemId, "Ses gelmiyor", 10);
+        createFaultItem(systemId, "Butonlar çalışmıyor", 20);
+        createFaultItem(systemId, "Bağlantı kopuk", 30);
+    }
+
+    // Blok Yağ Pislik Tutucuları Çeklist
+    private void createBlokYagPislikChecklists(String systemId) {
+        createChecklistItem(systemId, "Yağ seviyeleri kontrol edildi mi ?", 10);
+        createChecklistItem(systemId, "Temizlik işlemi yapıldı mı ?", 20);
+        createChecklistItem(systemId, "Filtrelerin durumu kontrol edildi mi ?", 30);
+    }
+
+    // Blok Yağ Pislik Tutucuları Arıza
+    private void createBlokYagPislikFaults(String systemId) {
+        createFaultItem(systemId, "Yağ seviyesi yüksek", 10);
+        createFaultItem(systemId, "Filtre tıkalı", 20);
+        createFaultItem(systemId, "Temizlik gerekli", 30);
+    }
+
+    // Yardımcı metodlar
+    private void createChecklistItem(String systemId, String description, Integer order) {
+        SystemInfoDto checklistDto = new SystemInfoDto();
+        checklistDto.setId(UUID.randomUUID().toString());
+        checklistDto.setDescription(description);
+        checklistDto.setControlPointOrder(order);
+        checklistDto.setControlPointIsActive(true);
+        checklistDto.setIsChecklist(true);
+        checklistDto.setIsFault(false);
+
+        // Parent sistemden bilgileri al
+        SystemInfo parentSystem = systemInfoRepository.findById(systemId)
+                .orElseThrow(() -> new RuntimeException("Sistem bulunamadı: " + systemId));
+        checklistDto.setSystemName(parentSystem.getSystemName());
+        checklistDto.setCreatedBy("System");
+
+        SystemInfo checklistEntity = systemInfoMapper.convertToEntity(checklistDto);
+        systemInfoRepository.save(checklistEntity);
+    }
+
+    private void createFaultItem(String systemId, String description, Integer order) {
+        SystemInfoDto faultDto = new SystemInfoDto();
+        faultDto.setId(UUID.randomUUID().toString());
+        faultDto.setDescription(description);
+        faultDto.setControlPointOrder(order);
+        faultDto.setControlPointIsActive(true);
+        faultDto.setIsChecklist(false);
+        faultDto.setIsFault(true);
+
+        // Parent sistemden bilgileri al
+        SystemInfo parentSystem = systemInfoRepository.findById(systemId)
+                .orElseThrow(() -> new RuntimeException("Sistem bulunamadı: " + systemId));
+        faultDto.setSystemName(parentSystem.getSystemName());
+        faultDto.setCreatedBy("System");
+
+        SystemInfo faultEntity = systemInfoMapper.convertToEntity(faultDto);
+        systemInfoRepository.save(faultEntity);
     }
 }
