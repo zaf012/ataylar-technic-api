@@ -9,13 +9,14 @@ public class QrCodeGenerator {
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int QR_CODE_LENGTH = 12;
-    private static final SecureRandom random = new SecureRandom();
+    private final SecureRandom random = new SecureRandom();
 
     /**
-     * 12 haneli unique QR kod oluşturur (İngilizce harf ve rakam)
-     * @return 12 karakterli QR kod
+     * 12 haneli benzersiz QR kod üretir
+     * Format: İngilizce büyük harfler ve rakamlar
+     * Örnek: TK0000119, L4AKKEUZNV
      */
-    public String generateQrCode() {
+    public String generateQRCode() {
         StringBuilder qrCode = new StringBuilder(QR_CODE_LENGTH);
 
         for (int i = 0; i < QR_CODE_LENGTH; i++) {
@@ -27,19 +28,18 @@ public class QrCodeGenerator {
     }
 
     /**
-     * Belirtilen prefix ile QR kod oluşturur
+     * Özel prefix ile QR kod üretir
      * @param prefix QR kodun başına eklenecek prefix (max 4 karakter)
-     * @return Prefix + random 8 karakter
      */
-    public String generateQrCodeWithPrefix(String prefix) {
+    public String generateQRCodeWithPrefix(String prefix) {
         if (prefix == null || prefix.length() > 4) {
-            throw new IllegalArgumentException("Prefix 4 karakterden fazla olamaz");
+            throw new IllegalArgumentException("Prefix maksimum 4 karakter olabilir");
         }
 
-        int remainingLength = QR_CODE_LENGTH - prefix.length();
         StringBuilder qrCode = new StringBuilder();
         qrCode.append(prefix.toUpperCase());
 
+        int remainingLength = QR_CODE_LENGTH - prefix.length();
         for (int i = 0; i < remainingLength; i++) {
             int randomIndex = random.nextInt(CHARACTERS.length());
             qrCode.append(CHARACTERS.charAt(randomIndex));
@@ -49,15 +49,29 @@ public class QrCodeGenerator {
     }
 
     /**
-     * QR kod format kontrolü
-     * @param qrCode Kontrol edilecek QR kod
-     * @return Geçerli ise true
+     * Sayısal QR kod üretir
+     * @param length QR kod uzunluğu
      */
-    public boolean isValidQrCodeFormat(String qrCode) {
+    public String generateNumericQRCode(int length) {
+        StringBuilder qrCode = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            qrCode.append(random.nextInt(10));
+        }
+
+        return qrCode.toString();
+    }
+
+    /**
+     * QR kod formatını doğrular
+     * @param qrCode kontrol edilecek QR kod
+     * @return geçerli ise true
+     */
+    public boolean isValidQRCode(String qrCode) {
         if (qrCode == null || qrCode.length() != QR_CODE_LENGTH) {
             return false;
         }
 
-        return qrCode.matches("^[A-Z0-9]{12}$");
+        return qrCode.matches("[A-Z0-9]{" + QR_CODE_LENGTH + "}");
     }
 }

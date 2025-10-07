@@ -20,7 +20,7 @@ public class SystemInfo {
     @Column(name = "system_name", nullable = false, length = 100)
     private String systemName;
 
-    @Column(name = "system_order_no", nullable = false, length = 100)
+    @Column(name = "system_order_no", length = 100)
     private Integer systemOrderNo;
 
     @Column(name = "is_active")
