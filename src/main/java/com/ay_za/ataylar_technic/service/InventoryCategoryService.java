@@ -10,7 +10,6 @@ import com.ay_za.ataylar_technic.util.QrCodeGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -294,7 +293,7 @@ public class InventoryCategoryService implements InventoryCategoryServiceImpl {
         int maxAttempts = 100;
 
         do {
-            qrCode = qrCodeGenerator.generateQrCode();
+            qrCode = qrCodeGenerator.generateQRCode();
             attempts++;
             if (attempts > maxAttempts) {
                 throw new QrCodeGenerationException(attempts);
@@ -403,7 +402,7 @@ public class InventoryCategoryService implements InventoryCategoryServiceImpl {
         }
 
         // QR kod formatı kontrolü (eğer manuel girilmişse)
-        if (categoryDto.getQrCode() != null && !qrCodeGenerator.isValidQrCodeFormat(categoryDto.getQrCode())) {
+        if (categoryDto.getQrCode() != null && !qrCodeGenerator.isValidQRCode(categoryDto.getQrCode())) {
             throw CategoryValidationException.invalidQrCodeFormat(categoryDto.getQrCode());
         }
     }
@@ -413,7 +412,7 @@ public class InventoryCategoryService implements InventoryCategoryServiceImpl {
             throw new CategoryValidationException("QR kod boş olamaz");
         }
 
-        if (!qrCodeGenerator.isValidQrCodeFormat(qrCode)) {
+        if (!qrCodeGenerator.isValidQRCode(qrCode)) {
             throw CategoryValidationException.invalidQrCodeFormat(qrCode);
         }
     }
