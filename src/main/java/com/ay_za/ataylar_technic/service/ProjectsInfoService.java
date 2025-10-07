@@ -196,4 +196,18 @@ public class ProjectsInfoService implements ProjectsInfoServiceImpl {
     public boolean checkProjectById(String projectId) {
         return projectsInfoRepository.existsById(projectId);
     }
+
+    /**
+     * Rastgele bir proje getir
+     */
+    @Override
+    public Optional<ProjectsInfo> getRandomProject() {
+        List<ProjectsInfo> allProjects = projectsInfoRepository.findAll();
+        if (allProjects.isEmpty()) {
+            return Optional.empty();
+        }
+
+        int randomIndex = (int) (Math.random() * allProjects.size());
+        return Optional.of(allProjects.get(randomIndex));
+    }
 }

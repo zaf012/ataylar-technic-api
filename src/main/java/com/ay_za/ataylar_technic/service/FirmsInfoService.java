@@ -184,4 +184,18 @@ public class FirmsInfoService implements FirmsInfoServiceImpl {
 
         return createdFirms;
     }
+
+    /**
+     * Rastgele bir firma getir
+     */
+    @Override
+    public Optional<FirmsInfo> getRandomFirm() {
+        List<FirmsInfo> allFirms = firmsInfoRepository.findAll();
+        if (allFirms.isEmpty()) {
+            return Optional.empty();
+        }
+
+        int randomIndex = (int) (Math.random() * allFirms.size());
+        return Optional.of(allFirms.get(randomIndex));
+    }
 }

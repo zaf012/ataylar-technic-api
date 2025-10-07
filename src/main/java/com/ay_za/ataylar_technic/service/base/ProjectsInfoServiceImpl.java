@@ -1,6 +1,7 @@
 package com.ay_za.ataylar_technic.service.base;
 
 import com.ay_za.ataylar_technic.dto.ProjectsInfoDto;
+import com.ay_za.ataylar_technic.entity.ProjectsInfo;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -34,4 +35,6 @@ public interface ProjectsInfoServiceImpl {
     Integer getProjectCountByFirmId(String firmId);
 
     boolean checkProjectById(String projectId);
+
+    Optional<ProjectsInfo> getRandomProject();
 }
