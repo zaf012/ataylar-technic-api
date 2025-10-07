@@ -1,15 +1,10 @@
 package com.ay_za.ataylar_technic.service;
 
 import com.ay_za.ataylar_technic.dto.InstantAccountDto;
-import com.ay_za.ataylar_technic.entity.InstantAccount;
-import com.ay_za.ataylar_technic.entity.InstantGroup;
-import com.ay_za.ataylar_technic.entity.UserType;
+import com.ay_za.ataylar_technic.entity.*;
 import com.ay_za.ataylar_technic.mapper.InstantAccountMapper;
 import com.ay_za.ataylar_technic.repository.InstantAccountRepository;
-import com.ay_za.ataylar_technic.repository.InstantGroupRepository;
-import com.ay_za.ataylar_technic.service.base.InstantAccountServiceImpl;
-import com.ay_za.ataylar_technic.service.base.InstantGroupServiceImpl;
-import com.ay_za.ataylar_technic.service.base.UserTypeServiceImpl;
+import com.ay_za.ataylar_technic.service.base.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,20 +20,20 @@ public class InstantAccountService implements InstantAccountServiceImpl {
 
     private final InstantAccountRepository instantAccountRepository;
     private final InstantGroupServiceImpl instantGroupServiceImpl;
-    private final InstantGroupRepository instantGroupRepository;
     private final InstantAccountMapper instantAccountMapper;
     private final UserTypeServiceImpl userTypeServiceImpl;
+    private final FirmsInfoServiceImpl firmsInfoServiceImpl;
+    private final ProjectsInfoServiceImpl projectsInfoServiceImpl;
 
-    public InstantAccountService(InstantAccountRepository instantAccountRepository,
-                                 InstantGroupServiceImpl instantGroupServiceImpl,
-                                 InstantGroupRepository instantGroupRepository,
-                                 InstantAccountMapper instantAccountMapper, UserTypeServiceImpl userTypeServiceImpl) {
+    public InstantAccountService(InstantAccountRepository instantAccountRepository, InstantGroupServiceImpl instantGroupServiceImpl, InstantAccountMapper instantAccountMapper, UserTypeServiceImpl userTypeServiceImpl, FirmsInfoServiceImpl firmsInfoServiceImpl, ProjectsInfoServiceImpl projectsInfoServiceImpl) {
         this.instantAccountRepository = instantAccountRepository;
         this.instantGroupServiceImpl = instantGroupServiceImpl;
-        this.instantGroupRepository = instantGroupRepository;
         this.instantAccountMapper = instantAccountMapper;
         this.userTypeServiceImpl = userTypeServiceImpl;
+        this.firmsInfoServiceImpl = firmsInfoServiceImpl;
+        this.projectsInfoServiceImpl = projectsInfoServiceImpl;
     }
+
 
     /**
      * Yeni hesap oluştur
@@ -413,6 +408,20 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         }
         UserType randomUserType = randomUserTypeOpt.get();
 
+        // Rastgele FirmsInfo al - güvenli yaklaşım
+        Optional<FirmsInfo> randomFirmOpt = firmsInfoServiceImpl.getRandomFirm();
+        if (randomFirmOpt.isEmpty()) {
+            throw new RuntimeException("Hiç firma bulunamadı. Önce firma oluşturun.");
+        }
+        FirmsInfo randomFirm = randomFirmOpt.get();
+
+        // Rastgele ProjectsInfo al - güvenli yaklaşım
+        Optional<ProjectsInfo> randomProjectOpt = projectsInfoServiceImpl.getRandomProject();
+        if (randomProjectOpt.isEmpty()) {
+            throw new RuntimeException("Hiç proje bulunamadı. Önce proje oluşturun.");
+        }
+        ProjectsInfo randomProject = randomProjectOpt.get();
+
         // Rastgele kullanıcı adı ve email oluştur
         String randomNumber = String.valueOf(System.currentTimeMillis()).substring(7);
 
@@ -426,22 +435,6 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         String firstName = firstNames[firstIndex];
         String lastName = lastNames[lastIndex];
 
-        // Şirket bilgileri
-        String[] firmNames = {
-                "ZIRVE ELEKTRİK BOBİNAJ HİDROFOR POMPA SİSTEMLERİ",
-                "Kentplus Centrum Site Yönetimi",
-                "Atayıldız Plaza Yönetimi",
-                "TEM 34 ESENYURT 2 SİTE YÖNETİMİ",
-                "Tom 34 Esenyurt Site Yönetimi",
-                "Nurol Kalman Site Yönetimi",
-                "İNNOVA DEPARTMANLAR DAİRE B C BLOK SİTE YÖNETİMİ",
-                "İlke Park Evleri Site Yönetimi",
-                "Esas Flora Evleri Site Yönetimi"
-        };
-
-        int companyIndex = (int) (Math.random() * firmNames.length);
-        String firmName = firmNames[companyIndex];
-
         InstantAccountDto instantAccountDto = new InstantAccountDto();
 
         instantAccountDto.setAccountGroupId(randomGroup.getId());
@@ -452,15 +445,19 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         instantAccountDto.setUsername("user" + randomNumber + "@example.com");
         instantAccountDto.setPassword("password123");
         instantAccountDto.setAuthorizedPersonnel(firstName + " " + lastName);
-        instantAccountDto.setFirmName(firmName);
-        instantAccountDto.setProjectName(firmName + " Projesi");
-        instantAccountDto.setCompanyShortName(firmName.substring(0, 5));
+
+        // Random seçilen firma ve proje bilgilerini kullan
+        instantAccountDto.setFirmId(randomFirm.getId());
+        instantAccountDto.setFirmName(randomFirm.getFirmName());
+        instantAccountDto.setProjectId(randomProject.getId());
+        instantAccountDto.setProjectName(randomProject.getProjectName());
+
+        instantAccountDto.setCompanyShortName(randomFirm.getFirmName().length() > 5 ? randomFirm.getFirmName().substring(0, 5) : randomFirm.getFirmName());
         instantAccountDto.setPhoneCountryCode("+90");
         instantAccountDto.setPhone("212" + String.format("%07d", (int) (Math.random() * 10000000)));
         instantAccountDto.setGsmCountryCode("+90");
         instantAccountDto.setGsm("5" + String.format("%09d", (int) (Math.random() * 1000000000)));
         instantAccountDto.setEmail("user" + randomNumber + "@example.com");
-
 
         // Adres bilgileri
         String[] cities = {"İstanbul", "Ankara", "İzmir", "Bursa", "Antalya"};

@@ -1,6 +1,7 @@
 package com.ay_za.ataylar_technic.service.base;
 
 import com.ay_za.ataylar_technic.dto.FirmsInfoDto;
+import com.ay_za.ataylar_technic.entity.FirmsInfo;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -30,4 +31,6 @@ public interface FirmsInfoServiceImpl {
     boolean checkFirmById(String firmId);
 
     List<FirmsInfoDto> createSampleFirms();
+
+    Optional<FirmsInfo> getRandomFirm();
 }
