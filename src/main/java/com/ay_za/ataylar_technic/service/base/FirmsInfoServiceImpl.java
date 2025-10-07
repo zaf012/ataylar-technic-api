@@ -28,4 +28,6 @@ public interface FirmsInfoServiceImpl {
     Integer getFirmCount();
 
     boolean checkFirmById(String firmId);
+
+    List<FirmsInfoDto> createSampleFirms();
 }

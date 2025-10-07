@@ -13,7 +13,9 @@ public class InstantAccountDto {
     private String userTypeName;
     private String username;
     private String password;
-    private String companyName;
+    private String firmId;
+    private String firmName;
+    private String projectId;
     private String projectName;
     private String authorizedPersonnel;
     private String companyShortName;
@@ -41,15 +43,14 @@ public class InstantAccountDto {
     public InstantAccountDto() {
     }
 
-    public InstantAccountDto(String id, String accountGroupId, String accountGroupName, String site,
-                             Integer userTypeId, String userTypeName, String username, String password,
-                             String companyName, String projectName, String authorizedPersonnel,
-                             String companyShortName, String phoneCountryCode, String phone,
-                             String gsmCountryCode, String gsm, String address, String fax, String email, String pttBox,
-                             String postalCode, String taxNumber, String tcIdentityNo, String bankAddress,
-                             BigDecimal riskLimit, String riskLimitExplanation, Boolean userStatus,
-                             LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy,
-                             Boolean isActive) {
+    public InstantAccountDto(String id, String accountGroupId, String accountGroupName, String site, Integer userTypeId,
+                             String userTypeName, String username, String password, String firmId, String firmName,
+                             String projectId, String projectName, String authorizedPersonnel, String companyShortName,
+                             String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address,
+                             String fax, String email, String pttBox, String postalCode, String taxNumber,
+                             String tcIdentityNo, String bankAddress, BigDecimal riskLimit, String riskLimitExplanation,
+                             Boolean userStatus, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy,
+                             String updatedBy, Boolean isActive) {
         this.id = id;
         this.accountGroupId = accountGroupId;
         this.accountGroupName = accountGroupName;
@@ -58,7 +59,9 @@ public class InstantAccountDto {
         this.userTypeName = userTypeName;
         this.username = username;
         this.password = password;
-        this.companyName = companyName;
+        this.firmId = firmId;
+        this.firmName = firmName;
+        this.projectId = projectId;
         this.projectName = projectName;
         this.authorizedPersonnel = authorizedPersonnel;
         this.companyShortName = companyShortName;
@@ -150,12 +153,28 @@ public class InstantAccountDto {
         this.password = password;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getFirmId() {
+        return firmId;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setFirmId(String firmId) {
+        this.firmId = firmId;
+    }
+
+    public String getFirmName() {
+        return firmName;
+    }
+
+    public void setFirmName(String firmName) {
+        this.firmName = firmName;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
     }
 
     public String getProjectName() {
