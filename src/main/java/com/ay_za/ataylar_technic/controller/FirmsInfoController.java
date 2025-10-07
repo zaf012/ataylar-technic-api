@@ -18,10 +18,10 @@ import java.util.*;
 @Tag(name = "Firms Info", description = "Firma yönetimi API'leri")
 public class FirmsInfoController {
 
-    private final FirmsInfoServiceImpl firmsInfoService;
+    private final FirmsInfoServiceImpl firmsInfoServiceImpl;
 
-    public FirmsInfoController(FirmsInfoServiceImpl firmsInfoService) {
-        this.firmsInfoService = firmsInfoService;
+    public FirmsInfoController(FirmsInfoServiceImpl firmsInfoServiceImpl) {
+        this.firmsInfoServiceImpl = firmsInfoServiceImpl;
     }
 
     /**
@@ -46,7 +46,7 @@ public class FirmsInfoController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            FirmsInfoDto firm = firmsInfoService.createFirm(firmName, createdBy);
+            FirmsInfoDto firm = firmsInfoServiceImpl.createFirm(firmName, createdBy);
 
             response.put("success", true);
             response.put("message", "Firma başarıyla oluşturuldu");
@@ -83,7 +83,7 @@ public class FirmsInfoController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            FirmsInfoDto firm = firmsInfoService.updateFirm(firmId, firmName, updatedBy);
+            FirmsInfoDto firm = firmsInfoServiceImpl.updateFirm(firmId, firmName, updatedBy);
 
             response.put("success", true);
             response.put("message", "Firma başarıyla güncellendi");
@@ -109,7 +109,7 @@ public class FirmsInfoController {
     public ResponseEntity<Map<String, Object>> deleteFirm(@PathVariable String firmId) {
         Map<String, Object> response = new HashMap<>();
         try {
-            firmsInfoService.deleteFirm(firmId);
+            firmsInfoServiceImpl.deleteFirm(firmId);
 
             response.put("success", true);
             response.put("message", "Firma başarıyla silindi");
@@ -134,7 +134,7 @@ public class FirmsInfoController {
     public ResponseEntity<Map<String, Object>> getFirmById(@PathVariable String firmId) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Optional<FirmsInfoDto> firm = firmsInfoService.getFirmById(firmId);
+            Optional<FirmsInfoDto> firm = firmsInfoServiceImpl.getFirmById(firmId);
 
             if (firm.isPresent()) {
                 response.put("success", true);
@@ -161,7 +161,7 @@ public class FirmsInfoController {
     public ResponseEntity<Map<String, Object>> getAllFirms() {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<FirmsInfoDto> firms = firmsInfoService.getAllFirms();
+            List<FirmsInfoDto> firms = firmsInfoServiceImpl.getAllFirms();
 
             response.put("success", true);
             response.put("data", firms);
@@ -183,7 +183,7 @@ public class FirmsInfoController {
     public ResponseEntity<Map<String, Object>> searchFirmsByName(@RequestParam String searchTerm) {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<FirmsInfoDto> firms = firmsInfoService.searchFirmsByName(searchTerm);
+            List<FirmsInfoDto> firms = firmsInfoServiceImpl.searchFirmsByName(searchTerm);
 
             response.put("success", true);
             response.put("data", firms);
@@ -206,7 +206,7 @@ public class FirmsInfoController {
     public ResponseEntity<Map<String, Object>> getFirmCount() {
         Map<String, Object> response = new HashMap<>();
         try {
-            Integer count = firmsInfoService.getFirmCount();
+            Integer count = firmsInfoServiceImpl.getFirmCount();
 
             response.put("success", true);
             response.put("count", count);
@@ -227,7 +227,7 @@ public class FirmsInfoController {
     public ResponseEntity<Map<String, Object>> createDefaultFirms() {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<FirmsInfoDto> createdFirms = createSampleFirms();
+            List<FirmsInfoDto> createdFirms = firmsInfoServiceImpl.createSampleFirms();
 
             response.put("success", true);
             response.put("message", createdFirms.size() + " örnek firma oluşturuldu");
@@ -240,41 +240,5 @@ public class FirmsInfoController {
             response.put("message", "Örnek firmalar oluşturulurken hata oluştu: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-    }
-
-    /**
-     * Örnek firma verilerini oluştur
-     */
-    private List<FirmsInfoDto> createSampleFirms() {
-        List<String> sampleFirms = Arrays.asList(
-                "DAP Yapı",
-                "Emlak Konut GYO",
-                "TOKİ",
-                "Sinpaş GYO",
-                "Nurol İnşaat",
-                "Akfen İnşaat",
-                "Mesa Mesken",
-                "Rönesans Holding",
-                "Ağaoğlu Grubu",
-                "Babacan Holding"
-        );
-
-        List<FirmsInfoDto> createdFirms = new ArrayList<>();
-        String createdBy = "System Admin";
-
-        for (String firmName : sampleFirms) {
-            try {
-                // Var olan firmaları tekrar oluşturmaya çalışma
-                if (!firmsInfoService.existsByFirmName(firmName)) {
-                    FirmsInfoDto created = firmsInfoService.createFirm(firmName, createdBy);
-                    createdFirms.add(created);
-                }
-            } catch (Exception e) {
-                // Hata durumunda devam et
-                System.err.println("Firma oluşturulurken hata: " + firmName + " - " + e.getMessage());
-            }
-        }
-
-        return createdFirms;
     }
 }

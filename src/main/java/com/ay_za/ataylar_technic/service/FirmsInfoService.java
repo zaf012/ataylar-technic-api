@@ -8,9 +8,7 @@ import com.ay_za.ataylar_technic.service.base.FirmsInfoServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class FirmsInfoService implements FirmsInfoServiceImpl {
@@ -147,5 +145,43 @@ public class FirmsInfoService implements FirmsInfoServiceImpl {
     @Override
     public boolean checkFirmById(String firmId) {
         return firmsInfoRepository.existsById(firmId);
+    }
+
+
+    /**
+     * Örnek firma verilerini oluştur
+     */
+    @Override
+    public List<FirmsInfoDto> createSampleFirms() {
+        List<String> sampleFirms = Arrays.asList(
+                "DAP Yapı",
+                "Emlak Konut GYO",
+                "TOKİ",
+                "Sinpaş GYO",
+                "Nurol İnşaat",
+                "Akfen İnşaat",
+                "Mesa Mesken",
+                "Rönesans Holding",
+                "Ağaoğlu Grubu",
+                "Babacan Holding"
+        );
+
+        List<FirmsInfoDto> createdFirms = new ArrayList<>();
+        String createdBy = "System Admin";
+
+        for (String firmName : sampleFirms) {
+            try {
+                // Var olan firmaları tekrar oluşturmaya çalışma
+                if (!existsByFirmName(firmName)) {
+                    FirmsInfoDto created = createFirm(firmName, createdBy);
+                    createdFirms.add(created);
+                }
+            } catch (Exception e) {
+                // Hata durumunda devam et
+                System.err.println("Firma oluşturulurken hata: " + firmName + " - " + e.getMessage());
+            }
+        }
+
+        return createdFirms;
     }
 }

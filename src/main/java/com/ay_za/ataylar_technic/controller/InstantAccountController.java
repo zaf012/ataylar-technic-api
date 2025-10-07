@@ -65,7 +65,7 @@ public class InstantAccountController {
         Map<String, Object> response = new HashMap<>();
         try {
 
-            List<InstantAccountDto> accounts = instantAccountService.createDummyAccounts(5, "admin");
+            List<InstantAccountDto> accounts = instantAccountService.createDummyAccounts(8, "admin");
 
             response.put("success", true);
             response.put("message", "Hesap başarıyla oluşturuldu");

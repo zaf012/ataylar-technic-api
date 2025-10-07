@@ -1,7 +1,6 @@
 package com.ay_za.ataylar_technic.service;
 
 import com.ay_za.ataylar_technic.dto.InstantAccountDto;
-import com.ay_za.ataylar_technic.dto.UserTypeDto;
 import com.ay_za.ataylar_technic.entity.InstantAccount;
 import com.ay_za.ataylar_technic.entity.InstantGroup;
 import com.ay_za.ataylar_technic.entity.UserType;
@@ -14,9 +13,11 @@ import com.ay_za.ataylar_technic.service.base.UserTypeServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class InstantAccountService implements InstantAccountServiceImpl {
@@ -28,7 +29,10 @@ public class InstantAccountService implements InstantAccountServiceImpl {
     private final InstantAccountMapper instantAccountMapper;
     private final UserTypeServiceImpl userTypeServiceImpl;
 
-    public InstantAccountService(InstantAccountRepository instantAccountRepository, InstantGroupServiceImpl instantGroupServiceImpl, InstantGroupRepository instantGroupRepository, InstantAccountMapper instantAccountMapper, UserTypeServiceImpl userTypeServiceImpl) {
+    public InstantAccountService(InstantAccountRepository instantAccountRepository,
+                                 InstantGroupServiceImpl instantGroupServiceImpl,
+                                 InstantGroupRepository instantGroupRepository,
+                                 InstantAccountMapper instantAccountMapper, UserTypeServiceImpl userTypeServiceImpl) {
         this.instantAccountRepository = instantAccountRepository;
         this.instantGroupServiceImpl = instantGroupServiceImpl;
         this.instantGroupRepository = instantGroupRepository;
@@ -56,14 +60,15 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         accountData.setUserTypeName(accountData.getUserTypeName());
         accountData.setUsername(accountData.getUsername());
         accountData.setPassword(accountData.getPassword());
-        accountData.setCompanyName(accountData.getCompanyName());
+        accountData.setFirmId(accountData.getFirmId());
+        accountData.setFirmName(accountData.getFirmName());
+        accountData.setProjectId(accountData.getProjectId());
         accountData.setProjectName(accountData.getProjectName());
         accountData.setCompanyShortName(accountData.getCompanyShortName());
         accountData.setPhoneCountryCode(accountData.getPhoneCountryCode());
         accountData.setPhone(accountData.getPhone());
         accountData.setGsmCountryCode(accountData.getGsmCountryCode());
         accountData.setGsm(accountData.getGsm());
-        accountData.setActive(true);
         accountData.setAddress(accountData.getAddress());
         accountData.setFax(accountData.getFax());
         accountData.setEmail(accountData.getEmail());
@@ -364,7 +369,9 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         existing.setUserTypeName(updated.getUserTypeName());
         existing.setUsername(updated.getUsername());
         existing.setPassword(updated.getPassword());
-        existing.setCompanyName(updated.getCompanyName());
+        existing.setFirmId(updated.getFirmId());
+        existing.setFirmName(updated.getFirmName());
+        existing.setProjectId(updated.getProjectId());
         existing.setProjectName(updated.getProjectName());
         existing.setCompanyShortName(updated.getCompanyShortName());
         existing.setPhoneCountryCode(updated.getPhoneCountryCode());
@@ -391,9 +398,6 @@ public class InstantAccountService implements InstantAccountServiceImpl {
     @Transactional
     public InstantAccountDto createAccount2(String createdBy) {
         createdBy = "admin";
-
-        // Önce default veriler yoksa oluştur
-        ensureDefaultDataExists();
 
         // Rastgele bir aktif grup ID'si al - güvenli yaklaşım
         Optional<InstantGroup> randomGroupOpt = instantGroupServiceImpl.getRandomGroup();
@@ -423,7 +427,7 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         String lastName = lastNames[lastIndex];
 
         // Şirket bilgileri
-        String[] companyNames = {
+        String[] firmNames = {
                 "ZIRVE ELEKTRİK BOBİNAJ HİDROFOR POMPA SİSTEMLERİ",
                 "Kentplus Centrum Site Yönetimi",
                 "Atayıldız Plaza Yönetimi",
@@ -435,8 +439,8 @@ public class InstantAccountService implements InstantAccountServiceImpl {
                 "Esas Flora Evleri Site Yönetimi"
         };
 
-        int companyIndex = (int) (Math.random() * companyNames.length);
-        String companyName = companyNames[companyIndex];
+        int companyIndex = (int) (Math.random() * firmNames.length);
+        String firmName = firmNames[companyIndex];
 
         InstantAccountDto instantAccountDto = new InstantAccountDto();
 
@@ -448,9 +452,9 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         instantAccountDto.setUsername("user" + randomNumber + "@example.com");
         instantAccountDto.setPassword("password123");
         instantAccountDto.setAuthorizedPersonnel(firstName + " " + lastName);
-        instantAccountDto.setCompanyName(companyName);
-        instantAccountDto.setProjectName(companyName + " Projesi");
-        instantAccountDto.setCompanyShortName(companyName.substring(0, 5));
+        instantAccountDto.setFirmName(firmName);
+        instantAccountDto.setProjectName(firmName + " Projesi");
+        instantAccountDto.setCompanyShortName(firmName.substring(0, 5));
         instantAccountDto.setPhoneCountryCode("+90");
         instantAccountDto.setPhone("212" + String.format("%07d", (int) (Math.random() * 10000000)));
         instantAccountDto.setGsmCountryCode("+90");
@@ -484,6 +488,7 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         instantAccountDto.setRiskLimitExplanation("dummy data");
         instantAccountDto.setUserStatus(true);
         instantAccountDto.setActive(true);
+        instantAccountDto.setCreatedBy(createdBy);
 
         // createAccount metodunu kullan
         return createAccount(instantAccountDto);
@@ -511,79 +516,5 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         }
 
         return accounts;
-    }
-
-    // Helper method - Request body'den InstantAccount objesi oluştur
-    private InstantAccount mapToInstantAccount(Map<String, Object> request) {
-        InstantAccount account = new InstantAccount();
-
-        // String alanlar
-        account.setAccountGroupId((String) request.get("accountGroupId"));
-        account.setSite((String) request.get("site"));
-        account.setUserTypeId((Integer) request.get("userTypeId"));
-        account.setUserTypeName((String) request.get("userTypeName"));
-        account.setUsername((String) request.get("username"));
-        account.setPassword((String) request.get("password"));
-        account.setCompanyName((String) request.get("companyName"));
-        account.setCompanyShortName((String) request.get("companyShortName"));
-        account.setAuthorizedPersonnel((String) request.get("authorizedPersonnel"));
-        account.setPhoneCountryCode((String) request.get("phoneCountryCode"));
-        account.setPhone((String) request.get("phone"));
-        account.setGsmCountryCode((String) request.get("gsmCountryCode"));
-        account.setGsm((String) request.get("gsm"));
-        account.setAddress((String) request.get("address"));
-        account.setFax((String) request.get("fax"));
-        account.setEmail((String) request.get("email"));
-        account.setPttBox((String) request.get("pttBox"));
-        account.setPostalCode((String) request.get("postalCode"));
-        account.setTaxNumber((String) request.get("taxNumber"));
-        account.setTcIdentityNo((String) request.get("tcIdentityNo"));
-        account.setBankAddress((String) request.get("bankAddress"));
-        account.setRiskLimitExplanation((String) request.get("riskLimitExplanation"));
-
-        // Boolean alanlar
-        if (request.get("userStatus") != null) {
-            account.setUserStatus((Boolean) request.get("userStatus"));
-        }
-        if (request.get("isActive") != null) {
-            account.setActive((Boolean) request.get("isActive"));
-        }
-
-        // BigDecimal alan
-        if (request.get("riskLimit") != null) {
-            Object riskLimitObj = request.get("riskLimit");
-            if (riskLimitObj instanceof Number) {
-                account.setRiskLimit(BigDecimal.valueOf(((Number) riskLimitObj).doubleValue()));
-            } else if (riskLimitObj instanceof String) {
-                try {
-                    account.setRiskLimit(new BigDecimal((String) riskLimitObj));
-                } catch (NumberFormatException e) {
-                    // Invalid number format, ignore
-                }
-            }
-        }
-
-        return account;
-    }
-
-    /**
-     * Default verilerin varlığını kontrol et ve yoksa oluştur
-     */
-    private void ensureDefaultDataExists() {
-        try {
-            // Default grupları kontrol et ve oluştur
-            List<InstantGroup> groups = instantGroupRepository.findAll();
-            if (groups.isEmpty()) {
-                instantGroupServiceImpl.createDefaultGroups("System Admin");
-            }
-
-            // Default user type'ları kontrol et ve oluştur
-            List<UserTypeDto> userTypeDtos = userTypeServiceImpl.getAllUserTypes();
-            if (userTypeDtos == null || userTypeDtos.isEmpty()) {
-                userTypeServiceImpl.createDefaultUserTypes();
-            }
-        } catch (Exception e) {
-            System.err.println("Default veriler oluşturulurken hata: " + e.getMessage());
-        }
     }
 }

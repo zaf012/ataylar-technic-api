@@ -38,8 +38,14 @@ public class InstantAccount {
     @Column(name = "password", length = 255)
     private String password;
 
-    @Column(name = "company_name", length = 200)
-    private String companyName;
+    @Column(name = "firm_id", length = 255)
+    private String firmId;
+
+    @Column(name = "firm_name", length = 200)
+    private String firmName;
+
+    @Column(name = "project_id", length = 255)
+    private String projectId;
 
     @Column(name = "project_name", length = 200)
     private String projectName;
@@ -119,13 +125,13 @@ public class InstantAccount {
     // Constructor with required fields
 
     public InstantAccount(String id, String accountGroupId, String accountGroupName, String site, Integer userTypeId,
-                          String userTypeName, String username, String password, String companyName, String projectName,
-                          String authorizedPersonnel, String companyShortName, String phoneCountryCode,
-                          String phone, String gsmCountryCode, String gsm, String address, String fax, String email,
-                          String pttBox, String postalCode, String taxNumber, String tcIdentityNo, String bankAddress,
-                          BigDecimal riskLimit, String riskLimitExplanation, Boolean userStatus,
-                          LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy,
-                          Boolean isActive) {
+                          String userTypeName, String username, String password, String firmId, String firmName,
+                          String projectId, String projectName, String authorizedPersonnel, String companyShortName,
+                          String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address,
+                          String fax, String email, String pttBox, String postalCode, String taxNumber,
+                          String tcIdentityNo, String bankAddress, BigDecimal riskLimit, String riskLimitExplanation,
+                          Boolean userStatus, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy,
+                          String updatedBy, Boolean isActive) {
         this.id = id;
         this.accountGroupId = accountGroupId;
         this.accountGroupName = accountGroupName;
@@ -134,7 +140,9 @@ public class InstantAccount {
         this.userTypeName = userTypeName;
         this.username = username;
         this.password = password;
-        this.companyName = companyName;
+        this.firmId = firmId;
+        this.firmName = firmName;
+        this.projectId = projectId;
         this.projectName = projectName;
         this.authorizedPersonnel = authorizedPersonnel;
         this.companyShortName = companyShortName;
@@ -161,6 +169,7 @@ public class InstantAccount {
     }
 
     // Getters and Setters
+
 
     public String getId() {
         return id;
@@ -226,12 +235,28 @@ public class InstantAccount {
         this.password = password;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getFirmId() {
+        return firmId;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setFirmId(String firmId) {
+        this.firmId = firmId;
+    }
+
+    public String getFirmName() {
+        return firmName;
+    }
+
+    public void setFirmName(String firmName) {
+        this.firmName = firmName;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
     }
 
     public String getProjectName() {
