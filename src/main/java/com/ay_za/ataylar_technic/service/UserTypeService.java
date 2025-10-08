@@ -125,4 +125,71 @@ public class UserTypeService implements UserTypeServiceImpl {
         Random random = new Random();
         return Optional.of(allUserTypes.get(random.nextInt(allUserTypes.size())));
     }
+
+    /**
+     * Kullanıcı tipini güncelle
+     */
+    @Transactional
+    @Override
+    public UserTypeDto updateUserType(Integer id, String userTypeName) {
+        // Parametreler kontrolü
+        if (id == null) {
+            throw new IllegalArgumentException("Kullanıcı tipi ID boş olamaz");
+        }
+
+        if (userTypeName == null || userTypeName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Kullanıcı tipi adı boş olamaz");
+        }
+
+        // Kullanıcı tipi var mı kontrol et
+        UserType userType = userTypeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Güncellenecek kullanıcı tipi bulunamadı"));
+
+        // Aynı isimde başka tip var mı kontrol et (kendisi hariç)
+        Optional<UserType> existingUserType = userTypeRepository.findByUserTypeName(userTypeName.trim());
+        if (existingUserType.isPresent() && !existingUserType.get().getId().equals(id)) {
+            throw new IllegalArgumentException("Bu isimde başka bir kullanıcı tipi zaten mevcut: " + userTypeName);
+        }
+
+        userType.setUserTypeName(userTypeName.trim());
+        UserType savedUserType = userTypeRepository.save(userType);
+        return userTypeMapper.convertToDTO(savedUserType);
+    }
+
+    /**
+     * Kullanıcı tipini sil
+     */
+    @Transactional
+    @Override
+    public void deleteUserType(Integer id) {
+        // Parametreler kontrolü
+        if (id == null) {
+            throw new IllegalArgumentException("Kullanıcı tipi ID boş olamaz");
+        }
+
+        // ID = 0 olan varsayılan tipi silmeye izin verme
+        if (id == 0) {
+            throw new IllegalArgumentException("Varsayılan kullanıcı tipi silinemez");
+        }
+
+        // Kullanıcı tipi var mı kontrol et
+        UserType userType = userTypeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Silinecek kullanıcı tipi bulunamadı"));
+
+        // TODO: Bu kullanıcı tipini kullanan hesap var mı kontrol et
+        // Bu kontrol InstantAccount tablosunda bu userTypeId'yi kullanan kayıt olup olmadığını kontrol edebilir
+
+        userTypeRepository.delete(userType);
+    }
+
+    /**
+     * Kullanıcı tipi varlık kontrolü
+     */
+    @Override
+    public boolean checkUserTypeById(Integer id) {
+        if (id == null) {
+            return false;
+        }
+        return userTypeRepository.existsByUserTypeId(id);
+    }
 }

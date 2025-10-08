@@ -24,6 +24,9 @@ public interface UserTypeRepository extends JpaRepository<UserType, String> {
     // UserType adının varlığını kontrol et
     boolean existsByUserTypeName(String userTypeName);
 
+    // UserType ID'nin varlığını kontrol et
+    boolean existsByUserTypeId(Integer id);
+
     // En yüksek ID'yi getir
     @Query("SELECT MAX(u.id) FROM UserType u")
     Optional<Integer> findMaxId();

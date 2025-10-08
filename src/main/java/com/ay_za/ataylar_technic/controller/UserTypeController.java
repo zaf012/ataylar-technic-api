@@ -100,9 +100,8 @@ public class UserTypeController {
             List<UserTypeDto> createdTypes = userTypeService.createDefaultUserTypes();
 
             response.put("success", true);
-            response.put("message", createdTypes.size() + " default kullanıcı tipi oluşturuldu");
+            response.put("message", createdTypes.size() + " adet default kullanıcı tipi oluşturuldu");
             response.put("data", createdTypes);
-            response.put("count", createdTypes.size());
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -115,8 +114,8 @@ public class UserTypeController {
     /**
      * ID'ye göre kullanıcı tipi getir
      */
-    @Operation(summary = "Kullanıcı tipi getir", description = "ID'ye göre kullanıcı tipini getirir")
-    @GetMapping("/get/{id}")
+    @Operation(summary = "Kullanıcı tipi getir", description = "Belirtilen ID'ye sahip kullanıcı tipini getirir")
+    @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getUserTypeById(@PathVariable Integer id) {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -131,7 +130,6 @@ public class UserTypeController {
                 response.put("message", "Kullanıcı tipi bulunamadı");
                 return ResponseEntity.notFound().build();
             }
-
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Kullanıcı tipi getirilirken hata oluştu: " + e.getMessage());
@@ -140,23 +138,90 @@ public class UserTypeController {
     }
 
     /**
-     * Kullanıcı tipi adının varlığını kontrol et
+     * Kullanıcı tipini güncelle
      */
-    @Operation(summary = "Kullanıcı tipi varlık kontrolü", description = "Belirtilen isimde kullanıcı tipi var mı kontrol eder")
-    @GetMapping("/exists")
-    public ResponseEntity<Map<String, Object>> checkUserTypeExists(@RequestParam String userTypeName) {
+    @Operation(summary = "Kullanıcı tipini güncelle", description = "Belirtilen ID'ye sahip kullanıcı tipini günceller")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Kullanıcı tipi başarıyla güncellendi"),
+            @ApiResponse(responseCode = "400", description = "Geçersiz istek"),
+            @ApiResponse(responseCode = "404", description = "Kullanıcı tipi bulunamadı"),
+            @ApiResponse(responseCode = "500", description = "Sunucu hatası")
+    })
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Map<String, Object>> updateUserType(
+            @PathVariable Integer id,
+            @RequestBody Map<String, String> request) {
         Map<String, Object> response = new HashMap<>();
         try {
-            boolean exists = userTypeService.existsByUserTypeName(userTypeName);
+            String userTypeName = request.get("userTypeName");
+
+            UserTypeDto updatedUserType = userTypeService.updateUserType(id, userTypeName);
+
+            response.put("success", true);
+            response.put("message", "Kullanıcı tipi başarıyla güncellendi");
+            response.put("data", updatedUserType);
+
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Kullanıcı tipi güncellenirken hata oluştu: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
+     * Kullanıcı tipini sil
+     */
+    @Operation(summary = "Kullanıcı tipini sil", description = "Belirtilen ID'ye sahip kullanıcı tipini siler")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Kullanıcı tipi başarıyla silindi"),
+            @ApiResponse(responseCode = "400", description = "Geçersiz istek - Varsayılan tip silinemez"),
+            @ApiResponse(responseCode = "404", description = "Kullanıcı tipi bulunamadı"),
+            @ApiResponse(responseCode = "500", description = "Sunucu hatası")
+    })
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Map<String, Object>> deleteUserType(@PathVariable Integer id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            userTypeService.deleteUserType(id);
+
+            response.put("success", true);
+            response.put("message", "Kullanıcı tipi başarıyla silindi");
+
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Kullanıcı tipi silinirken hata oluştu: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
+     * Kullanıcı tipi varlık kontrolü
+     */
+    @Operation(summary = "Kullanıcı tipi varlık kontrolü", description = "Belirtilen ID'ye sahip kullanıcı tipinin var olup olmadığını kontrol eder")
+    @GetMapping("/check/{id}")
+    public ResponseEntity<Map<String, Object>> checkUserTypeById(@PathVariable Integer id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            boolean exists = userTypeService.checkUserTypeById(id);
 
             response.put("success", true);
             response.put("exists", exists);
-            response.put("message", exists ? "Kullanıcı tipi mevcut" : "Kullanıcı tipi mevcut değil");
+            response.put("message", exists ? "Kullanıcı tipi mevcut" : "Kullanıcı tipi bulunamadı");
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("success", false);
-            response.put("message", "Kontrol işlemi sırasında hata oluştu: " + e.getMessage());
+            response.put("message", "Kullanıcı tipi kontrol edilirken hata oluştu: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

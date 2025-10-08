@@ -22,4 +22,12 @@ public interface UserTypeServiceImpl {
     boolean existsByUserTypeName(String userTypeName);
 
     Optional<UserType> getRandomUserType();
+
+    @Transactional
+    UserTypeDto updateUserType(Integer id, String userTypeName);
+
+    @Transactional
+    void deleteUserType(Integer id);
+
+    boolean checkUserTypeById(Integer id);
 }
