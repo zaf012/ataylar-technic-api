@@ -76,8 +76,11 @@ public class SystemInfoService implements SystemInfoServiceImpl {
     @Override
     @Transactional
     public SystemInfoDto updateSystem(SystemInfoDto systemDto) {
-        SystemInfo existingSystem = systemInfoRepository.findById(systemDto.getId())
-                .orElseThrow(() -> new RuntimeException("Sistem bulunamadı: " + systemDto.getId()));
+        SystemInfo existingSystem = systemInfoRepository.findSystemInfoById(systemDto.getId());
+
+        if (existingSystem == null) {
+            throw new RuntimeException("Sistem bulunamadı: " + systemDto.getId());
+        }
 
         existingSystem.setSystemName(systemDto.getSystemName());
         existingSystem.setSystemOrderNo(systemDto.getSystemOrderNo());
