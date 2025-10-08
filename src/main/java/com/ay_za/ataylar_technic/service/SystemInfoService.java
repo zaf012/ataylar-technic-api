@@ -56,11 +56,12 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         }
 
         // Sistem tanımı için diğer alanları temizle/varsayılan değerler ata
-        systemDto.setDescription(""); // Sistem tanımları için boş
-        systemDto.setIsChecklist(false);
-        systemDto.setIsFault(false);
-        systemDto.setControlPointOrder(null);
-        systemDto.setControlPointIsActive(null);
+        systemDto.setDescription(systemDto.getDescription()); // Sistem tanımları için boş
+        systemDto.setIsChecklist(systemDto.getIsChecklist());
+        systemDto.setIsFault(systemDto.getIsFault());
+        systemDto.setControlPointOrder(systemDto.getControlPointOrder());
+        systemDto.setControlPointIsActive(systemDto.getControlPointIsActive());
+        systemDto.setSystemName(systemDto.getSystemName());
 
         // Aktiflik durumu verilmemişse varsayılan true
         if (systemDto.getIsActive() == null) {
@@ -78,12 +79,18 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         SystemInfo existingSystem = systemInfoRepository.findById(systemDto.getId())
                 .orElseThrow(() -> new RuntimeException("Sistem bulunamadı: " + systemDto.getId()));
 
-        // Sadece sistem bilgilerini güncelle
         existingSystem.setSystemName(systemDto.getSystemName());
         existingSystem.setSystemOrderNo(systemDto.getSystemOrderNo());
         existingSystem.setActive(systemDto.getIsActive());
-        existingSystem.setUpdatedBy(systemDto.getUpdatedBy());
+        existingSystem.setDescription(systemDto.getDescription());
+        existingSystem.setChecklist(systemDto.getIsChecklist());
+        existingSystem.setFault(systemDto.getIsFault());
+        existingSystem.setControlPointOrder(systemDto.getControlPointOrder());
+        existingSystem.setControlPointIsActive(systemDto.getControlPointIsActive());
+        existingSystem.setCreatedDate(systemDto.getCreatedDate());
         existingSystem.setUpdatedDate(LocalDateTime.now());
+        existingSystem.setCreatedBy(systemDto.getCreatedBy());
+        existingSystem.setUpdatedBy(systemDto.getUpdatedBy());
 
         SystemInfo updatedSystem = systemInfoRepository.save(existingSystem);
         return systemInfoMapper.convertToDTO(updatedSystem);
