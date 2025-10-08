@@ -24,14 +24,16 @@ public class InstantAccountService implements InstantAccountServiceImpl {
     private final UserTypeServiceImpl userTypeServiceImpl;
     private final FirmsInfoServiceImpl firmsInfoServiceImpl;
     private final ProjectsInfoServiceImpl projectsInfoServiceImpl;
+    private final SitesInfoServiceImpl sitesInfoServiceImpl;
 
-    public InstantAccountService(InstantAccountRepository instantAccountRepository, InstantGroupServiceImpl instantGroupServiceImpl, InstantAccountMapper instantAccountMapper, UserTypeServiceImpl userTypeServiceImpl, FirmsInfoServiceImpl firmsInfoServiceImpl, ProjectsInfoServiceImpl projectsInfoServiceImpl) {
+    public InstantAccountService(InstantAccountRepository instantAccountRepository, InstantGroupServiceImpl instantGroupServiceImpl, InstantAccountMapper instantAccountMapper, UserTypeServiceImpl userTypeServiceImpl, FirmsInfoServiceImpl firmsInfoServiceImpl, ProjectsInfoServiceImpl projectsInfoServiceImpl, SitesInfoServiceImpl sitesInfoServiceImpl) {
         this.instantAccountRepository = instantAccountRepository;
         this.instantGroupServiceImpl = instantGroupServiceImpl;
         this.instantAccountMapper = instantAccountMapper;
         this.userTypeServiceImpl = userTypeServiceImpl;
         this.firmsInfoServiceImpl = firmsInfoServiceImpl;
         this.projectsInfoServiceImpl = projectsInfoServiceImpl;
+        this.sitesInfoServiceImpl = sitesInfoServiceImpl;
     }
 
 
@@ -50,7 +52,8 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         accountData.setActive(true);
         accountData.setAccountGroupId(accountData.getAccountGroupId());
         accountData.setAccountGroupName(accountData.getAccountGroupName());
-        accountData.setSite(accountData.getSite());
+        accountData.setSiteId(accountData.getSiteId());
+        accountData.setSiteName(accountData.getSiteName());
         accountData.setUserTypeId(accountData.getUserTypeId());
         accountData.setUserTypeName(accountData.getUserTypeName());
         accountData.setUsername(accountData.getUsername());
@@ -359,7 +362,8 @@ public class InstantAccountService implements InstantAccountServiceImpl {
     private void updateAccountFields(InstantAccount existing, InstantAccountDto updated) {
         existing.setAccountGroupId(updated.getAccountGroupId());
         existing.setAccountGroupName(updated.getAccountGroupName());
-        existing.setSite(updated.getSite());
+        existing.setSiteId(updated.getSiteId());
+        existing.setSiteName(updated.getSiteName());
         existing.setUserTypeId(updated.getUserTypeId());
         existing.setUserTypeName(updated.getUserTypeName());
         existing.setUsername(updated.getUsername());
@@ -422,6 +426,15 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         }
         ProjectsInfo randomProject = randomProjectOpt.get();
 
+         // Rastgele SitesInfo al - güvenli yaklaşım
+        Optional<SitesInfo> randomSiteOpt = sitesInfoServiceImpl.getRandomSite();
+        if (randomSiteOpt.isEmpty()) {
+            throw new RuntimeException("Hiç site bulunamadı. Önce site oluşturun.");
+        }
+        SitesInfo randomSite = randomSiteOpt.get();
+
+
+
         // Rastgele kullanıcı adı ve email oluştur
         String randomNumber = String.valueOf(System.currentTimeMillis()).substring(7);
 
@@ -441,7 +454,8 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         instantAccountDto.setAccountGroupName(randomGroup.getGroupName());
         instantAccountDto.setUserTypeId(randomUserType.getId());
         instantAccountDto.setUserTypeName(randomUserType.getUserTypeName());
-        instantAccountDto.setSite("Ana Kullanıcı");
+        instantAccountDto.setSiteId(randomSite.getId());
+        instantAccountDto.setSiteName(randomSite.getSiteName());
         instantAccountDto.setUsername("user" + randomNumber + "@example.com");
         instantAccountDto.setPassword("password123");
         instantAccountDto.setAuthorizedPersonnel(firstName + " " + lastName);

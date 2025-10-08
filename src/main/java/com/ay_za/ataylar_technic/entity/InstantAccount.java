@@ -22,8 +22,11 @@ public class InstantAccount {
     @Column(name = "account_group_name", length = 100)
     private String accountGroupName;
 
-    @Column(name = "site", length = 100)
-    private String site;
+    @Column(name = "site_id")
+    private String siteId;
+
+    @Column(name = "site_name", length = 150)
+    private String siteName;
 
     @Column(name = "user_type_id", length = 100)
     private Integer userTypeId;
@@ -124,18 +127,19 @@ public class InstantAccount {
 
     // Constructor with required fields
 
-    public InstantAccount(String id, String accountGroupId, String accountGroupName, String site, Integer userTypeId,
-                          String userTypeName, String username, String password, String firmId, String firmName,
-                          String projectId, String projectName, String authorizedPersonnel, String companyShortName,
-                          String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address,
-                          String fax, String email, String pttBox, String postalCode, String taxNumber,
-                          String tcIdentityNo, String bankAddress, BigDecimal riskLimit, String riskLimitExplanation,
-                          Boolean userStatus, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy,
-                          String updatedBy, Boolean isActive) {
+    public InstantAccount(String id, String accountGroupId, String accountGroupName, String siteId, String siteName,
+                          Integer userTypeId, String userTypeName, String username, String password, String firmId,
+                          String firmName, String projectId, String projectName, String authorizedPersonnel,
+                          String companyShortName, String phoneCountryCode, String phone, String gsmCountryCode,
+                          String gsm, String address, String fax, String email, String pttBox, String postalCode,
+                          String taxNumber, String tcIdentityNo, String bankAddress, BigDecimal riskLimit,
+                          String riskLimitExplanation, Boolean userStatus, LocalDateTime createdDate,
+                          LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
         this.id = id;
         this.accountGroupId = accountGroupId;
         this.accountGroupName = accountGroupName;
-        this.site = site;
+        this.siteId = siteId;
+        this.siteName = siteName;
         this.userTypeId = userTypeId;
         this.userTypeName = userTypeName;
         this.username = username;
@@ -168,6 +172,7 @@ public class InstantAccount {
         this.isActive = isActive;
     }
 
+
     // Getters and Setters
 
 
@@ -195,12 +200,20 @@ public class InstantAccount {
         this.accountGroupName = accountGroupName;
     }
 
-    public String getSite() {
-        return site;
+    public String getSiteId() {
+        return siteId;
     }
 
-    public void setSite(String site) {
-        this.site = site;
+    public void setSiteId(String siteId) {
+        this.siteId = siteId;
+    }
+
+    public String getSiteName() {
+        return siteName;
+    }
+
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
     }
 
     public Integer getUserTypeId() {

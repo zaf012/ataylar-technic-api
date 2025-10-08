@@ -238,4 +238,18 @@ public class SitesInfoService implements SitesInfoServiceImpl {
 
         return createdSites;
     }
+
+    /**
+     * Rastgele bir site getir
+     */
+    @Override
+    public Optional<SitesInfo> getRandomSite() {
+        List<SitesInfo> allSites = sitesInfoRepository.findAll();
+        if (allSites.isEmpty()) {
+            return Optional.empty();
+        }
+
+        int randomIndex = (int) (Math.random() * allSites.size());
+        return Optional.of(allSites.get(randomIndex));
+    }
 }

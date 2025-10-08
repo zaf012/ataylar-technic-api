@@ -8,7 +8,8 @@ public class InstantAccountDto {
     private String id;
     private String accountGroupId;
     private String accountGroupName;
-    private String site;
+    private String siteId;
+    private String siteName;
     private Integer userTypeId;
     private String userTypeName;
     private String username;
@@ -43,18 +44,19 @@ public class InstantAccountDto {
     public InstantAccountDto() {
     }
 
-    public InstantAccountDto(String id, String accountGroupId, String accountGroupName, String site, Integer userTypeId,
-                             String userTypeName, String username, String password, String firmId, String firmName,
-                             String projectId, String projectName, String authorizedPersonnel, String companyShortName,
-                             String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address,
-                             String fax, String email, String pttBox, String postalCode, String taxNumber,
-                             String tcIdentityNo, String bankAddress, BigDecimal riskLimit, String riskLimitExplanation,
-                             Boolean userStatus, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy,
-                             String updatedBy, Boolean isActive) {
+    public InstantAccountDto(String id, String accountGroupId, String accountGroupName, String siteId, String siteName,
+                             Integer userTypeId, String userTypeName, String username, String password, String firmId,
+                             String firmName, String projectId, String projectName, String authorizedPersonnel,
+                             String companyShortName, String phoneCountryCode, String phone, String gsmCountryCode,
+                             String gsm, String address, String fax, String email, String pttBox, String postalCode,
+                             String taxNumber, String tcIdentityNo, String bankAddress, BigDecimal riskLimit,
+                             String riskLimitExplanation, Boolean userStatus, LocalDateTime createdDate,
+                             LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
         this.id = id;
         this.accountGroupId = accountGroupId;
         this.accountGroupName = accountGroupName;
-        this.site = site;
+        this.siteId = siteId;
+        this.siteName = siteName;
         this.userTypeId = userTypeId;
         this.userTypeName = userTypeName;
         this.username = username;
@@ -113,12 +115,20 @@ public class InstantAccountDto {
         this.accountGroupName = accountGroupName;
     }
 
-    public String getSite() {
-        return site;
+    public String getSiteId() {
+        return siteId;
     }
 
-    public void setSite(String site) {
-        this.site = site;
+    public void setSiteId(String siteId) {
+        this.siteId = siteId;
+    }
+
+    public String getSiteName() {
+        return siteName;
+    }
+
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
     }
 
     public Integer getUserTypeId() {
