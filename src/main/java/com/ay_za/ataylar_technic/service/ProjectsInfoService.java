@@ -33,10 +33,14 @@ public class ProjectsInfoService implements ProjectsInfoServiceImpl {
      */
     @Transactional
     @Override
-    public ProjectsInfoDto createProject(String firmId, String projectName, String createdBy) {
+    public ProjectsInfoDto createProject(String firmId, String firmName, String projectName) {
         // Parametreler kontrolü
         if (firmId == null || firmId.trim().isEmpty()) {
             throw new IllegalArgumentException("Firma ID boş olamaz");
+        }
+
+        if (firmName == null || firmName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Firma adı boş olamaz");
         }
 
         if (projectName == null || projectName.trim().isEmpty()) {
@@ -53,14 +57,11 @@ public class ProjectsInfoService implements ProjectsInfoServiceImpl {
             throw new IllegalArgumentException("Bu firmada aynı isimde bir proje zaten mevcut");
         }
 
-        Optional<FirmsInfoDto> firmById = firmsInfoServiceImpl.getFirmById(firmId);
-
         ProjectsInfo project = new ProjectsInfo();
         project.setId(UUID.randomUUID().toString());
         project.setFirmId(firmId.trim());
-        project.setFirmName(firmById.get().getFirmName());
+        project.setFirmName(firmName.trim());
         project.setProjectName(projectName.trim());
-        project.setCreatedBy(createdBy);
 
         ProjectsInfo savedProject = projectsInfoRepository.save(project);
         return projectsInfoMapper.convertToDTO(savedProject);
@@ -71,8 +72,20 @@ public class ProjectsInfoService implements ProjectsInfoServiceImpl {
      */
     @Transactional
     @Override
-    public ProjectsInfoDto updateProject(String projectId, String projectName, String updatedBy) {
+    public ProjectsInfoDto updateProject(String projectId, String firmId, String firmName, String projectName) {
         // Parametreler kontrolü
+        if (projectId == null || projectId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Proje ID boş olamaz");
+        }
+
+        if (firmId == null || firmId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Firma ID boş olamaz");
+        }
+
+        if (firmName == null || firmName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Firma adı boş olamaz");
+        }
+
         if (projectName == null || projectName.trim().isEmpty()) {
             throw new IllegalArgumentException("Proje adı boş olamaz");
         }
@@ -81,16 +94,22 @@ public class ProjectsInfoService implements ProjectsInfoServiceImpl {
         ProjectsInfo project = projectsInfoRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Proje bulunamadı"));
 
+        // Firma var mı kontrol et
+        if (!firmsInfoServiceImpl.checkFirmById(firmId)) {
+            throw new IllegalArgumentException("Belirtilen firma bulunamadı");
+        }
+
         // Aynı firma için aynı isimde başka proje var mı kontrol et (kendisi hariç)
-        if (projectsInfoRepository.existsByFirmIdAndProjectNameIgnoreCase(project.getFirmId(), projectName.trim())) {
+        if (projectsInfoRepository.existsByFirmIdAndProjectNameIgnoreCase(firmId, projectName.trim())) {
             Optional<ProjectsInfo> existingProject = projectsInfoRepository.findByProjectNameIgnoreCase(projectName.trim());
             if (existingProject.isPresent() && !existingProject.get().getId().equals(projectId)) {
                 throw new IllegalArgumentException("Bu firmada aynı isimde başka bir proje zaten mevcut");
             }
         }
 
+        project.setFirmId(firmId.trim());
+        project.setFirmName(firmName.trim());
         project.setProjectName(projectName.trim());
-        project.setUpdatedBy(updatedBy);
 
         ProjectsInfo savedProject = projectsInfoRepository.save(project);
         return projectsInfoMapper.convertToDTO(savedProject);

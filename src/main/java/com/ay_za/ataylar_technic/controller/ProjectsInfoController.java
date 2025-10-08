@@ -42,12 +42,18 @@ public class ProjectsInfoController {
         Map<String, Object> response = new HashMap<>();
         try {
             String firmId = request.get("firmId");
+            String firmName = request.get("firmName");
             String projectName = request.get("projectName");
-            String createdBy = request.get("createdBy");
 
             if (firmId == null || firmId.trim().isEmpty()) {
                 response.put("success", false);
                 response.put("message", "Firma ID boş olamaz");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            if (firmName == null || firmName.trim().isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Firma adı boş olamaz");
                 return ResponseEntity.badRequest().body(response);
             }
 
@@ -57,7 +63,7 @@ public class ProjectsInfoController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            ProjectsInfoDto project = projectsInfoService.createProject(firmId, projectName, createdBy);
+            ProjectsInfoDto project = projectsInfoService.createProject(firmId, firmName, projectName);
 
             response.put("success", true);
             response.put("message", "Proje başarıyla oluşturuldu");
@@ -85,8 +91,21 @@ public class ProjectsInfoController {
             @RequestBody Map<String, String> request) {
         Map<String, Object> response = new HashMap<>();
         try {
+            String firmId = request.get("firmId");
+            String firmName = request.get("firmName");
             String projectName = request.get("projectName");
-            String updatedBy = request.get("updatedBy");
+
+            if (firmId == null || firmId.trim().isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Firma ID boş olamaz");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            if (firmName == null || firmName.trim().isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Firma adı boş olamaz");
+                return ResponseEntity.badRequest().body(response);
+            }
 
             if (projectName == null || projectName.trim().isEmpty()) {
                 response.put("success", false);
@@ -94,7 +113,7 @@ public class ProjectsInfoController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            ProjectsInfoDto project = projectsInfoService.updateProject(projectId, projectName, updatedBy);
+            ProjectsInfoDto project = projectsInfoService.updateProject(projectId, firmId, firmName, projectName);
 
             response.put("success", true);
             response.put("message", "Proje başarıyla güncellendi");
@@ -303,7 +322,6 @@ public class ProjectsInfoController {
      */
     private List<ProjectsInfoDto> createSampleProjects() {
         List<ProjectsInfoDto> createdProjects = new ArrayList<>();
-        String createdBy = "System Admin";
 
         // Önce firmaları kontrol et ve sample projeler için gerekli firmaları oluştur
         Map<String, String> firmProjectMapping = new LinkedHashMap<>();
@@ -352,7 +370,7 @@ public class ProjectsInfoController {
                 if (firmId != null) {
                     // Aynı proje adı zaten var mı kontrol et
                     if (!projectsInfoService.existsByFirmIdAndProjectName(firmId, projectName)) {
-                        ProjectsInfoDto created = projectsInfoService.createProject(firmId, projectName, createdBy);
+                        ProjectsInfoDto created = projectsInfoService.createProject(firmId, firmName, projectName);
                         createdProjects.add(created);
                     }
                 } else {

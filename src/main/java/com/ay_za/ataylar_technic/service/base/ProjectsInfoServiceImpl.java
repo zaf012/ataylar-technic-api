@@ -10,10 +10,10 @@ import java.util.Optional;
 public interface ProjectsInfoServiceImpl {
 
     @Transactional
-    ProjectsInfoDto createProject(String firmId, String projectName, String createdBy);
+    ProjectsInfoDto createProject(String firmId, String firmName, String projectName);
 
     @Transactional
-    ProjectsInfoDto updateProject(String projectId, String projectName, String updatedBy);
+    ProjectsInfoDto updateProject(String projectId, String firmId, String firmName, String projectName);
 
     @Transactional
     void deleteProject(String projectId);
