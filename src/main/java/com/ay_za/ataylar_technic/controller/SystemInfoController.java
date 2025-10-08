@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/system-info")
+@CrossOrigin(origins = "*")
 @Tag(name = "System Info", description = "Sistem yönetimi ve çeklist/arıza tanımları")
 public class SystemInfoController {
 
