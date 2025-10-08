@@ -38,7 +38,6 @@ public class FirmsInfoController {
         Map<String, Object> response = new HashMap<>();
         try {
             String firmName = request.get("firmName");
-            String createdBy = request.get("createdBy");
 
             if (firmName == null || firmName.trim().isEmpty()) {
                 response.put("success", false);
@@ -46,7 +45,7 @@ public class FirmsInfoController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            FirmsInfoDto firm = firmsInfoServiceImpl.createFirm(firmName, createdBy);
+            FirmsInfoDto firm = firmsInfoServiceImpl.createFirm(firmName);
 
             response.put("success", true);
             response.put("message", "Firma başarıyla oluşturuldu");
@@ -75,7 +74,6 @@ public class FirmsInfoController {
         Map<String, Object> response = new HashMap<>();
         try {
             String firmName = request.get("firmName");
-            String updatedBy = request.get("updatedBy");
 
             if (firmName == null || firmName.trim().isEmpty()) {
                 response.put("success", false);
@@ -83,7 +81,7 @@ public class FirmsInfoController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            FirmsInfoDto firm = firmsInfoServiceImpl.updateFirm(firmId, firmName, updatedBy);
+            FirmsInfoDto firm = firmsInfoServiceImpl.updateFirm(firmId, firmName);
 
             response.put("success", true);
             response.put("message", "Firma başarıyla güncellendi");

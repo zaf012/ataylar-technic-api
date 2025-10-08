@@ -26,7 +26,7 @@ public class FirmsInfoService implements FirmsInfoServiceImpl {
      */
     @Transactional
     @Override
-    public FirmsInfoDto createFirm(String firmName, String createdBy) {
+    public FirmsInfoDto createFirm(String firmName) {
         // Firma adı kontrolü
         if (firmName == null || firmName.trim().isEmpty()) {
             throw new IllegalArgumentException("Firma adı boş olamaz");
@@ -40,7 +40,6 @@ public class FirmsInfoService implements FirmsInfoServiceImpl {
         FirmsInfo firm = new FirmsInfo();
         firm.setId(UUID.randomUUID().toString());
         firm.setFirmName(firmName.trim());
-        firm.setCreatedBy(createdBy);
 
         FirmsInfo savedFirm = firmsInfoRepository.save(firm);
         return firmsInfoMapper.convertToDTO(savedFirm);
@@ -51,7 +50,7 @@ public class FirmsInfoService implements FirmsInfoServiceImpl {
      */
     @Transactional
     @Override
-    public FirmsInfoDto updateFirm(String firmId, String firmName, String updatedBy) {
+    public FirmsInfoDto updateFirm(String firmId, String firmName) {
         // Parametreler kontrolü
         if (firmName == null || firmName.trim().isEmpty()) {
             throw new IllegalArgumentException("Firma adı boş olamaz");
@@ -68,7 +67,6 @@ public class FirmsInfoService implements FirmsInfoServiceImpl {
         }
 
         firm.setFirmName(firmName.trim());
-        firm.setUpdatedBy(updatedBy);
 
         FirmsInfo savedFirm = firmsInfoRepository.save(firm);
         return firmsInfoMapper.convertToDTO(savedFirm);
@@ -167,13 +165,12 @@ public class FirmsInfoService implements FirmsInfoServiceImpl {
         );
 
         List<FirmsInfoDto> createdFirms = new ArrayList<>();
-        String createdBy = "System Admin";
 
         for (String firmName : sampleFirms) {
             try {
                 // Var olan firmaları tekrar oluşturmaya çalışma
                 if (!existsByFirmName(firmName)) {
-                    FirmsInfoDto created = createFirm(firmName, createdBy);
+                    FirmsInfoDto created = createFirm(firmName);
                     createdFirms.add(created);
                 }
             } catch (Exception e) {

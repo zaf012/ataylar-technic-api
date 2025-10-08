@@ -10,10 +10,10 @@ import java.util.Optional;
 public interface FirmsInfoServiceImpl {
 
     @Transactional
-    FirmsInfoDto createFirm(String firmName, String createdBy);
+    FirmsInfoDto createFirm(String firmName);
 
     @Transactional
-    FirmsInfoDto updateFirm(String firmId, String firmName, String updatedBy);
+    FirmsInfoDto updateFirm(String firmId, String firmName);
 
     @Transactional
     void deleteFirm(String firmId);
