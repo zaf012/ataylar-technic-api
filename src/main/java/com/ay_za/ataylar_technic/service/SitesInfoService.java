@@ -61,8 +61,6 @@ public class SitesInfoService implements SitesInfoServiceImpl {
         sitesInfo.setBlockName(sitesInfoDto.getBlockName()); // DTO'dan al
         sitesInfo.setCreatedDate(LocalDateTime.now());
         sitesInfo.setUpdatedDate(LocalDateTime.now());
-        sitesInfo.setCreatedBy("Admin");
-        sitesInfo.setUpdatedBy("Admin");
         SitesInfo savedSite = sitesInfoRepository.save(sitesInfo);
 
         return sitesInfoMapper.convertToDTO(savedSite);
@@ -73,24 +71,53 @@ public class SitesInfoService implements SitesInfoServiceImpl {
      */
     @Transactional
     @Override
-    public SitesInfoDto updateSite(String id, String siteName) {
-        // Parametreler kontrolü
-        if (siteName == null || siteName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Site adı boş olamaz");
-        }
-
+    public SitesInfoDto updateSite(String id, SitesInfoDto sitesInfoDto) {
         // Site var mı kontrol et
         SitesInfo site = sitesInfoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Site bulunamadı"));
 
-        // Aynı isimde başka site var mı kontrol et (kendisi hariç)
-        Optional<SitesInfo> siteById = sitesInfoRepository.findById(siteName.trim());
-        if (siteById.isPresent() && !siteById.get().getId().equals(id)) {
-            throw new IllegalArgumentException("Bu isimde başka bir site zaten mevcut");
+        // Güncellenecek alanları kontrol et ve güncelle
+        if (sitesInfoDto.getSiteName() != null && !sitesInfoDto.getSiteName().trim().isEmpty()) {
+            // Aynı site adı ve blok adı kombinasyonu var mı kontrol et (kendisi hariç)
+            if (sitesInfoDto.getBlockName() != null) {
+                boolean exists = sitesInfoRepository.existsBySiteNameAndBlockNameIgnoreCase(
+                        sitesInfoDto.getSiteName().trim(), sitesInfoDto.getBlockName().trim());
+                if (exists) {
+                    // Mevcut kaydın kendisi mi kontrol et
+                    Optional<SitesInfo> existingSite = sitesInfoRepository.findBySiteNameAndBlockNameIgnoreCase(
+                            sitesInfoDto.getSiteName().trim(), sitesInfoDto.getBlockName().trim());
+                    if (existingSite.isPresent() && !existingSite.get().getId().equals(id)) {
+                        throw new IllegalArgumentException("Bu site adı ve blok adı kombinasyonu zaten mevcut");
+                    }
+                }
+            }
+            site.setSiteName(sitesInfoDto.getSiteName().trim());
         }
 
-        site.setSiteName(siteName.trim());
-        site.setUpdatedBy("Admin");
+        if (sitesInfoDto.getProjectId() != null && !sitesInfoDto.getProjectId().trim().isEmpty()) {
+            if (projectsInfoService.getProjectById(sitesInfoDto.getProjectId()).isEmpty()) {
+                throw new IllegalArgumentException("Lütfen geçerli bir proje seçiniz");
+            }
+            site.setProjectId(sitesInfoDto.getProjectId().trim());
+        }
+
+        if (sitesInfoDto.getProjectName() != null && !sitesInfoDto.getProjectName().trim().isEmpty()) {
+            site.setProjectName(sitesInfoDto.getProjectName().trim());
+        }
+
+        if (sitesInfoDto.getDescription() != null) {
+            site.setDescription(sitesInfoDto.getDescription().trim());
+        }
+
+        if (sitesInfoDto.getSquare() != null) {
+            site.setSquare(sitesInfoDto.getSquare().trim());
+        }
+
+        if (sitesInfoDto.getBlockName() != null) {
+            site.setBlockName(sitesInfoDto.getBlockName().trim());
+        }
+
+        site.setUpdatedDate(LocalDateTime.now());
 
         SitesInfo savedSite = sitesInfoRepository.save(site);
         return sitesInfoMapper.convertToDTO(savedSite);

@@ -65,18 +65,10 @@ public class SitesInfoController {
     @PutMapping("/update/{siteId}")
     public ResponseEntity<Map<String, Object>> updateSite(
             @PathVariable String siteId,
-            @RequestBody Map<String, String> request) {
+            @RequestBody SitesInfoDto sitesInfoDto) {
         Map<String, Object> response = new HashMap<>();
         try {
-            String siteName = request.get("siteName");
-
-            if (siteName == null || siteName.trim().isEmpty()) {
-                response.put("success", false);
-                response.put("message", "Site adı boş olamaz");
-                return ResponseEntity.badRequest().body(response);
-            }
-
-            SitesInfoDto site = sitesInfoService.updateSite(siteId, siteName);
+            SitesInfoDto site = sitesInfoService.updateSite(siteId, sitesInfoDto);
 
             response.put("success", true);
             response.put("message", "Site başarıyla güncellendi");

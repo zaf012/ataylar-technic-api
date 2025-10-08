@@ -11,7 +11,7 @@ public interface SitesInfoServiceImpl {
     SitesInfoDto createSite(SitesInfoDto sitesInfoDto);
 
     @Transactional
-    SitesInfoDto updateSite(String id, String siteName);
+    SitesInfoDto updateSite(String id, SitesInfoDto sitesInfoDto);
 
     @Transactional
     void deleteSite(String id);

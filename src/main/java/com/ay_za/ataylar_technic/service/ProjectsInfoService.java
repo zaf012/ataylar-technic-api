@@ -1,6 +1,5 @@
 package com.ay_za.ataylar_technic.service;
 
-import com.ay_za.ataylar_technic.dto.FirmsInfoDto;
 import com.ay_za.ataylar_technic.dto.ProjectsInfoDto;
 import com.ay_za.ataylar_technic.entity.ProjectsInfo;
 import com.ay_za.ataylar_technic.mapper.ProjectsInfoMapper;
