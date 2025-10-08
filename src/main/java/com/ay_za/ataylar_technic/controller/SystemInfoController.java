@@ -55,12 +55,10 @@ public class SystemInfoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSystem);
     }
 
-    @PutMapping("/systems/{id}")
+    @PutMapping("/systems")
     @Operation(summary = "Sistem güncelle", description = "Mevcut sistemi günceller")
-    public ResponseEntity<SystemInfoDto> updateSystem(
-            @Parameter(description = "Sistem ID'si") @PathVariable String id,
-            @RequestBody SystemInfoDto systemDto) {
-        SystemInfoDto updatedSystem = systemInfoService.updateSystem(id, systemDto);
+    public ResponseEntity<SystemInfoDto> updateSystem(@RequestBody SystemInfoDto systemDto) {
+        SystemInfoDto updatedSystem = systemInfoService.updateSystem(systemDto);
         return ResponseEntity.ok(updatedSystem);
     }
 

@@ -12,7 +12,7 @@ public interface SystemInfoServiceImpl {
     List<SystemInfoDto> getAllSystems();
     List<SystemInfoDto> getActiveSystems();
     SystemInfoDto createSystem(SystemInfoDto systemDto);
-    SystemInfoDto updateSystem(String id, SystemInfoDto systemDto);
+    SystemInfoDto updateSystem(SystemInfoDto systemDto);
     void deleteSystem(String id);
     SystemInfoDto getSystemById(String id);
 

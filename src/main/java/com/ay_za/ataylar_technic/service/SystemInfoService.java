@@ -74,15 +74,16 @@ public class SystemInfoService implements SystemInfoServiceImpl {
 
     @Override
     @Transactional
-    public SystemInfoDto updateSystem(String id, SystemInfoDto systemDto) {
-        SystemInfo existingSystem = systemInfoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Sistem bulunamadı: " + id));
+    public SystemInfoDto updateSystem(SystemInfoDto systemDto) {
+        SystemInfo existingSystem = systemInfoRepository.findById(systemDto.getId())
+                .orElseThrow(() -> new RuntimeException("Sistem bulunamadı: " + systemDto.getId()));
 
         // Sadece sistem bilgilerini güncelle
         existingSystem.setSystemName(systemDto.getSystemName());
         existingSystem.setSystemOrderNo(systemDto.getSystemOrderNo());
         existingSystem.setActive(systemDto.getIsActive());
         existingSystem.setUpdatedBy(systemDto.getUpdatedBy());
+        existingSystem.setUpdatedDate(LocalDateTime.now());
 
         SystemInfo updatedSystem = systemInfoRepository.save(existingSystem);
         return systemInfoMapper.convertToDTO(updatedSystem);
@@ -563,4 +564,3 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         systemInfoRepository.save(faultEntity);
     }
 }
-
