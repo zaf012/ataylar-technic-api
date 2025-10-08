@@ -25,7 +25,7 @@ public class SystemInfoController {
 
     // ===== Sistem Tanımları Endpoints =====
 
-    @GetMapping("/systems")
+    @GetMapping("/get-all-systems")
     @Operation(summary = "Tüm sistemleri getir", description = "Sistemlerin temel bilgilerini döner")
     public ResponseEntity<List<SystemInfoDto>> getAllSystems() {
         List<SystemInfoDto> systems = systemInfoService.getAllSystems();
