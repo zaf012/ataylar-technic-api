@@ -25,6 +25,7 @@ public interface UserTypeRepository extends JpaRepository<UserType, String> {
     boolean existsByUserTypeName(String userTypeName);
 
     // UserType ID'nin varlığını kontrol et
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UserType u WHERE u.id = :id")
     boolean existsByUserTypeId(Integer id);
 
     // En yüksek ID'yi getir
