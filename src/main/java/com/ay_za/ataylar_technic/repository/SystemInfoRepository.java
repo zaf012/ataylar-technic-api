@@ -12,7 +12,7 @@ import java.util.List;
 public interface SystemInfoRepository extends JpaRepository<SystemInfo, String> {
 
     // Sadece sistem tanımlarını getir (çeklist/arıza maddeleri olmayan)
-    @Query("SELECT s FROM SystemInfo s WHERE s.description IS NULL OR s.description = '' ORDER BY s.systemOrderNo")
+    @Query("SELECT s FROM SystemInfo s")
     List<SystemInfo> findAllSystems();
 
     // Aktif sistemleri getir
