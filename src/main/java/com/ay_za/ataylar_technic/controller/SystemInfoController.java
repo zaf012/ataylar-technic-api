@@ -48,14 +48,14 @@ public class SystemInfoController {
         return ResponseEntity.ok(system);
     }
 
-    @PostMapping("/systems")
+    @PostMapping("/system")
     @Operation(summary = "Yeni sistem oluştur", description = "Sistem adı, sıra no ve aktiflik durumu ile yeni sistem oluşturur")
     public ResponseEntity<SystemInfoDto> createSystem(@RequestBody SystemInfoDto systemDto) {
         SystemInfoDto createdSystem = systemInfoService.createSystem(systemDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSystem);
     }
 
-    @PutMapping("/systems")
+    @PutMapping("/update-system")
     @Operation(summary = "Sistem güncelle", description = "Mevcut sistemi günceller")
     public ResponseEntity<SystemInfoDto> updateSystem(@RequestBody SystemInfoDto systemDto) {
         SystemInfoDto updatedSystem = systemInfoService.updateSystem(systemDto);
