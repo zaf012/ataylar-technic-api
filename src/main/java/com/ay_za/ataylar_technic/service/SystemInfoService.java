@@ -68,8 +68,7 @@ public class SystemInfoService implements SystemInfoServiceImpl {
             systemDto.setIsActive(true);
         }
 
-        SystemInfo systemEntity = systemInfoMapper.convertToEntity(systemDto);
-        SystemInfo savedSystem = systemInfoRepository.save(systemEntity);
+        SystemInfo savedSystem = systemInfoRepository.save(systemInfoMapper.convertToEntity(systemDto));
         return systemInfoMapper.convertToDTO(savedSystem);
     }
 
@@ -262,9 +261,9 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         suAritma.setIsActive(true);
         suAritma.setDescription("Su arıtma ve filtre sistemleri");
         suAritma.setIsChecklist(false);
-        suAritma.setIsFault(false);
-        suAritma.setControlPointOrder(null);
-        suAritma.setControlPointIsActive(null);
+        suAritma.setIsFault(true);
+        suAritma.setControlPointOrder(10);
+        suAritma.setControlPointIsActive(true);
         suAritma.setCreatedDate(LocalDateTime.now());
         suAritma.setUpdatedDate(LocalDateTime.now());
         suAritma.setCreatedBy("System");
@@ -277,10 +276,10 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         havaPerdesi.setSystemOrderNo(490);
         havaPerdesi.setIsActive(true);
         havaPerdesi.setDescription("Hava perdesi fanları ve kontrol sistemleri");
-        havaPerdesi.setIsChecklist(false);
+        havaPerdesi.setIsChecklist(true);
         havaPerdesi.setIsFault(false);
-        havaPerdesi.setControlPointOrder(null);
-        havaPerdesi.setControlPointIsActive(null);
+        havaPerdesi.setControlPointOrder(20);
+        havaPerdesi.setControlPointIsActive(true);
         havaPerdesi.setCreatedDate(LocalDateTime.now());
         havaPerdesi.setUpdatedDate(LocalDateTime.now());
         havaPerdesi.setCreatedBy("System");
@@ -293,10 +292,10 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         isiGeriKazanim.setSystemOrderNo(480);
         isiGeriKazanim.setIsActive(true);
         isiGeriKazanim.setDescription("Enerji verimliliği için ısı geri kazanım fan sistemleri");
-        isiGeriKazanim.setIsChecklist(false);
+        isiGeriKazanim.setIsChecklist(true);
         isiGeriKazanim.setIsFault(false);
-        isiGeriKazanim.setControlPointOrder(null);
-        isiGeriKazanim.setControlPointIsActive(null);
+        isiGeriKazanim.setControlPointOrder(40);
+        isiGeriKazanim.setControlPointIsActive(true);
         isiGeriKazanim.setCreatedDate(LocalDateTime.now());
         isiGeriKazanim.setUpdatedDate(LocalDateTime.now());
         isiGeriKazanim.setCreatedBy("System");
@@ -310,9 +309,9 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         isiGeriKazanimCihazlari.setIsActive(true);
         isiGeriKazanimCihazlari.setDescription("Merkezi ısı geri kazanım cihazları ve ekipmanları");
         isiGeriKazanimCihazlari.setIsChecklist(false);
-        isiGeriKazanimCihazlari.setIsFault(false);
-        isiGeriKazanimCihazlari.setControlPointOrder(null);
-        isiGeriKazanimCihazlari.setControlPointIsActive(null);
+        isiGeriKazanimCihazlari.setIsFault(true);
+        isiGeriKazanimCihazlari.setControlPointOrder(60);
+        isiGeriKazanimCihazlari.setControlPointIsActive(true);
         isiGeriKazanimCihazlari.setCreatedDate(LocalDateTime.now());
         isiGeriKazanimCihazlari.setUpdatedDate(LocalDateTime.now());
         isiGeriKazanimCihazlari.setCreatedBy("System");
@@ -325,10 +324,10 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         osmozCihazlari.setSystemOrderNo(510);
         osmozCihazlari.setIsActive(true);
         osmozCihazlari.setDescription("Ters osmoz su arıtma cihazları ve membran sistemleri");
-        osmozCihazlari.setIsChecklist(false);
+        osmozCihazlari.setIsChecklist(true);
         osmozCihazlari.setIsFault(false);
-        osmozCihazlari.setControlPointOrder(null);
-        osmozCihazlari.setControlPointIsActive(null);
+        osmozCihazlari.setControlPointOrder(80);
+        osmozCihazlari.setControlPointIsActive(true);
         osmozCihazlari.setCreatedDate(LocalDateTime.now());
         osmozCihazlari.setUpdatedDate(LocalDateTime.now());
         osmozCihazlari.setCreatedBy("System");
@@ -341,10 +340,10 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         intercomlar.setSystemOrderNo(520);
         intercomlar.setIsActive(true);
         intercomlar.setDescription("İç ve dış interkom sistemleri");
-        intercomlar.setIsChecklist(false);
+        intercomlar.setIsChecklist(true);
         intercomlar.setIsFault(false);
-        intercomlar.setControlPointOrder(null);
-        intercomlar.setControlPointIsActive(null);
+        intercomlar.setControlPointOrder(90);
+        intercomlar.setControlPointIsActive(true);
         intercomlar.setCreatedDate(LocalDateTime.now());
         intercomlar.setUpdatedDate(LocalDateTime.now());
         intercomlar.setCreatedBy("System");
@@ -357,10 +356,10 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         blokYagPislik.setSystemOrderNo(530);
         blokYagPislik.setIsActive(true);
         blokYagPislik.setDescription("Mutfak atık su yağ ve pislik ayırma sistemleri");
-        blokYagPislik.setIsChecklist(false);
+        blokYagPislik.setIsChecklist(true);
         blokYagPislik.setIsFault(false);
-        blokYagPislik.setControlPointOrder(null);
-        blokYagPislik.setControlPointIsActive(null);
+        blokYagPislik.setControlPointOrder(100);
+        blokYagPislik.setControlPointIsActive(true);
         blokYagPislik.setCreatedDate(LocalDateTime.now());
         blokYagPislik.setUpdatedDate(LocalDateTime.now());
         blokYagPislik.setCreatedBy("System");

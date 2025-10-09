@@ -15,7 +15,7 @@ public interface SystemInfoRepository extends JpaRepository<SystemInfo, String> 
     @Query("SELECT s FROM SystemInfo s")
     List<SystemInfo> findAllSystems();
 
-    @Query("SELECT s.id FROM SystemInfo s WHERE s.id = :id")
+    @Query("SELECT s FROM SystemInfo s WHERE s.id = :id")
     SystemInfo findSystemInfoById(@Param("id") String id);
 
     // Aktif sistemleri getir

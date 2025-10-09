@@ -22,7 +22,7 @@ public class FirmsInfo {
     private String firmName;
 
     @CreationTimestamp
-    @Column(name = "created_date", updatable = false)
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     @Column(name = "created_by", length = 100)

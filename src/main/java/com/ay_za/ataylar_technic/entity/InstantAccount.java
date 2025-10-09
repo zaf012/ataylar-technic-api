@@ -105,14 +105,14 @@ public class InstantAccount {
     private Boolean userStatus = true;
 
     @CreationTimestamp
-    @Column(name = "created_date", updatable = false)
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     @UpdateTimestamp
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    @Column(name = "created_by", length = 50, updatable = false)
+    @Column(name = "created_by", length = 50)
     private String createdBy;
 
     @Column(name = "updated_by", length = 50)

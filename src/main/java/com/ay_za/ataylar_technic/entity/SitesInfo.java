@@ -37,7 +37,7 @@ public class SitesInfo {
     private String blockName;
 
     @CreationTimestamp
-    @Column(name = "created_date", updatable = false)
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     @UpdateTimestamp

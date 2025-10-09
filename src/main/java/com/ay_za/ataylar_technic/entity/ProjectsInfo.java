@@ -28,7 +28,7 @@ public class ProjectsInfo {
     private String projectName;
 
     @CreationTimestamp
-    @Column(name = "created_date", updatable = false)
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     @Column(name = "created_by", length = 100)

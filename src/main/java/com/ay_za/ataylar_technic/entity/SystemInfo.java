@@ -51,7 +51,7 @@ public class SystemInfo {
     private Boolean controlPointIsActive;
 
     @CreationTimestamp
-    @Column(name = "created_date", updatable = false)
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     @UpdateTimestamp
