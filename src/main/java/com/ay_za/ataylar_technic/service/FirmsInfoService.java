@@ -2,6 +2,9 @@ package com.ay_za.ataylar_technic.service;
 
 import com.ay_za.ataylar_technic.dto.FirmsInfoDto;
 import com.ay_za.ataylar_technic.entity.FirmsInfo;
+import com.ay_za.ataylar_technic.exception.FirmAlreadyExistsException;
+import com.ay_za.ataylar_technic.exception.FirmNotFoundException;
+import com.ay_za.ataylar_technic.exception.ValidationException;
 import com.ay_za.ataylar_technic.mapper.FirmsInfoMapper;
 import com.ay_za.ataylar_technic.repository.FirmsInfoRepository;
 import com.ay_za.ataylar_technic.service.base.FirmsInfoServiceImpl;
@@ -29,12 +32,12 @@ public class FirmsInfoService implements FirmsInfoServiceImpl {
     public FirmsInfoDto createFirm(String firmName) {
         // Firma adı kontrolü
         if (firmName == null || firmName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Firma adı boş olamaz");
+            throw new ValidationException("Firma adı boş olamaz");
         }
 
         // Aynı isimde firma var mı kontrol et
         if (firmsInfoRepository.existsByFirmNameIgnoreCase(firmName.trim())) {
-            throw new IllegalArgumentException("Bu isimde bir firma zaten mevcut");
+            throw new FirmAlreadyExistsException("Bu isimde bir firma zaten mevcut");
         }
 
         FirmsInfo firm = new FirmsInfo();
@@ -53,17 +56,17 @@ public class FirmsInfoService implements FirmsInfoServiceImpl {
     public FirmsInfoDto updateFirm(String firmId, String firmName) {
         // Parametreler kontrolü
         if (firmName == null || firmName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Firma adı boş olamaz");
+            throw new ValidationException("Firma adı boş olamaz");
         }
 
         // Firma var mı kontrol et
         FirmsInfo firm = firmsInfoRepository.findById(firmId)
-                .orElseThrow(() -> new IllegalArgumentException("Firma bulunamadı"));
+                .orElseThrow(() -> new FirmNotFoundException("Firma bulunamadı"));
 
         // Aynı isimde başka firma var mı kontrol et (kendisi hariç)
         Optional<FirmsInfo> existingFirm = firmsInfoRepository.findByFirmNameIgnoreCase(firmName.trim());
         if (existingFirm.isPresent() && !existingFirm.get().getId().equals(firmId)) {
-            throw new IllegalArgumentException("Bu isimde başka bir firma zaten mevcut");
+            throw new FirmAlreadyExistsException("Bu isimde başka bir firma zaten mevcut");
         }
 
         firm.setFirmName(firmName.trim());
@@ -80,7 +83,7 @@ public class FirmsInfoService implements FirmsInfoServiceImpl {
     public void deleteFirm(String firmId) {
         // Firma var mı kontrol et
         FirmsInfo firm = firmsInfoRepository.findById(firmId)
-                .orElseThrow(() -> new IllegalArgumentException("Silinecek firma bulunamadı"));
+                .orElseThrow(() -> new FirmNotFoundException("Silinecek firma bulunamadı"));
 
         // Firmayı sil
         firmsInfoRepository.delete(firm);
