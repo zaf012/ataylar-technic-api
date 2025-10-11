@@ -73,6 +73,7 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         accountData.setPttBox(accountData.getPttBox());
         accountData.setPostalCode(accountData.getPostalCode());
         accountData.setTaxNumber(accountData.getTaxNumber());
+        accountData.setTaxOffice(accountData.getTaxOffice());
         accountData.setTcIdentityNo(accountData.getTcIdentityNo());
         accountData.setBankAddress(accountData.getBankAddress());
         accountData.setRiskLimit(accountData.getRiskLimit());
@@ -383,6 +384,7 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         existing.setPttBox(updated.getPttBox());
         existing.setPostalCode(updated.getPostalCode());
         existing.setTaxNumber(updated.getTaxNumber());
+        existing.setTaxOffice(updated.getTaxOffice());
         existing.setTcIdentityNo(updated.getTcIdentityNo());
         existing.setBankAddress(updated.getBankAddress());
         existing.setRiskLimit(updated.getRiskLimit());
@@ -492,6 +494,13 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         instantAccountDto.setPttBox("PK " + (int) (Math.random() * 9999 + 1));
         instantAccountDto.setPostalCode(String.format("%05d", (int) (Math.random() * 99999 + 1)));
         instantAccountDto.setTaxNumber(String.format("%010d", (int) (Math.random() * 9999999999L + 1)));
+
+        // Vergi daireleri listesi
+        String[] taxOffices = {"Beyoğlu Vergi Dairesi", "Kadıköy Vergi Dairesi", "Şişli Vergi Dairesi",
+                              "Beşiktaş Vergi Dairesi", "Ümraniye Vergi Dairesi", "Fatih Vergi Dairesi",
+                              "Bakırköy Vergi Dairesi", "Üsküdar Vergi Dairesi", "Pendik Vergi Dairesi"};
+        instantAccountDto.setTaxOffice(taxOffices[(int) (Math.random() * taxOffices.length)]);
+
         instantAccountDto.setTcIdentityNo(String.format("%011d", (int) (Math.random() * 99999999999L + 1)));
         String[] banks = {"Ziraat Bankası", "İş Bankası", "Garanti BBVA", "Akbank", "Yapı Kredi"};
 
@@ -529,3 +538,4 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         return accounts;
     }
 }
+

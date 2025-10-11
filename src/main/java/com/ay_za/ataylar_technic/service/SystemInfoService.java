@@ -49,24 +49,18 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         // Sistem için ID oluştur
         systemDto.setId(UUID.randomUUID().toString());
 
-        // Sistem sıra numarasını otomatik belirle eğer verilmemişse
-        if (systemDto.getSystemOrderNo() == null) {
-            Integer maxOrderNo = systemInfoRepository.findMaxSystemOrderNo();
-            systemDto.setSystemOrderNo(maxOrderNo != null ? maxOrderNo + 10 : 10);
-        }
-
-        // Sistem tanımı için diğer alanları temizle/varsayılan değerler ata
-        systemDto.setDescription(systemDto.getDescription()); // Sistem tanımları için boş
+        systemDto.setSystemName(systemDto.getSystemName());
+        systemDto.setSystemOrderNo(systemDto.getSystemOrderNo());
+        systemDto.setIsActive(systemDto.getIsActive());
+        systemDto.setDescription(systemDto.getDescription());
         systemDto.setIsChecklist(systemDto.getIsChecklist());
         systemDto.setIsFault(systemDto.getIsFault());
         systemDto.setControlPointOrder(systemDto.getControlPointOrder());
-        systemDto.setControlPointIsActive(systemDto.getControlPointIsActive());
-        systemDto.setSystemName(systemDto.getSystemName());
-
-        // Aktiflik durumu verilmemişse varsayılan true
-        if (systemDto.getIsActive() == null) {
-            systemDto.setIsActive(true);
-        }
+        systemDto.setControlPointIsActive(systemDto.getIsActive());
+        systemDto.setCreatedDate(LocalDateTime.now());
+        systemDto.setUpdatedDate(LocalDateTime.now());
+        systemDto.setCreatedBy("Admin");
+        systemDto.setUpdatedBy("Admin");
 
         SystemInfo savedSystem = systemInfoRepository.save(systemInfoMapper.convertToEntity(systemDto));
         return systemInfoMapper.convertToDTO(savedSystem);
@@ -92,7 +86,7 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         existingSystem.setCreatedDate(systemDto.getCreatedDate());
         existingSystem.setUpdatedDate(LocalDateTime.now());
         existingSystem.setCreatedBy(systemDto.getCreatedBy());
-        existingSystem.setUpdatedBy(systemDto.getUpdatedBy());
+        existingSystem.setUpdatedBy("Admin");
 
         SystemInfo updatedSystem = systemInfoRepository.save(existingSystem);
         return systemInfoMapper.convertToDTO(updatedSystem);
@@ -158,8 +152,8 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         systemInfo.setControlPointIsActive(request.getControlPointIsActive() != null ? request.getControlPointIsActive() : true);
         systemInfo.setCreatedDate(LocalDateTime.now());
         systemInfo.setUpdatedDate(LocalDateTime.now());
-        systemInfo.setCreatedBy("Admin"); // TODO: Bunu dinamik yap
-        systemInfo.setUpdatedBy("Admin"); // TODO: Bunu dinamik yap
+        systemInfo.setCreatedBy("Admin");
+        systemInfo.setUpdatedBy("Admin");
 
         SystemInfo savedFaultOrChecklistPoint = systemInfoRepository.save(systemInfo);
         return systemInfoMapper.convertToDTO(savedFaultOrChecklistPoint);

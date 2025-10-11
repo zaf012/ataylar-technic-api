@@ -30,6 +30,7 @@ public class InstantAccountDto {
     private String pttBox;
     private String postalCode;
     private String taxNumber;
+    private String taxOffice;
     private String tcIdentityNo;
     private String bankAddress;
     private BigDecimal riskLimit;
@@ -49,7 +50,7 @@ public class InstantAccountDto {
                              String firmName, String projectId, String projectName, String authorizedPersonnel,
                              String companyShortName, String phoneCountryCode, String phone, String gsmCountryCode,
                              String gsm, String address, String fax, String email, String pttBox, String postalCode,
-                             String taxNumber, String tcIdentityNo, String bankAddress, BigDecimal riskLimit,
+                             String taxNumber, String taxOffice, String tcIdentityNo, String bankAddress, BigDecimal riskLimit,
                              String riskLimitExplanation, Boolean userStatus, LocalDateTime createdDate,
                              LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
         this.id = id;
@@ -77,6 +78,7 @@ public class InstantAccountDto {
         this.pttBox = pttBox;
         this.postalCode = postalCode;
         this.taxNumber = taxNumber;
+        this.taxOffice = taxOffice;
         this.tcIdentityNo = tcIdentityNo;
         this.bankAddress = bankAddress;
         this.riskLimit = riskLimit;
@@ -289,6 +291,14 @@ public class InstantAccountDto {
 
     public void setTaxNumber(String taxNumber) {
         this.taxNumber = taxNumber;
+    }
+
+    public String getTaxOffice() {
+        return taxOffice;
+    }
+
+    public void setTaxOffice(String taxOffice) {
+        this.taxOffice = taxOffice;
     }
 
     public String getTcIdentityNo() {
