@@ -103,7 +103,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.ayza.ataylartechnic.AtaylarTechnicApplication</mainClass>
+                    <mainClass>com.ay_za.ataylar_technic.AtaylarTechnicApplication</mainClass>
                 </configuration>
 			</plugin>
 		</plugins>
