@@ -4,15 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
-/**
- * SitesInfo DTO sınıfı
- */
-public class SitesInfoDto {
+public class SquaresInfoDto {
 
     private String id;
+    private String squareName;
+    private String siteId;
     private String siteName;
-    private String projectId;
-    private String projectName;
     private String description;
 
     @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
@@ -24,15 +21,15 @@ public class SitesInfoDto {
     private String createdBy;
     private String updatedBy;
 
-    public SitesInfoDto() {
+    public SquaresInfoDto() {
     }
 
-    public SitesInfoDto(String id, String siteName, String projectId, String projectName, String description,
-                        LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy) {
+    public SquaresInfoDto(String id, String squareName, String siteId, String siteName, String description,
+                          LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy) {
         this.id = id;
+        this.squareName = squareName;
+        this.siteId = siteId;
         this.siteName = siteName;
-        this.projectId = projectId;
-        this.projectName = projectName;
         this.description = description;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -48,28 +45,28 @@ public class SitesInfoDto {
         this.id = id;
     }
 
+    public String getSquareName() {
+        return squareName;
+    }
+
+    public void setSquareName(String squareName) {
+        this.squareName = squareName;
+    }
+
+    public String getSiteId() {
+        return siteId;
+    }
+
+    public void setSiteId(String siteId) {
+        this.siteId = siteId;
+    }
+
     public String getSiteName() {
         return siteName;
     }
 
     public void setSiteName(String siteName) {
         this.siteName = siteName;
-    }
-
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
     }
 
     public String getDescription() {
@@ -114,11 +111,11 @@ public class SitesInfoDto {
 
     @Override
     public String toString() {
-        return "SitesInfoDto{" +
+        return "SquaresInfoDto{" +
                 "id='" + id + '\'' +
+                ", squareName='" + squareName + '\'' +
+                ", siteId='" + siteId + '\'' +
                 ", siteName='" + siteName + '\'' +
-                ", projectId='" + projectId + '\'' +
-                ", projectName='" + projectName + '\'' +
                 ", description='" + description + '\'' +
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +

@@ -30,7 +30,7 @@ public class SitesInfoController {
     /**
      * Yeni site oluştur
      */
-    @Operation(summary = "Site oluştur", description = "Yeni bir site ve blok oluşturur")
+    @Operation(summary = "Site oluştur", description = "Yeni bir site oluşturur")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Site başarıyla oluşturuldu"),
             @ApiResponse(responseCode = "400", description = "Geçersiz istek"),
@@ -161,29 +161,6 @@ public class SitesInfoController {
     }
 
     /**
-     * Site adına göre blokları getir
-     */
-    @Operation(summary = "Site bloklarını getir", description = "Belirtilen site adına ait tüm blokları getirir")
-    @GetMapping("/get-blocks-by-site")
-    public ResponseEntity<Map<String, Object>> getBlocksBySiteName(@RequestParam String siteName) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            List<SitesInfoDto> blocks = sitesInfoService.getBlocksBySiteName(siteName);
-
-            response.put("success", true);
-            response.put("data", blocks);
-            response.put("count", blocks.size());
-            response.put("siteName", siteName);
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Site blokları getirilirken hata oluştu: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
-    /**
      * Proje ID'sine göre siteleri getir
      */
     @Operation(summary = "Projeye ait siteleri getir", description = "Belirtilen projeye ait tüm siteleri getirir")
@@ -225,32 +202,6 @@ public class SitesInfoController {
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Arama yapılırken hata oluştu: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
-    /**
-     * Site ve blok kombinasyonu varlık kontrolü
-     */
-    @Operation(summary = "Site-blok varlık kontrolü", description = "Belirtilen site ve blok kombinasyonunun varlığını kontrol eder")
-    @GetMapping("/exists")
-    public ResponseEntity<Map<String, Object>> checkSiteBlockExists(
-            @RequestParam String siteName,
-            @RequestParam String blockName) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            boolean exists = sitesInfoService.existsBySiteNameAndBlockName(siteName, blockName);
-
-            response.put("success", true);
-            response.put("exists", exists);
-            response.put("siteName", siteName);
-            response.put("blockName", blockName);
-            response.put("message", exists ? "Site-blok kombinasyonu mevcut" : "Site-blok kombinasyonu mevcut değil");
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Kontrol işlemi sırasında hata oluştu: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

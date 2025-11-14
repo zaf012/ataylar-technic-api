@@ -4,15 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
-/**
- * SitesInfo DTO sınıfı
- */
-public class SitesInfoDto {
+public class BlocksInfoDto {
 
     private String id;
-    private String siteName;
-    private String projectId;
-    private String projectName;
+    private String blockName;
+    private String blockCode;
+    private String squareId;
     private String description;
 
     @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
@@ -24,15 +21,15 @@ public class SitesInfoDto {
     private String createdBy;
     private String updatedBy;
 
-    public SitesInfoDto() {
+    public BlocksInfoDto() {
     }
 
-    public SitesInfoDto(String id, String siteName, String projectId, String projectName, String description,
-                        LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy) {
+    public BlocksInfoDto(String id, String blockName, String blockCode, String squareId, String description,
+                         LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy) {
         this.id = id;
-        this.siteName = siteName;
-        this.projectId = projectId;
-        this.projectName = projectName;
+        this.blockName = blockName;
+        this.blockCode = blockCode;
+        this.squareId = squareId;
         this.description = description;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -48,28 +45,28 @@ public class SitesInfoDto {
         this.id = id;
     }
 
-    public String getSiteName() {
-        return siteName;
+    public String getBlockName() {
+        return blockName;
     }
 
-    public void setSiteName(String siteName) {
-        this.siteName = siteName;
+    public void setBlockName(String blockName) {
+        this.blockName = blockName;
     }
 
-    public String getProjectId() {
-        return projectId;
+    public String getBlockCode() {
+        return blockCode;
     }
 
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
+    public void setBlockCode(String blockCode) {
+        this.blockCode = blockCode;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getSquareId() {
+        return squareId;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setSquareId(String squareId) {
+        this.squareId = squareId;
     }
 
     public String getDescription() {
@@ -114,11 +111,11 @@ public class SitesInfoDto {
 
     @Override
     public String toString() {
-        return "SitesInfoDto{" +
+        return "BlocksInfoDto{" +
                 "id='" + id + '\'' +
-                ", siteName='" + siteName + '\'' +
-                ", projectId='" + projectId + '\'' +
-                ", projectName='" + projectName + '\'' +
+                ", blockName='" + blockName + '\'' +
+                ", blockCode='" + blockCode + '\'' +
+                ", squareId='" + squareId + '\'' +
                 ", description='" + description + '\'' +
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +

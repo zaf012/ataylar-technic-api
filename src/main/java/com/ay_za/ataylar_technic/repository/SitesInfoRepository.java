@@ -22,14 +22,8 @@ public interface SitesInfoRepository extends JpaRepository<SitesInfo, String> {
     // Site adına göre sıralı liste (alfabetik)
     List<SitesInfo> findAllByOrderBySiteNameAsc();
 
-    // Site adı ve blok adı kombinasyonunun varlığını kontrol et
-    boolean existsBySiteNameAndBlockNameIgnoreCase(String siteName, String blockName);
-
-    // Site adı ve blok adı ile site getir
-    Optional<SitesInfo> findBySiteNameAndBlockNameIgnoreCase(String siteName, String blockName);
-
-    // Belirli bir site adına sahip tüm blokları getir
-    List<SitesInfo> findBySiteNameIgnoreCaseOrderByBlockNameAsc(String siteName);
+    // Site adına göre tüm blokları getir (aynı site adına sahip birden fazla blok olabilir)
+    List<SitesInfo> findBySiteNameIgnoreCase(String siteName);
 
     // Site adına göre arama (contains)
     List<SitesInfo> findBySiteNameContainingIgnoreCaseOrderBySiteNameAsc(String siteName);

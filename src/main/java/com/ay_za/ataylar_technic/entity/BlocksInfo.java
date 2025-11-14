@@ -10,23 +10,23 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "sites_info")
-public class SitesInfo {
+@Table(name = "blocks_info")
+public class BlocksInfo {
 
     @Id
     @Column(name = "id", length = 200)
     private String id;
 
-    @Column(name = "site_name", nullable = false, length = 100)
-    private String siteName;
+    @Column(name = "block_name", nullable = false, length = 100)
+    private String blockName;
 
-    @Column(name = "project_id", nullable = false, length = 100)
-    private String projectId;
+    @Column(name = "block_code", length = 50)
+    private String blockCode;
 
-    @Column(name = "project_name", nullable = false, length = 100)
-    private String projectName;
+    @Column(name = "square_id", nullable = false, length = 200)
+    private String squareId;
 
-    @Column(name = "description", length = 100)
+    @Column(name = "description", length = 500)
     private String description;
 
     @CreationTimestamp
@@ -43,15 +43,15 @@ public class SitesInfo {
     @Column(name = "updated_by", length = 100)
     private String updatedBy;
 
-    public SitesInfo() {
+    public BlocksInfo() {
     }
 
-    public SitesInfo(String id, String siteName, String projectId, String projectName, String description,
-                     LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy) {
+    public BlocksInfo(String id, String blockName, String blockCode, String squareId, String description,
+                      LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy) {
         this.id = id;
-        this.siteName = siteName;
-        this.projectId = projectId;
-        this.projectName = projectName;
+        this.blockName = blockName;
+        this.blockCode = blockCode;
+        this.squareId = squareId;
         this.description = description;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -67,28 +67,28 @@ public class SitesInfo {
         this.id = id;
     }
 
-    public String getSiteName() {
-        return siteName;
+    public String getBlockName() {
+        return blockName;
     }
 
-    public void setSiteName(String siteName) {
-        this.siteName = siteName;
+    public void setBlockName(String blockName) {
+        this.blockName = blockName;
     }
 
-    public String getProjectId() {
-        return projectId;
+    public String getBlockCode() {
+        return blockCode;
     }
 
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
+    public void setBlockCode(String blockCode) {
+        this.blockCode = blockCode;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getSquareId() {
+        return squareId;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setSquareId(String squareId) {
+        this.squareId = squareId;
     }
 
     public String getDescription() {
@@ -133,11 +133,11 @@ public class SitesInfo {
 
     @Override
     public String toString() {
-        return "SitesInfo{" +
+        return "BlocksInfo{" +
                 "id='" + id + '\'' +
-                ", siteName='" + siteName + '\'' +
-                ", projectId='" + projectId + '\'' +
-                ", projectName='" + projectName + '\'' +
+                ", blockName='" + blockName + '\'' +
+                ", blockCode='" + blockCode + '\'' +
+                ", squareId='" + squareId + '\'' +
                 ", description='" + description + '\'' +
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +

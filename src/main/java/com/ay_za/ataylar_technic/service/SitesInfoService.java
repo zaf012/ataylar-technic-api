@@ -1,7 +1,9 @@
 package com.ay_za.ataylar_technic.service;
 
+import com.ay_za.ataylar_technic.dto.BlocksInfoDto;
 import com.ay_za.ataylar_technic.dto.ProjectsInfoDto;
 import com.ay_za.ataylar_technic.dto.SitesInfoDto;
+import com.ay_za.ataylar_technic.dto.SquaresInfoDto;
 import com.ay_za.ataylar_technic.entity.SitesInfo;
 import com.ay_za.ataylar_technic.mapper.SitesInfoMapper;
 import com.ay_za.ataylar_technic.repository.SitesInfoRepository;
@@ -10,12 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class SitesInfoService implements SitesInfoServiceImpl {
@@ -23,11 +20,19 @@ public class SitesInfoService implements SitesInfoServiceImpl {
     private final SitesInfoRepository sitesInfoRepository;
     private final SitesInfoMapper sitesInfoMapper;
     private final ProjectsInfoService projectsInfoService;
+    private final SquaresInfoService squaresInfoService;
+    private final BlocksInfoService blocksInfoService;
 
-    public SitesInfoService(SitesInfoRepository sitesInfoRepository, SitesInfoMapper sitesInfoMapper, ProjectsInfoService projectsInfoService) {
+    public SitesInfoService(SitesInfoRepository sitesInfoRepository,
+                           SitesInfoMapper sitesInfoMapper,
+                           ProjectsInfoService projectsInfoService,
+                           SquaresInfoService squaresInfoService,
+                           BlocksInfoService blocksInfoService) {
         this.sitesInfoRepository = sitesInfoRepository;
         this.sitesInfoMapper = sitesInfoMapper;
         this.projectsInfoService = projectsInfoService;
+        this.squaresInfoService = squaresInfoService;
+        this.blocksInfoService = blocksInfoService;
     }
 
     /**
@@ -41,10 +46,10 @@ public class SitesInfoService implements SitesInfoServiceImpl {
             throw new IllegalArgumentException("Lütfen site adı giriniz");
         }
 
-        // Site adı ve blok adı kombinasyonunun benzersizliğini kontrol et
-        if (sitesInfoRepository.existsBySiteNameAndBlockNameIgnoreCase(
-                sitesInfoDto.getSiteName(), sitesInfoDto.getBlockName())) {
-            throw new IllegalArgumentException("Bu site için aynı blok adı zaten mevcut");
+        // Site adı benzersizliğini kontrol et
+        if (sitesInfoRepository.existsBySiteNameIgnoreCase(
+                sitesInfoDto.getSiteName())) {
+            throw new IllegalArgumentException("Bu site zaten mevcut");
         }
 
         if (projectsInfoService.getProjectById(sitesInfoDto.getProjectId()).isEmpty()) {
@@ -57,8 +62,6 @@ public class SitesInfoService implements SitesInfoServiceImpl {
         sitesInfo.setProjectId(sitesInfoDto.getProjectId());
         sitesInfo.setProjectName(sitesInfoDto.getProjectName());
         sitesInfo.setDescription(sitesInfoDto.getDescription()); // DTO'dan al
-        sitesInfo.setSquare(sitesInfoDto.getSquare()); // DTO'dan al
-        sitesInfo.setBlockName(sitesInfoDto.getBlockName()); // DTO'dan al
         sitesInfo.setCreatedDate(LocalDateTime.now());
         sitesInfo.setUpdatedDate(LocalDateTime.now());
         SitesInfo savedSite = sitesInfoRepository.save(sitesInfo);
@@ -79,18 +82,19 @@ public class SitesInfoService implements SitesInfoServiceImpl {
         // Güncellenecek alanları kontrol et ve güncelle
         if (sitesInfoDto.getSiteName() != null && !sitesInfoDto.getSiteName().trim().isEmpty()) {
             // Aynı site adı ve blok adı kombinasyonu var mı kontrol et (kendisi hariç)
-            if (sitesInfoDto.getBlockName() != null) {
-                boolean exists = sitesInfoRepository.existsBySiteNameAndBlockNameIgnoreCase(
-                        sitesInfoDto.getSiteName().trim(), sitesInfoDto.getBlockName().trim());
+                boolean exists = sitesInfoRepository.existsBySiteNameIgnoreCase(
+                        sitesInfoDto.getSiteName().trim());
                 if (exists) {
                     // Mevcut kaydın kendisi mi kontrol et
-                    Optional<SitesInfo> existingSite = sitesInfoRepository.findBySiteNameAndBlockNameIgnoreCase(
-                            sitesInfoDto.getSiteName().trim(), sitesInfoDto.getBlockName().trim());
-                    if (existingSite.isPresent() && !existingSite.get().getId().equals(id)) {
-                        throw new IllegalArgumentException("Bu site adı ve blok adı kombinasyonu zaten mevcut");
+                    List<SitesInfo> existingSites = sitesInfoRepository.findBySiteNameIgnoreCase(
+                            sitesInfoDto.getSiteName().trim());
+                    boolean isDuplicate = existingSites.stream()
+                            .anyMatch(existingSite -> !existingSite.getId().equals(id));
+                    if (isDuplicate) {
+                        throw new IllegalArgumentException("Bu site adı zaten mevcut");
                     }
                 }
-            }
+
             site.setSiteName(sitesInfoDto.getSiteName().trim());
         }
 
@@ -107,14 +111,6 @@ public class SitesInfoService implements SitesInfoServiceImpl {
 
         if (sitesInfoDto.getDescription() != null) {
             site.setDescription(sitesInfoDto.getDescription().trim());
-        }
-
-        if (sitesInfoDto.getSquare() != null) {
-            site.setSquare(sitesInfoDto.getSquare().trim());
-        }
-
-        if (sitesInfoDto.getBlockName() != null) {
-            site.setBlockName(sitesInfoDto.getBlockName().trim());
         }
 
         site.setUpdatedDate(LocalDateTime.now());
@@ -146,13 +142,7 @@ public class SitesInfoService implements SitesInfoServiceImpl {
         return sitesInfoMapper.convertAllToDTO(allByOrderBySiteNameAsc);
     }
 
-    /**
-     * Belirli bir site adına sahip tüm blokları getir
-     */
-    public List<SitesInfoDto> getBlocksBySiteName(String siteName) {
-        List<SitesInfo> blocks = sitesInfoRepository.findBySiteNameIgnoreCaseOrderByBlockNameAsc(siteName);
-        return sitesInfoMapper.convertAllToDTO(blocks);
-    }
+
 
     /**
      * Site adına göre arama
@@ -178,11 +168,13 @@ public class SitesInfoService implements SitesInfoServiceImpl {
         return site.map(sitesInfoMapper::convertToDTO);
     }
 
+
+
     /**
-     * Site ve blok kombinasyonunun varlığını kontrol et
+     * Site ID'ye göre site entity getir
      */
-    public boolean existsBySiteNameAndBlockName(String siteName, String blockName) {
-        return sitesInfoRepository.existsBySiteNameAndBlockNameIgnoreCase(siteName, blockName);
+    public Optional<SitesInfo> getSiteEntityById(String siteId) {
+        return sitesInfoRepository.findById(siteId);
     }
 
     /**
@@ -204,66 +196,84 @@ public class SitesInfoService implements SitesInfoServiceImpl {
         ProjectsInfoDto project2 = projects.size() > 1 ? projects.get(1) : project1;
         ProjectsInfoDto project3 = projects.size() > 2 ? projects.get(2) : project1;
 
-        // Sample site ve blok verileri
-        Map<String, Map<String, String[]>> siteProjectData = new LinkedHashMap<>();
+        // Sample site verileri
+        Map<String, String> siteProjectData = new LinkedHashMap<>();
+        siteProjectData.put("DAP Validebağ Sitesi", project1.getId());
+        siteProjectData.put("DAP Mesa Kartal", project1.getId());
+        siteProjectData.put("Emlak Konut Başakşehir", project2.getId());
+        siteProjectData.put("Royal Garden Sitesi", project2.getId());
+        siteProjectData.put("TOKİ Mamak Konutları", project3.getId());
+        siteProjectData.put("Nurol Park Evleri", project3.getId());
 
-        // Her proje için site ve bloklar
-        Map<String, String[]> project1Sites = new LinkedHashMap<>();
-        project1Sites.put("DAP Validebağ Sitesi", new String[]{"123.blok", "456.blok", "789.blok"});
-        project1Sites.put("DAP Mesa Kartal", new String[]{"A Blok", "B Blok", "C Blok"});
-        siteProjectData.put(project1.getId(), project1Sites);
+        // Siteleri oluştur
+        for (Map.Entry<String, String> entry : siteProjectData.entrySet()) {
+            String siteName = entry.getKey();
+            String projectId = entry.getValue();
 
-        Map<String, String[]> project2Sites = new LinkedHashMap<>();
-        project2Sites.put("Emlak Konut Başakşehir", new String[]{"1.Etap", "2.Etap", "3.Etap"});
-        project2Sites.put("Royal Garden Sitesi", new String[]{"Rose Blok", "Lily Blok"});
-        siteProjectData.put(project2.getId(), project2Sites);
+            try {
+                // Aynı site adı zaten var mı kontrol et
+                if (!sitesInfoRepository.existsBySiteNameIgnoreCase(siteName)) {
+                    // Proje adını bul
+                    String projectName = projects.stream()
+                            .filter(p -> p.getId().equals(projectId))
+                            .findFirst()
+                            .map(ProjectsInfoDto::getProjectName)
+                            .orElse("Unknown Project");
 
-        Map<String, String[]> project3Sites = new LinkedHashMap<>();
-        project3Sites.put("TOKİ Mamak Konutları", new String[]{"1.Kısım", "2.Kısım", "3.Kısım", "4.Kısım"});
-        project3Sites.put("Nurol Park Evleri", new String[]{"Park A", "Park B"});
-        siteProjectData.put(project3.getId(), project3Sites);
+                    SitesInfoDto siteDto = new SitesInfoDto();
+                    siteDto.setSiteName(siteName);
+                    siteDto.setProjectId(projectId);
+                    siteDto.setProjectName(projectName);
+                    siteDto.setCreatedDate(LocalDateTime.now());
+                    siteDto.setCreatedBy(createdBy);
+                    siteDto.setDescription(siteName + " projesi açıklaması");
 
-        // Site ve blokları oluştur
-        for (Map.Entry<String, Map<String, String[]>> projectEntry : siteProjectData.entrySet()) {
-            String projectId = projectEntry.getKey();
-            Map<String, String[]> sitesData = projectEntry.getValue();
-
-            // Proje adını bul
-            String projectName = projects.stream()
-                    .filter(p -> p.getId().equals(projectId))
-                    .findFirst()
-                    .map(ProjectsInfoDto::getProjectName)
-                    .orElse("Unknown Project");
-
-            for (Map.Entry<String, String[]> siteEntry : sitesData.entrySet()) {
-                String siteName = siteEntry.getKey();
-                String[] blocks = siteEntry.getValue();
-
-                for (String blockName : blocks) {
-                    try {
-                        // Aynı site+blok kombinasyonu zaten var mı kontrol et
-                        if (!existsBySiteNameAndBlockName(siteName, blockName)) {
-                            SitesInfoDto siteDto = new SitesInfoDto();
-                            siteDto.setSiteName(siteName);
-                            siteDto.setProjectId(projectId);
-                            siteDto.setProjectName(projectName);
-                            siteDto.setBlockName(blockName);
-                            siteDto.setCreatedDate(LocalDateTime.now());
-                            siteDto.setCreatedBy(createdBy);
-                            siteDto.setDescription(siteName + " - " + blockName + " açıklaması");
-                            siteDto.setSquare("Ada " + (int)(Math.random() * 100 + 1));
-
-                            SitesInfoDto created = createSite(siteDto);
-                            createdSites.add(created);
-                        }
-                    } catch (Exception e) {
-                        System.err.println("Site oluşturulurken hata: " + siteName + " - " + blockName + " - " + e.getMessage());
-                    }
+                    SitesInfoDto created = createSite(siteDto);
+                    createdSites.add(created);
                 }
+            } catch (Exception e) {
+                System.err.println("Site oluşturulurken hata: " + siteName + " - " + e.getMessage());
             }
         }
 
         return createdSites;
+    }
+
+
+
+    /**
+     * Tüm default verileri oluştur (Site, Ada, Blok)
+     */
+    @Transactional
+    public Map<String, Object> createAllDefaultData() {
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            // 1. Siteleri oluştur
+            List<SitesInfoDto> sites = createDefaultSites();
+            result.put("sites", sites);
+            result.put("sitesCount", sites.size());
+
+            // 2. Adaları oluştur
+            List<SquaresInfoDto> squares = squaresInfoService.createDefaultSquares();
+            result.put("squares", squares);
+            result.put("squaresCount", squares.size());
+
+            // 3. Blokları oluştur
+            List<BlocksInfoDto> blocks = blocksInfoService.createDefaultBlocks();
+            result.put("blocks", blocks);
+            result.put("blocksCount", blocks.size());
+
+            result.put("success", true);
+            result.put("message", "Tüm default veriler başarıyla oluşturuldu");
+            result.put("totalCount", sites.size() + squares.size() + blocks.size());
+
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("message", "Default veriler oluşturulurken hata: " + e.getMessage());
+        }
+
+        return result;
     }
 
     /**

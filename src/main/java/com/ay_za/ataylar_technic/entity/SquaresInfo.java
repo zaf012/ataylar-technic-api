@@ -1,38 +1,57 @@
-package com.ay_za.ataylar_technic.dto;
+package com.ay_za.ataylar_technic.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-/**
- * SitesInfo DTO sınıfı
- */
-public class SitesInfoDto {
+@Entity
+@Table(name = "squares_info")
+public class SquaresInfo {
 
+    @Id
+    @Column(name = "id", length = 200)
     private String id;
+
+    @Column(name = "square_name", nullable = false, length = 100)
+    private String squareName;
+
+    @Column(name = "site_id", nullable = false, length = 200)
+    private String siteId;
+
+    @Column(name = "site_name", nullable = false, length = 100)
     private String siteName;
-    private String projectId;
-    private String projectName;
+
+    @Column(name = "description", length = 500)
     private String description;
 
-    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
+    @CreationTimestamp
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
-    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
+    @UpdateTimestamp
+    @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
+    @Column(name = "created_by", length = 100)
     private String createdBy;
+
+    @Column(name = "updated_by", length = 100)
     private String updatedBy;
 
-    public SitesInfoDto() {
+    public SquaresInfo() {
     }
 
-    public SitesInfoDto(String id, String siteName, String projectId, String projectName, String description,
-                        LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy) {
+    public SquaresInfo(String id, String squareName, String siteId, String siteName, String description,
+                       LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy) {
         this.id = id;
+        this.squareName = squareName;
+        this.siteId = siteId;
         this.siteName = siteName;
-        this.projectId = projectId;
-        this.projectName = projectName;
         this.description = description;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -48,28 +67,28 @@ public class SitesInfoDto {
         this.id = id;
     }
 
+    public String getSquareName() {
+        return squareName;
+    }
+
+    public void setSquareName(String squareName) {
+        this.squareName = squareName;
+    }
+
+    public String getSiteId() {
+        return siteId;
+    }
+
+    public void setSiteId(String siteId) {
+        this.siteId = siteId;
+    }
+
     public String getSiteName() {
         return siteName;
     }
 
     public void setSiteName(String siteName) {
         this.siteName = siteName;
-    }
-
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
     }
 
     public String getDescription() {
@@ -114,11 +133,11 @@ public class SitesInfoDto {
 
     @Override
     public String toString() {
-        return "SitesInfoDto{" +
+        return "SquaresInfo{" +
                 "id='" + id + '\'' +
+                ", squareName='" + squareName + '\'' +
+                ", siteId='" + siteId + '\'' +
                 ", siteName='" + siteName + '\'' +
-                ", projectId='" + projectId + '\'' +
-                ", projectName='" + projectName + '\'' +
                 ", description='" + description + '\'' +
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +
