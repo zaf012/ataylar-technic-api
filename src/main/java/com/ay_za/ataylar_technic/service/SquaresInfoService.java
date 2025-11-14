@@ -6,6 +6,7 @@ import com.ay_za.ataylar_technic.entity.SquaresInfo;
 import com.ay_za.ataylar_technic.mapper.SquaresInfoMapper;
 import com.ay_za.ataylar_technic.repository.SquaresInfoRepository;
 import com.ay_za.ataylar_technic.service.base.SquaresInfoServiceImpl;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +22,7 @@ public class SquaresInfoService implements SquaresInfoServiceImpl {
 
     public SquaresInfoService(SquaresInfoRepository squaresInfoRepository,
                               SquaresInfoMapper squaresInfoMapper,
-                              SitesInfoService sitesInfoService) {
+                              @Lazy SitesInfoService sitesInfoService) {
         this.squaresInfoRepository = squaresInfoRepository;
         this.squaresInfoMapper = squaresInfoMapper;
         this.sitesInfoService = sitesInfoService;
