@@ -1,12 +1,13 @@
 package com.ay_za.ataylar_technic.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "inventory_category")
@@ -19,6 +20,18 @@ public class InventoryCategory {
     @Column(name = "category_name", nullable = false, length = 200)
     private String categoryName;
 
+    @Column(name = "main_category_id", length = 200)
+    private String mainCategoryId;
+
+    @Column(name = "is_main_category")
+    private Boolean isMainCategory;
+
+    @Column(name = "market_code", length = 100)
+    private String marketCode;
+
+    @Column(name = "product_name", length = 200)
+    private String productName;
+
     @Column(name = "category_code", unique = true, length = 50)
     private String categoryCode;
 
@@ -28,22 +41,12 @@ public class InventoryCategory {
     @Column(name = "description", length = 500)
     private String description;
 
-    @Column(name = "level")
-    private Integer level; // 0: Ana kategori, 1,2,3... alt kategoriler
-
     @Column(name = "sort_order")
     private Integer sortOrder;
 
     @Column(name = "is_active")
     private Boolean isActive;
 
-    // Self-referencing relationship
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_category_id")
-    private InventoryCategory parentCategory;
-
-    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<InventoryCategory> subCategories = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_date")
@@ -63,19 +66,22 @@ public class InventoryCategory {
     public InventoryCategory() {
     }
 
-    public InventoryCategory(String id, String categoryName, String categoryCode, String qrCode,
-                           String description, Integer level, Integer sortOrder, Boolean isActive,
-                           InventoryCategory parentCategory, LocalDateTime createdDate,
-                           LocalDateTime updatedDate, String createdBy, String updatedBy) {
+    public InventoryCategory(String id, String categoryName, String mainCategoryId, Boolean isMainCategory,
+                           String marketCode, String productName, String categoryCode, String qrCode,
+                           String description, Integer sortOrder, Boolean isActive,
+                           LocalDateTime createdDate, LocalDateTime updatedDate,
+                           String createdBy, String updatedBy) {
         this.id = id;
         this.categoryName = categoryName;
+        this.mainCategoryId = mainCategoryId;
+        this.isMainCategory = isMainCategory;
+        this.marketCode = marketCode;
+        this.productName = productName;
         this.categoryCode = categoryCode;
         this.qrCode = qrCode;
         this.description = description;
-        this.level = level;
         this.sortOrder = sortOrder;
         this.isActive = isActive;
-        this.parentCategory = parentCategory;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.createdBy = createdBy;
@@ -97,6 +103,38 @@ public class InventoryCategory {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public String getMainCategoryId() {
+        return mainCategoryId;
+    }
+
+    public void setMainCategoryId(String mainCategoryId) {
+        this.mainCategoryId = mainCategoryId;
+    }
+
+    public Boolean getIsMainCategory() {
+        return isMainCategory;
+    }
+
+    public void setIsMainCategory(Boolean isMainCategory) {
+        this.isMainCategory = isMainCategory;
+    }
+
+    public String getMarketCode() {
+        return marketCode;
+    }
+
+    public void setMarketCode(String marketCode) {
+        this.marketCode = marketCode;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public String getCategoryCode() {
@@ -123,14 +161,6 @@ public class InventoryCategory {
         this.description = description;
     }
 
-    public Integer getLevel() {
-        return level;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
-
     public Integer getSortOrder() {
         return sortOrder;
     }
@@ -145,22 +175,6 @@ public class InventoryCategory {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
-    }
-
-    public InventoryCategory getParentCategory() {
-        return parentCategory;
-    }
-
-    public void setParentCategory(InventoryCategory parentCategory) {
-        this.parentCategory = parentCategory;
-    }
-
-    public List<InventoryCategory> getSubCategories() {
-        return subCategories;
-    }
-
-    public void setSubCategories(List<InventoryCategory> subCategories) {
-        this.subCategories = subCategories;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -196,11 +210,11 @@ public class InventoryCategory {
     }
 
     // Utility methods
-    public boolean isRootCategory() {
-        return parentCategory == null;
+    public boolean isMainCategoryType() {
+        return Boolean.TRUE.equals(isMainCategory);
     }
 
-    public boolean hasSubCategories() {
-        return subCategories != null && !subCategories.isEmpty();
+    public boolean hasMainCategory() {
+        return mainCategoryId != null && !mainCategoryId.isEmpty();
     }
 }

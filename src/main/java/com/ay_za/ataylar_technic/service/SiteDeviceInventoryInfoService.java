@@ -302,9 +302,13 @@ public class SiteDeviceInventoryInfoService {
     }
 
     private void buildHierarchyRecursive(InventoryCategory category, StringBuilder hierarchy) {
-        if (category.getParentCategory() != null) {
-            buildHierarchyRecursive(category.getParentCategory(), hierarchy);
-            hierarchy.append(" > ");
+        // Ana kategorisi varsa önce onu ekle
+        if (category.getMainCategoryId() != null && !category.getMainCategoryId().isEmpty()) {
+            Optional<InventoryCategory> mainCategory = inventoryCategoryRepository.findById(category.getMainCategoryId());
+            if (mainCategory.isPresent()) {
+                buildHierarchyRecursive(mainCategory.get(), hierarchy);
+                hierarchy.append(" > ");
+            }
         }
         hierarchy.append(category.getCategoryName());
     }

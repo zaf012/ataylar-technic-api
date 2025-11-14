@@ -3,7 +3,6 @@ package com.ay_za.ataylar_technic.controller;
 import com.ay_za.ataylar_technic.dto.InventoryCategoryDto;
 import com.ay_za.ataylar_technic.service.InventoryCategoryService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,196 +12,141 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/inventory-categories")
-@Tag(name = "Inventory Categories", description = "Envanter kategori yönetimi - Hiyerarşik kategori sistemi")
+@Tag(name = "Inventory Category", description = "Envanter Kategori Yönetimi")
 public class InventoryCategoryController {
 
-    private final InventoryCategoryService inventoryCategoryService;
+    private final InventoryCategoryService service;
 
-    public InventoryCategoryController(InventoryCategoryService inventoryCategoryService) {
-        this.inventoryCategoryService = inventoryCategoryService;
-    }
-
-    // ===== Temel CRUD Endpoints =====
-
-    @GetMapping
-    @Operation(summary = "Tüm kategorileri getir", description = "Sistemdeki tüm kategorileri döner")
-    public ResponseEntity<List<InventoryCategoryDto>> getAllCategories() {
-        List<InventoryCategoryDto> categories = inventoryCategoryService.getAllCategories();
-        return ResponseEntity.ok(categories);
-    }
-
-    @GetMapping("/active")
-    @Operation(summary = "Aktif kategorileri getir", description = "Sadece aktif olan kategorileri döner")
-    public ResponseEntity<List<InventoryCategoryDto>> getActiveCategories() {
-        List<InventoryCategoryDto> activeCategories = inventoryCategoryService.getActiveCategories();
-        return ResponseEntity.ok(activeCategories);
-    }
-
-    @GetMapping("/{id}")
-    @Operation(summary = "ID ile kategori getir", description = "Belirtilen ID'ye sahip kategoriyi döner")
-    public ResponseEntity<InventoryCategoryDto> getCategoryById(
-            @Parameter(description = "Kategori ID'si") @PathVariable String id) {
-        InventoryCategoryDto category = inventoryCategoryService.getCategoryById(id);
-        return ResponseEntity.ok(category);
+    public InventoryCategoryController(InventoryCategoryService service) {
+        this.service = service;
     }
 
     @PostMapping
-    @Operation(summary = "Yeni kategori oluştur", description = "Yeni kategori oluşturur. QR kod otomatik oluşturulur.")
-    public ResponseEntity<InventoryCategoryDto> createCategory(@RequestBody InventoryCategoryDto categoryDto) {
-        InventoryCategoryDto createdCategory = inventoryCategoryService.createCategory(categoryDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
+    @Operation(summary = "Yeni kategori oluştur", description = "Ana kategori veya alt kategori oluşturur")
+    public ResponseEntity<InventoryCategoryDto> createCategory(@RequestBody InventoryCategoryDto dto) {
+        InventoryCategoryDto created = service.createCategory(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Kategori güncelle", description = "Mevcut kategoriyi günceller")
+    @Operation(summary = "Kategori güncelle", description = "Mevcut bir kategoriyi günceller")
     public ResponseEntity<InventoryCategoryDto> updateCategory(
-            @Parameter(description = "Kategori ID'si") @PathVariable String id,
-            @RequestBody InventoryCategoryDto categoryDto) {
-        InventoryCategoryDto updatedCategory = inventoryCategoryService.updateCategory(id, categoryDto);
-        return ResponseEntity.ok(updatedCategory);
+            @PathVariable String id,
+            @RequestBody InventoryCategoryDto dto) {
+        InventoryCategoryDto updated = service.updateCategory(id, dto);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Kategori sil", description = "Belirtilen kategoriyi siler. Alt kategorisi varsa silinemez.")
-    public ResponseEntity<Void> deleteCategory(
-            @Parameter(description = "Kategori ID'si") @PathVariable String id) {
-        inventoryCategoryService.deleteCategory(id);
+    @Operation(summary = "Kategori sil", description = "Kategoriyi siler (alt kategorisi yoksa)")
+    public ResponseEntity<Void> deleteCategory(@PathVariable String id) {
+        service.deleteCategory(id);
         return ResponseEntity.noContent().build();
     }
 
-    // ===== Hiyerarşik Endpoints =====
-
-    @GetMapping("/root")
-    @Operation(summary = "Ana kategorileri getir", description = "Üst kategorisi olmayan ana kategorileri döner")
-    public ResponseEntity<List<InventoryCategoryDto>> getRootCategories() {
-        List<InventoryCategoryDto> rootCategories = inventoryCategoryService.getRootCategories();
-        return ResponseEntity.ok(rootCategories);
-    }
-
-    @GetMapping("/root/active")
-    @Operation(summary = "Aktif ana kategorileri getir", description = "Aktif olan ana kategorileri döner")
-    public ResponseEntity<List<InventoryCategoryDto>> getActiveRootCategories() {
-        List<InventoryCategoryDto> activeRootCategories = inventoryCategoryService.getActiveRootCategories();
-        return ResponseEntity.ok(activeRootCategories);
-    }
-
-    @GetMapping("/{parentId}/subcategories")
-    @Operation(summary = "Alt kategorileri getir", description = "Belirtilen kategorinin alt kategorilerini döner")
-    public ResponseEntity<List<InventoryCategoryDto>> getSubCategories(
-            @Parameter(description = "Üst kategori ID'si") @PathVariable String parentId) {
-        List<InventoryCategoryDto> subCategories = inventoryCategoryService.getSubCategories(parentId);
-        return ResponseEntity.ok(subCategories);
-    }
-
-    @GetMapping("/{parentId}/subcategories/active")
-    @Operation(summary = "Aktif alt kategorileri getir", description = "Belirtilen kategorinin aktif alt kategorilerini döner")
-    public ResponseEntity<List<InventoryCategoryDto>> getActiveSubCategories(
-            @Parameter(description = "Üst kategori ID'si") @PathVariable String parentId) {
-        List<InventoryCategoryDto> activeSubCategories = inventoryCategoryService.getActiveSubCategories(parentId);
-        return ResponseEntity.ok(activeSubCategories);
-    }
-
-    @GetMapping("/{id}/with-subcategories")
-    @Operation(summary = "Kategori ve alt kategorileri", description = "Kategoriyi alt kategorileriyle birlikte döner")
-    public ResponseEntity<InventoryCategoryDto> getCategoryWithSubCategories(
-            @Parameter(description = "Kategori ID'si") @PathVariable String id) {
-        InventoryCategoryDto categoryWithSubs = inventoryCategoryService.getCategoryWithSubCategories(id);
-        return ResponseEntity.ok(categoryWithSubs);
-    }
-
-    @GetMapping("/hierarchy")
-    @Operation(summary = "Tam kategori hiyerarşisi", description = "Tüm kategori ağacını hiyerarşik yapıda döner")
-    public ResponseEntity<List<InventoryCategoryDto>> getCategoryHierarchy() {
-        List<InventoryCategoryDto> hierarchy = inventoryCategoryService.getCategoryHierarchy();
-        return ResponseEntity.ok(hierarchy);
-    }
-
-    // ===== Arama Endpoints =====
-
-    @GetMapping("/by-qr-code/{qrCode}")
-    @Operation(summary = "QR kod ile kategori bul", description = "QR kod ile kategori arar")
-    public ResponseEntity<InventoryCategoryDto> getCategoryByQrCode(
-            @Parameter(description = "QR kod") @PathVariable String qrCode) {
-        InventoryCategoryDto category = inventoryCategoryService.getCategoryByQrCode(qrCode);
+    @GetMapping("/{id}")
+    @Operation(summary = "Kategori detayı", description = "ID'ye göre kategori getirir")
+    public ResponseEntity<InventoryCategoryDto> getCategoryById(@PathVariable String id) {
+        InventoryCategoryDto category = service.getCategoryById(id);
         return ResponseEntity.ok(category);
     }
 
-    @GetMapping("/by-category-code/{categoryCode}")
-    @Operation(summary = "Kategori kodu ile bul", description = "Kategori kodu ile kategori arar")
-    public ResponseEntity<InventoryCategoryDto> getCategoryByCategoryCode(
-            @Parameter(description = "Kategori kodu") @PathVariable String categoryCode) {
-        InventoryCategoryDto category = inventoryCategoryService.getCategoryByCategoryCode(categoryCode);
+    @GetMapping
+    @Operation(summary = "Tüm kategorileri listele", description = "Tüm kategorileri getirir")
+    public ResponseEntity<List<InventoryCategoryDto>> getAllCategories() {
+        List<InventoryCategoryDto> categories = service.getAllCategories();
+        return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("/main")
+    @Operation(summary = "Ana kategorileri listele", description = "Sadece ana kategorileri getirir")
+    public ResponseEntity<List<InventoryCategoryDto>> getMainCategories() {
+        List<InventoryCategoryDto> categories = service.getMainCategories();
+        return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("/sub-categories/{mainCategoryId}")
+    @Operation(summary = "Alt kategorileri listele", description = "Belirli bir ana kategorinin alt kategorilerini getirir")
+    public ResponseEntity<List<InventoryCategoryDto>> getSubCategories(@PathVariable String mainCategoryId) {
+        List<InventoryCategoryDto> categories = service.getSubCategoriesByMainCategoryId(mainCategoryId);
+        return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("/hierarchy")
+    @Operation(summary = "Hiyerarşik yapı", description = "Tüm kategorileri hiyerarşik yapıda getirir")
+    public ResponseEntity<List<InventoryCategoryDto>> getCategoryHierarchy() {
+        List<InventoryCategoryDto> hierarchy = service.getCategoryHierarchy();
+        return ResponseEntity.ok(hierarchy);
+    }
+
+    @GetMapping("/{id}/with-subs")
+    @Operation(summary = "Alt kategorilerle birlikte getir", description = "Kategoriyi alt kategorileriyle birlikte getirir")
+    public ResponseEntity<InventoryCategoryDto> getCategoryWithSubCategories(@PathVariable String id) {
+        InventoryCategoryDto category = service.getCategoryWithSubCategories(id);
+        return ResponseEntity.ok(category);
+    }
+
+    @GetMapping("/active")
+    @Operation(summary = "Aktif kategorileri listele", description = "Sadece aktif kategorileri getirir")
+    public ResponseEntity<List<InventoryCategoryDto>> getActiveCategories() {
+        List<InventoryCategoryDto> categories = service.getActiveCategories();
+        return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("/active/main")
+    @Operation(summary = "Aktif ana kategorileri listele", description = "Sadece aktif ana kategorileri getirir")
+    public ResponseEntity<List<InventoryCategoryDto>> getActiveMainCategories() {
+        List<InventoryCategoryDto> categories = service.getActiveMainCategories();
+        return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("/active/sub-categories/{mainCategoryId}")
+    @Operation(summary = "Aktif alt kategorileri listele", description = "Belirli bir ana kategorinin aktif alt kategorilerini getirir")
+    public ResponseEntity<List<InventoryCategoryDto>> getActiveSubCategories(@PathVariable String mainCategoryId) {
+        List<InventoryCategoryDto> categories = service.getActiveSubCategoriesByMainCategoryId(mainCategoryId);
+        return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("/by-code/{categoryCode}")
+    @Operation(summary = "Kategori koduna göre getir", description = "Kategori koduna göre kategori getirir")
+    public ResponseEntity<InventoryCategoryDto> getCategoryByCategoryCode(@PathVariable String categoryCode) {
+        InventoryCategoryDto category = service.getCategoryByCategoryCode(categoryCode);
+        return ResponseEntity.ok(category);
+    }
+
+    @GetMapping("/by-qr/{qrCode}")
+    @Operation(summary = "QR koduna göre getir", description = "QR koduna göre kategori getirir")
+    public ResponseEntity<InventoryCategoryDto> getCategoryByQrCode(@PathVariable String qrCode) {
+        InventoryCategoryDto category = service.getCategoryByQrCode(qrCode);
         return ResponseEntity.ok(category);
     }
 
     @GetMapping("/search")
-    @Operation(summary = "İsme göre arama", description = "Kategori ismine göre arama yapar")
-    public ResponseEntity<List<InventoryCategoryDto>> searchCategoriesByName(
-            @Parameter(description = "Aranacak isim") @RequestParam String name) {
-        List<InventoryCategoryDto> categories = inventoryCategoryService.searchCategoriesByName(name);
+    @Operation(summary = "İsme göre ara", description = "Kategori adına göre arama yapar")
+    public ResponseEntity<List<InventoryCategoryDto>> searchCategoriesByName(@RequestParam String name) {
+        List<InventoryCategoryDto> categories = service.searchCategoriesByName(name);
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/by-level/{level}")
-    @Operation(summary = "Seviyeye göre kategoriler", description = "Belirtilen seviyedeki kategorileri döner (0=ana kategori)")
-    public ResponseEntity<List<InventoryCategoryDto>> getCategoriesByLevel(
-            @Parameter(description = "Kategori seviyesi") @PathVariable Integer level) {
-        List<InventoryCategoryDto> categories = inventoryCategoryService.getCategoriesByLevel(level);
+    @GetMapping("/by-market/{marketCode}")
+    @Operation(summary = "Market koduna göre getir", description = "Market koduna göre kategorileri getirir")
+    public ResponseEntity<List<InventoryCategoryDto>> getCategoriesByMarketCode(@PathVariable String marketCode) {
+        List<InventoryCategoryDto> categories = service.getCategoriesByMarketCode(marketCode);
         return ResponseEntity.ok(categories);
     }
 
-    // ===== Yardımcı Endpoints =====
-
-    @GetMapping("/generate-qr-code")
-    @Operation(summary = "Yeni QR kod oluştur", description = "Benzersiz QR kod oluşturur")
-    public ResponseEntity<String> generateUniqueQrCode() {
-        String qrCode = inventoryCategoryService.generateUniqueQrCode();
-        return ResponseEntity.ok(qrCode);
+    @GetMapping("/exists/code/{categoryCode}")
+    @Operation(summary = "Kategori kodu kontrolü", description = "Kategori kodunun kullanılıp kullanılmadığını kontrol eder")
+    public ResponseEntity<Boolean> existsByCategoryCode(@PathVariable String categoryCode) {
+        boolean exists = service.existsByCategoryCode(categoryCode);
+        return ResponseEntity.ok(exists);
     }
 
-    @GetMapping("/validate-qr-code/{qrCode}")
-    @Operation(summary = "QR kod benzersizlik kontrolü", description = "QR kodun benzersiz olup olmadığını kontrol eder")
-    public ResponseEntity<Boolean> isQrCodeUnique(
-            @Parameter(description = "Kontrol edilecek QR kod") @PathVariable String qrCode) {
-        boolean isUnique = inventoryCategoryService.isQrCodeUnique(qrCode);
-        return ResponseEntity.ok(isUnique);
-    }
-
-    @GetMapping("/validate-category-code/{categoryCode}")
-    @Operation(summary = "Kategori kodu benzersizlik kontrolü", description = "Kategori kodunun benzersiz olup olmadığını kontrol eder")
-    public ResponseEntity<Boolean> isCategoryCodeUnique(
-            @Parameter(description = "Kontrol edilecek kategori kodu") @PathVariable String categoryCode) {
-        boolean isUnique = inventoryCategoryService.isCategoryCodeUnique(categoryCode);
-        return ResponseEntity.ok(isUnique);
-    }
-
-    @GetMapping("/{parentId}/subcategory-count")
-    @Operation(summary = "Alt kategori sayısı", description = "Belirtilen kategorinin alt kategori sayısını döner")
-    public ResponseEntity<Long> getSubCategoryCount(
-            @Parameter(description = "Üst kategori ID'si") @PathVariable String parentId) {
-        Long count = inventoryCategoryService.getSubCategoryCount(parentId);
-        return ResponseEntity.ok(count);
-    }
-
-    @GetMapping("/{id}/can-delete")
-    @Operation(summary = "Silinebilir mi kontrolü", description = "Kategorinin silinip silinemeyeceğini kontrol eder")
-    public ResponseEntity<Boolean> canDeleteCategory(
-            @Parameter(description = "Kategori ID'si") @PathVariable String id) {
-        boolean canDelete = inventoryCategoryService.canDeleteCategory(id);
-        return ResponseEntity.ok(canDelete);
-    }
-
-    // ===== Dummy Data Endpoint =====
-
-    @PostMapping("/create-default-data")
-    @Operation(
-        summary = "Örnek envanter kategorileri oluştur",
-        description = "Yangın Sistemleri, Pompa Sistemleri, Jeneratör Sistemleri vs. ile " +
-                     "tam hiyerarşik kategori yapısını oluşturur. Ekran görüntülerindeki " +
-                     "kategori yapısına uygun örnek veriler ekler."
-    )
-    public ResponseEntity<String> createDefaultData() {
-        String result = inventoryCategoryService.createDefaultCategoriesAndData();
-        return ResponseEntity.ok(result);
+    @GetMapping("/exists/qr/{qrCode}")
+    @Operation(summary = "QR kodu kontrolü", description = "QR kodunun kullanılıp kullanılmadığını kontrol eder")
+    public ResponseEntity<Boolean> existsByQrCode(@PathVariable String qrCode) {
+        boolean exists = service.existsByQrCode(qrCode);
+        return ResponseEntity.ok(exists);
     }
 }
+

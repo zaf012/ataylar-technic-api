@@ -1,55 +1,58 @@
 package com.ay_za.ataylar_technic.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class InventoryCategoryDto {
 
     private String id;
     private String categoryName;
+    private String mainCategoryId;
+    private Boolean isMainCategory;
+    private String marketCode;
+    private String productName;
     private String categoryCode;
     private String qrCode;
     private String description;
-    private Integer level;
     private Integer sortOrder;
     private Boolean isActive;
-    private String parentCategoryId;
-    private String parentCategoryName;
-    private List<InventoryCategoryDto> subCategories;
 
-    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdDate;
 
-    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedDate;
 
     private String createdBy;
     private String updatedBy;
 
+    // Alt kategorileri getirmek için (opsiyonel)
+    private List<InventoryCategoryDto> subCategories;
+
+    // Ana kategori bilgisi (opsiyonel)
+    private String mainCategoryName;
+
     // Constructors
     public InventoryCategoryDto() {
     }
 
-    public InventoryCategoryDto(String id, String categoryName, String categoryCode, String qrCode,
-                              String description, Integer level, Integer sortOrder, Boolean isActive,
-                              String parentCategoryId, String parentCategoryName,
-                              List<InventoryCategoryDto> subCategories, LocalDateTime createdDate,
-                              LocalDateTime updatedDate, String createdBy, String updatedBy) {
+    public InventoryCategoryDto(String id, String categoryName, String mainCategoryId, Boolean isMainCategory,
+                              String marketCode, String productName, String categoryCode, String qrCode,
+                              String description, Integer sortOrder, Boolean isActive,
+                              LocalDateTime createdDate, LocalDateTime updatedDate,
+                              String createdBy, String updatedBy) {
         this.id = id;
         this.categoryName = categoryName;
+        this.mainCategoryId = mainCategoryId;
+        this.isMainCategory = isMainCategory;
+        this.marketCode = marketCode;
+        this.productName = productName;
         this.categoryCode = categoryCode;
         this.qrCode = qrCode;
         this.description = description;
-        this.level = level;
         this.sortOrder = sortOrder;
         this.isActive = isActive;
-        this.parentCategoryId = parentCategoryId;
-        this.parentCategoryName = parentCategoryName;
-        this.subCategories = subCategories;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.createdBy = createdBy;
@@ -71,6 +74,38 @@ public class InventoryCategoryDto {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public String getMainCategoryId() {
+        return mainCategoryId;
+    }
+
+    public void setMainCategoryId(String mainCategoryId) {
+        this.mainCategoryId = mainCategoryId;
+    }
+
+    public Boolean getIsMainCategory() {
+        return isMainCategory;
+    }
+
+    public void setIsMainCategory(Boolean isMainCategory) {
+        this.isMainCategory = isMainCategory;
+    }
+
+    public String getMarketCode() {
+        return marketCode;
+    }
+
+    public void setMarketCode(String marketCode) {
+        this.marketCode = marketCode;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public String getCategoryCode() {
@@ -97,14 +132,6 @@ public class InventoryCategoryDto {
         this.description = description;
     }
 
-    public Integer getLevel() {
-        return level;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
-
     public Integer getSortOrder() {
         return sortOrder;
     }
@@ -119,30 +146,6 @@ public class InventoryCategoryDto {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
-    }
-
-    public String getParentCategoryId() {
-        return parentCategoryId;
-    }
-
-    public void setParentCategoryId(String parentCategoryId) {
-        this.parentCategoryId = parentCategoryId;
-    }
-
-    public String getParentCategoryName() {
-        return parentCategoryName;
-    }
-
-    public void setParentCategoryName(String parentCategoryName) {
-        this.parentCategoryName = parentCategoryName;
-    }
-
-    public List<InventoryCategoryDto> getSubCategories() {
-        return subCategories;
-    }
-
-    public void setSubCategories(List<InventoryCategoryDto> subCategories) {
-        this.subCategories = subCategories;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -176,4 +179,21 @@ public class InventoryCategoryDto {
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
+
+    public List<InventoryCategoryDto> getSubCategories() {
+        return subCategories;
+    }
+
+    public void setSubCategories(List<InventoryCategoryDto> subCategories) {
+        this.subCategories = subCategories;
+    }
+
+    public String getMainCategoryName() {
+        return mainCategoryName;
+    }
+
+    public void setMainCategoryName(String mainCategoryName) {
+        this.mainCategoryName = mainCategoryName;
+    }
 }
+

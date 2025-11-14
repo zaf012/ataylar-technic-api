@@ -12,69 +12,45 @@ import java.util.Optional;
 @Repository
 public interface InventoryCategoryRepository extends JpaRepository<InventoryCategory, String> {
 
-    // Ana kategorileri getir (parent'ı null olanlar)
-    @Query("SELECT c FROM InventoryCategory c WHERE c.parentCategory IS NULL ORDER BY c.sortOrder")
-    List<InventoryCategory> findRootCategories();
+    // Ana kategorileri getir (mainCategoryId null olanlar veya isMainCategory true olanlar)
+    @Query("SELECT ic FROM InventoryCategory ic WHERE ic.isMainCategory = true OR ic.mainCategoryId IS NULL ORDER BY ic.sortOrder")
+    List<InventoryCategory> findMainCategories();
 
-    // Aktif ana kategorileri getir
-    @Query("SELECT c FROM InventoryCategory c WHERE c.parentCategory IS NULL AND c.isActive = true ORDER BY c.sortOrder")
-    List<InventoryCategory> findActiveRootCategories();
-
-    // Belirli bir kategorinin alt kategorilerini getir
-    @Query("SELECT c FROM InventoryCategory c WHERE c.parentCategory.id = :parentId ORDER BY c.sortOrder")
-    List<InventoryCategory> findByParentCategoryId(@Param("parentId") String parentId);
-
-    // Belirli bir kategorinin aktif alt kategorilerini getir
-    @Query("SELECT c FROM InventoryCategory c WHERE c.parentCategory.id = :parentId AND c.isActive = true ORDER BY c.sortOrder")
-    List<InventoryCategory> findActiveByParentCategoryId(@Param("parentId") String parentId);
-
-    // QR kod ile kategori bul
-    Optional<InventoryCategory> findByQrCode(String qrCode);
-
-    // Kategori kodu ile kategori bul
-    Optional<InventoryCategory> findByCategoryCode(String categoryCode);
-
-    // Belirli level'daki kategorileri getir
-    @Query("SELECT c FROM InventoryCategory c WHERE c.level = :level ORDER BY c.sortOrder")
-    List<InventoryCategory> findByLevel(@Param("level") Integer level);
-
-    // Kategori adına göre arama (LIKE)
-    @Query("SELECT c FROM InventoryCategory c WHERE LOWER(c.categoryName) LIKE LOWER(CONCAT('%', :name, '%')) ORDER BY c.sortOrder")
-    List<InventoryCategory> findByCategoryNameContaining(@Param("name") String name);
-
-    // Belirli bir kategorinin tüm alt kategorilerini recursive olarak getir
-    @Query("SELECT c FROM InventoryCategory c WHERE c.parentCategory.id = :parentId " +
-           "UNION ALL " +
-           "SELECT sc FROM InventoryCategory sc WHERE sc.parentCategory.id IN " +
-           "(SELECT c2.id FROM InventoryCategory c2 WHERE c2.parentCategory.id = :parentId)")
-    List<InventoryCategory> findAllSubCategoriesRecursive(@Param("parentId") String parentId);
-
-    // QR kod unique kontrolü
-    boolean existsByQrCode(String qrCode);
-
-    // Kategori kodu unique kontrolü
-    boolean existsByCategoryCode(String categoryCode);
-
-    // Belirli parent category'de max sort order'ı bul
-    @Query("SELECT MAX(c.sortOrder) FROM InventoryCategory c WHERE c.parentCategory.id = :parentId")
-    Integer findMaxSortOrderByParentId(@Param("parentId") String parentId);
-
-    // Root kategorilerde max sort order'ı bul
-    @Query("SELECT MAX(c.sortOrder) FROM InventoryCategory c WHERE c.parentCategory IS NULL")
-    Integer findMaxSortOrderForRootCategories();
-
-    // Kategorinin child sayısını getir
-    @Query("SELECT COUNT(c) FROM InventoryCategory c WHERE c.parentCategory.id = :parentId")
-    Long countByParentCategoryId(@Param("parentId") String parentId);
+    // Belirli bir ana kategorinin alt kategorilerini getir
+    @Query("SELECT ic FROM InventoryCategory ic WHERE ic.mainCategoryId = :mainCategoryId ORDER BY ic.sortOrder")
+    List<InventoryCategory> findByMainCategoryId(@Param("mainCategoryId") String mainCategoryId);
 
     // Aktif kategorileri getir
-    List<InventoryCategory> findByIsActiveTrueOrderBySortOrder();
+    List<InventoryCategory> findByIsActiveTrue();
 
-    // Parent category ve isim ile arama (aynı parent altında aynı isim olmasın)
-    @Query("SELECT c FROM InventoryCategory c WHERE c.parentCategory.id = :parentId AND LOWER(c.categoryName) = LOWER(:categoryName)")
-    Optional<InventoryCategory> findByParentCategoryIdAndCategoryNameIgnoreCase(@Param("parentId") String parentId, @Param("categoryName") String categoryName);
+    // Aktif ana kategorileri getir
+    @Query("SELECT ic FROM InventoryCategory ic WHERE ic.isActive = true AND (ic.isMainCategory = true OR ic.mainCategoryId IS NULL) ORDER BY ic.sortOrder")
+    List<InventoryCategory> findActiveMainCategories();
 
-    // Root level'da isim ile arama
-    @Query("SELECT c FROM InventoryCategory c WHERE c.parentCategory IS NULL AND LOWER(c.categoryName) = LOWER(:categoryName)")
-    Optional<InventoryCategory> findRootByCategoryNameIgnoreCase(@Param("categoryName") String categoryName);
+    // Belirli bir ana kategorinin aktif alt kategorilerini getir
+    @Query("SELECT ic FROM InventoryCategory ic WHERE ic.mainCategoryId = :mainCategoryId AND ic.isActive = true ORDER BY ic.sortOrder")
+    List<InventoryCategory> findActiveSubCategoriesByMainCategoryId(@Param("mainCategoryId") String mainCategoryId);
+
+    // Category code ile arama
+    Optional<InventoryCategory> findByCategoryCode(String categoryCode);
+
+    // QR code ile arama
+    Optional<InventoryCategory> findByQrCode(String qrCode);
+
+    // Category name ile arama
+    List<InventoryCategory> findByCategoryNameContainingIgnoreCase(String categoryName);
+
+    // Market code ile arama
+    List<InventoryCategory> findByMarketCode(String marketCode);
+
+    // Hiyerarşik yapı için tüm kategorileri getir (ana kategoriler ve alt kategoriler)
+    @Query("SELECT ic FROM InventoryCategory ic ORDER BY ic.mainCategoryId NULLS FIRST, ic.sortOrder")
+    List<InventoryCategory> findAllOrderedByHierarchy();
+
+    // Kategori kodu varlık kontrolü
+    boolean existsByCategoryCode(String categoryCode);
+
+    // QR kodu varlık kontrolü
+    boolean existsByQrCode(String qrCode);
 }
+
