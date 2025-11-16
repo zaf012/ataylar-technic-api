@@ -21,17 +21,20 @@ public interface SiteDeviceInventoryInfoRepository extends JpaRepository<SiteDev
     // Site ID'ye göre cihazları bulma
     List<SiteDeviceInventoryInfo> findBySiteId(String siteId);
 
-    // Site ve ada bilgisine göre cihazları bulma
-    List<SiteDeviceInventoryInfo> findBySiteIdAndAda(String siteId, String ada);
+    // Site ve square (ada) bilgisine göre cihazları bulma
+    List<SiteDeviceInventoryInfo> findBySiteIdAndSquareId(String siteId, String squareId);
 
-    // Site, ada ve blok bilgisine göre cihazları bulma
-    List<SiteDeviceInventoryInfo> findBySiteIdAndAdaAndBlockName(String siteId, String ada, String blockName);
+    // Site, square ve blok bilgisine göre cihazları bulma
+    List<SiteDeviceInventoryInfo> findBySiteIdAndSquareIdAndBlockId(String siteId, String squareId, String blockId);
 
     // Aktif cihazları bulma
     List<SiteDeviceInventoryInfo> findByIsActive(Boolean isActive);
 
     // Belirli bir envanter kategorisindeki cihazları bulma
     List<SiteDeviceInventoryInfo> findByInventoryCategoryId(String inventoryCategoryId);
+
+    // Sistem ID'sine göre cihazları bulma
+    List<SiteDeviceInventoryInfo> findBySystemId(String systemId);
 
     // Site adına göre arama (like)
     @Query("SELECT s FROM SiteDeviceInventoryInfo s WHERE s.siteName LIKE %:siteName%")
@@ -49,28 +52,28 @@ public interface SiteDeviceInventoryInfoRepository extends JpaRepository<SiteDev
     List<SiteDeviceInventoryInfo> findByFloor(Integer floor);
 
     // Daire numarasına göre cihazları bulma (null kontrolü ile)
-    List<SiteDeviceInventoryInfo> findByApartmentNumber(String apartmentNumber);
+    List<SiteDeviceInventoryInfo> findByDoorNo(String doorNo);
 
-    // Kompleks arama - site, ada, blok ve aktiflik durumu
+    // Kompleks arama - site, square, blok ve aktiflik durumu
     @Query("SELECT s FROM SiteDeviceInventoryInfo s WHERE " +
            "(:siteId IS NULL OR s.siteId = :siteId) AND " +
-           "(:ada IS NULL OR s.ada = :ada) AND " +
-           "(:blockName IS NULL OR s.blockName = :blockName) AND " +
+           "(:squareId IS NULL OR s.squareId = :squareId) AND " +
+           "(:blockId IS NULL OR s.blockId = :blockId) AND " +
            "(:isActive IS NULL OR s.isActive = :isActive)")
     List<SiteDeviceInventoryInfo> findByCriteria(@Param("siteId") String siteId,
-                                                  @Param("ada") String ada,
-                                                  @Param("blockName") String blockName,
+                                                  @Param("squareId") String squareId,
+                                                  @Param("blockId") String blockId,
                                                   @Param("isActive") Boolean isActive);
 
-    // Site, ada, blok ve kat bilgisine göre cihaz sayısını döndürme
+    // Site, square, blok ve kat bilgisine göre cihaz sayısını döndürme
     @Query("SELECT COUNT(s) FROM SiteDeviceInventoryInfo s WHERE " +
-           "s.siteId = :siteId AND s.ada = :ada AND s.blockName = :blockName AND s.floor = :floor")
+           "s.siteId = :siteId AND s.squareId = :squareId AND s.blockId = :blockId AND s.floor = :floor")
     Long countDevicesInLocation(@Param("siteId") String siteId,
-                                @Param("ada") String ada,
-                                @Param("blockName") String blockName,
+                                @Param("squareId") String squareId,
+                                @Param("blockId") String blockId,
                                 @Param("floor") Integer floor);
 
     // Belirli bir kategori hiyerarşisinde kaç cihaz olduğunu sayma
-    @Query("SELECT COUNT(s) FROM SiteDeviceInventoryInfo s WHERE s.categoryHierarchy LIKE %:categoryHierarchy%")
-    Long countByCategoryHierarchy(@Param("categoryHierarchy") String categoryHierarchy);
+    @Query("SELECT COUNT(s) FROM SiteDeviceInventoryInfo s WHERE s.inventoryCategoryName LIKE %:inventoryCategoryName%")
+    Long countByInventoryCategoryName(@Param("inventoryCategoryName") String inventoryCategoryName);
 }

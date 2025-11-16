@@ -21,13 +21,11 @@ public class InventoryCategoryMapper {
         dto.setId(entity.getId());
         dto.setCategoryName(entity.getCategoryName());
         dto.setMainCategoryId(entity.getMainCategoryId());
+        dto.setMainCategoryName(entity.getMainCategoryName());
         dto.setIsMainCategory(entity.getIsMainCategory());
         dto.setMarketCode(entity.getMarketCode());
         dto.setProductName(entity.getProductName());
-        dto.setCategoryCode(entity.getCategoryCode());
-        dto.setQrCode(entity.getQrCode());
-        dto.setDescription(entity.getDescription());
-        dto.setSortOrder(entity.getSortOrder());
+        dto.setBrandName(entity.getBrandName());
         dto.setIsActive(entity.getIsActive());
         dto.setCreatedDate(entity.getCreatedDate());
         dto.setUpdatedDate(entity.getUpdatedDate());
@@ -46,13 +44,11 @@ public class InventoryCategoryMapper {
         entity.setId(dto.getId());
         entity.setCategoryName(dto.getCategoryName());
         entity.setMainCategoryId(dto.getMainCategoryId());
+        entity.setMainCategoryName(dto.getMainCategoryName());
         entity.setIsMainCategory(dto.getIsMainCategory());
         entity.setMarketCode(dto.getMarketCode());
         entity.setProductName(dto.getProductName());
-        entity.setCategoryCode(dto.getCategoryCode());
-        entity.setQrCode(dto.getQrCode());
-        entity.setDescription(dto.getDescription());
-        entity.setSortOrder(dto.getSortOrder());
+        entity.setBrandName(dto.getBrandName());
         entity.setIsActive(dto.getIsActive());
         entity.setCreatedBy(dto.getCreatedBy());
         entity.setUpdatedBy(dto.getUpdatedBy());
@@ -76,15 +72,6 @@ public class InventoryCategoryMapper {
         return dtos.stream()
                 .map(this::toEntity)
                 .collect(Collectors.toList());
-    }
-
-    // Alt kategorilerle birlikte DTO'ya çevirme (hiyerarşik yapı için)
-    public InventoryCategoryDto toDtoWithSubCategories(InventoryCategory entity, List<InventoryCategory> subCategories) {
-        InventoryCategoryDto dto = toDto(entity);
-        if (subCategories != null && !subCategories.isEmpty()) {
-            dto.setSubCategories(toDtoList(subCategories));
-        }
-        return dto;
     }
 }
 

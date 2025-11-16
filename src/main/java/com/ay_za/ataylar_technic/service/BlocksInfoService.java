@@ -66,6 +66,7 @@ public class BlocksInfoService implements BlocksInfoServiceImpl {
         blocksInfo.setBlockName(blocksInfoDto.getBlockName().trim());
         blocksInfo.setBlockCode(blocksInfoDto.getBlockCode() != null ? blocksInfoDto.getBlockCode().trim() : null);
         blocksInfo.setSquareId(blocksInfoDto.getSquareId().trim());
+        blocksInfo.setSquareName(blocksInfoDto.getSquareName().trim());
         blocksInfo.setDescription(blocksInfoDto.getDescription());
         blocksInfo.setCreatedDate(LocalDateTime.now());
         blocksInfo.setUpdatedDate(LocalDateTime.now());
@@ -282,5 +283,12 @@ public class BlocksInfoService implements BlocksInfoServiceImpl {
     public Optional<BlocksInfoDto> getBlockDtoById(String id) {
         Optional<BlocksInfo> block = blocksInfoRepository.findById(id);
         return block.map(blocksInfoMapper::convertToDTO);
+    }
+
+    /**
+     * Blok ID'ye göre blok entity getir
+     */
+    public Optional<BlocksInfo> getBlockEntityById(String id) {
+        return blocksInfoRepository.findById(id);
     }
 }

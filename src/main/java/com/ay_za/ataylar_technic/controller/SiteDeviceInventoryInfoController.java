@@ -143,21 +143,36 @@ public class SiteDeviceInventoryInfoController {
     }
 
     /**
-     * Site, ada ve blok bilgisine göre cihazları listele
+     * Site, square ve blok bilgisine göre cihazları listele
      */
     @GetMapping("/list/location")
-    @Operation(summary = "Lokasyona göre cihazları listele", description = "Site, ada ve blok bilgisine göre cihazları listeler")
+    @Operation(summary = "Lokasyona göre cihazları listele", description = "Site, square ve blok bilgisine göre cihazları listeler")
     public ResponseEntity<?> getDevicesByLocation(
             @Parameter(description = "Site ID") @RequestParam String siteId,
-            @Parameter(description = "Ada") @RequestParam String ada,
-            @Parameter(description = "Blok Adı") @RequestParam String blockName) {
+            @Parameter(description = "Square ID (Ada)") @RequestParam String squareId,
+            @Parameter(description = "Blok ID") @RequestParam String blockId) {
         try {
             List<SiteDeviceInventoryInfoDto> devices = siteDeviceInventoryInfoService
-                    .getDevicesBySiteAdaBlock(siteId, ada, blockName);
+                    .getDevicesBySiteSquareBlock(siteId, squareId, blockId);
             return ResponseEntity.ok(devices);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Lokasyon cihazları listelenirken hata: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Sistem ID'ye göre cihazları listele
+     */
+    @GetMapping("/list/system/{systemId}")
+    @Operation(summary = "Sistem ID'ye göre cihazları listele", description = "Belirtilen sistem ID'sine ait cihazları listeler")
+    public ResponseEntity<?> getDevicesBySystemId(@Parameter(description = "Sistem ID") @PathVariable String systemId) {
+        try {
+            List<SiteDeviceInventoryInfoDto> devices = siteDeviceInventoryInfoService.getDevicesBySystemId(systemId);
+            return ResponseEntity.ok(devices);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Sistem cihazları listelenirken hata: " + e.getMessage());
         }
     }
 
@@ -168,12 +183,12 @@ public class SiteDeviceInventoryInfoController {
     @Operation(summary = "Kriterlere göre cihaz arama", description = "Belirtilen kriterlere göre cihaz arama yapar")
     public ResponseEntity<?> searchDevices(
             @Parameter(description = "Site ID") @RequestParam(required = false) String siteId,
-            @Parameter(description = "Ada") @RequestParam(required = false) String ada,
-            @Parameter(description = "Blok Adı") @RequestParam(required = false) String blockName,
+            @Parameter(description = "Square ID (Ada)") @RequestParam(required = false) String squareId,
+            @Parameter(description = "Blok ID") @RequestParam(required = false) String blockId,
             @Parameter(description = "Aktiflik Durumu") @RequestParam(required = false) Boolean isActive) {
         try {
             List<SiteDeviceInventoryInfoDto> devices = siteDeviceInventoryInfoService
-                    .searchDevices(siteId, ada, blockName, isActive);
+                    .searchDevices(siteId, squareId, blockId, isActive);
             return ResponseEntity.ok(devices);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -213,22 +228,7 @@ public class SiteDeviceInventoryInfoController {
             return ResponseEntity.badRequest().body("Hata: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Cihaz pasif yapılırken hata: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Dummy data oluştur
-     */
-    @PostMapping("/create-default-data")
-    @Operation(summary = "Varsayılan cihaz verilerini oluştur", description = "Test amaçlı varsayılan cihaz envanteri verilerini oluşturur")
-    public ResponseEntity<?> createDefaultDevices() {
-        try {
-            siteDeviceInventoryInfoService.createDefaultDevices();
-            return ResponseEntity.ok("Varsayılan cihaz verileri başarıyla oluşturuldu");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Varsayılan cihaz verileri oluşturulurken hata: " + e.getMessage());
+                    .body("Cihaz pasif edilirken hata: " + e.getMessage());
         }
     }
 }

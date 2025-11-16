@@ -1,16 +1,11 @@
 package com.ay_za.ataylar_technic.service;
 
 import com.ay_za.ataylar_technic.dto.SiteDeviceInventoryInfoDto;
-import com.ay_za.ataylar_technic.entity.InventoryCategory;
-import com.ay_za.ataylar_technic.entity.SiteDeviceInventoryInfo;
-import com.ay_za.ataylar_technic.entity.SitesInfo;
+import com.ay_za.ataylar_technic.entity.*;
 import com.ay_za.ataylar_technic.mapper.SiteDeviceInventoryInfoMapper;
-import com.ay_za.ataylar_technic.repository.InventoryCategoryRepository;
 import com.ay_za.ataylar_technic.repository.SiteDeviceInventoryInfoRepository;
-import com.ay_za.ataylar_technic.repository.SitesInfoRepository;
-import com.ay_za.ataylar_technic.util.QrCodeGenerator;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,22 +15,24 @@ public class SiteDeviceInventoryInfoService {
 
     private final SiteDeviceInventoryInfoRepository siteDeviceInventoryInfoRepository;
     private final SiteDeviceInventoryInfoMapper siteDeviceInventoryInfoMapper;
-    private final SitesInfoRepository sitesInfoRepository;
-    private final InventoryCategoryRepository inventoryCategoryRepository;
-    private final QrCodeGenerator qrCodeGenerator;
+    private final SitesInfoService sitesInfoService;
+    private final BlocksInfoService blocksInfoService;
+    private final SystemInfoService systemInfoService;
+    private final InventoryCategoryService inventoryCategoryService;
 
     public SiteDeviceInventoryInfoService(SiteDeviceInventoryInfoRepository siteDeviceInventoryInfoRepository,
                                           SiteDeviceInventoryInfoMapper siteDeviceInventoryInfoMapper,
-                                          SitesInfoRepository sitesInfoRepository,
-                                          InventoryCategoryRepository inventoryCategoryRepository,
-                                          QrCodeGenerator qrCodeGenerator) {
+                                          SitesInfoService sitesInfoService,
+                                          BlocksInfoService blocksInfoService,
+                                          SystemInfoService systemInfoService,
+                                          InventoryCategoryService inventoryCategoryService) {
         this.siteDeviceInventoryInfoRepository = siteDeviceInventoryInfoRepository;
         this.siteDeviceInventoryInfoMapper = siteDeviceInventoryInfoMapper;
-        this.sitesInfoRepository = sitesInfoRepository;
-        this.inventoryCategoryRepository = inventoryCategoryRepository;
-        this.qrCodeGenerator = qrCodeGenerator;
+        this.sitesInfoService = sitesInfoService;
+        this.blocksInfoService = blocksInfoService;
+        this.systemInfoService = systemInfoService;
+        this.inventoryCategoryService = inventoryCategoryService;
     }
-
 
     /**
      * Yeni cihaz envanteri oluştur
@@ -44,16 +41,26 @@ public class SiteDeviceInventoryInfoService {
     public SiteDeviceInventoryInfoDto createDeviceInventory(SiteDeviceInventoryInfoDto dto) {
         validateCreateRequest(dto);
 
-        // Site bilgilerini al
-        SitesInfo siteInfo = sitesInfoRepository.findById(dto.getSiteId())
+        // Site bilgilerini servis üzerinden al
+        SitesInfo siteInfo = sitesInfoService.getSiteEntityById(dto.getSiteId())
                 .orElseThrow(() -> new IllegalArgumentException("Geçersiz site ID"));
 
-        // Envanter kategori bilgilerini al
-        InventoryCategory inventoryCategory = inventoryCategoryRepository.findById(dto.getInventoryCategoryId())
+        // Blok bilgilerini servis üzerinden al (içinde square bilgileri de var)
+        BlocksInfo blockInfo = blocksInfoService.getBlockEntityById(dto.getBlockId())
+                .orElseThrow(() -> new IllegalArgumentException("Geçersiz blok ID"));
+
+        // Sistem bilgilerini servis üzerinden al
+        SystemInfo systemInfo = systemInfoService.getSystemEntityById(dto.getSystemId())
+                .orElseThrow(() -> new IllegalArgumentException("Geçersiz sistem ID"));
+
+        // Envanter kategori bilgilerini servis üzerinden al
+        InventoryCategory inventoryCategory = inventoryCategoryService.getCategoryEntityById(dto.getInventoryCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Geçersiz envanter kategori ID"));
 
-        // QR kod oluştur
-        String qrCode = generateUniqueQRCode();
+        // QR kod kontrolü
+        if (siteDeviceInventoryInfoRepository.existsByQrCode(dto.getQrCode())) {
+            throw new IllegalArgumentException("Bu QR kod zaten kullanılıyor");
+        }
 
         // Kategori hiyerarşisini oluştur
         String categoryHierarchy = buildCategoryHierarchy(inventoryCategory);
@@ -62,16 +69,19 @@ public class SiteDeviceInventoryInfoService {
         SiteDeviceInventoryInfo entity = new SiteDeviceInventoryInfo(
                 dto.getSiteId(),
                 siteInfo.getSiteName(),
-                dto.getAda(),
-                dto.getBlockName(),
-                dto.getApartmentNumber(),
+                blockInfo.getSquareId(),
+                blockInfo.getSquareName(),
+                dto.getBlockId(),
+                blockInfo.getBlockName(),
+                dto.getDoorNo(),
                 dto.getFloor(),
                 dto.getLocation(),
+                dto.getSystemId(),
+                systemInfo.getSystemName(),
                 dto.getInventoryCategoryId(),
-                inventoryCategory.getCategoryName(),
                 categoryHierarchy,
-                dto.getDeviceSpecification(),
-                qrCode,
+                inventoryCategory.getCategoryName(),
+                dto.getQrCode(),
                 dto.getCreatedBy()
         );
 
@@ -91,28 +101,43 @@ public class SiteDeviceInventoryInfoService {
 
         // Site bilgilerini güncelle (eğer site değişmişse)
         if (!existingEntity.getSiteId().equals(dto.getSiteId())) {
-            SitesInfo siteInfo = sitesInfoRepository.findById(dto.getSiteId())
+            SitesInfo siteInfo = sitesInfoService.getSiteEntityById(dto.getSiteId())
                     .orElseThrow(() -> new IllegalArgumentException("Geçersiz site ID"));
             existingEntity.setSiteName(siteInfo.getSiteName());
         }
 
+        // Blok bilgilerini güncelle (eğer blok değişmişse)
+        if (!existingEntity.getBlockId().equals(dto.getBlockId())) {
+            BlocksInfo blockInfo = blocksInfoService.getBlockEntityById(dto.getBlockId())
+                    .orElseThrow(() -> new IllegalArgumentException("Geçersiz blok ID"));
+            existingEntity.setSquareId(blockInfo.getSquareId());
+            existingEntity.setSquareName(blockInfo.getSquareName());
+            existingEntity.setBlockName(blockInfo.getBlockName());
+        }
+
+        // Sistem bilgilerini güncelle (eğer sistem değişmişse)
+        if (!existingEntity.getSystemId().equals(dto.getSystemId())) {
+            SystemInfo systemInfo = systemInfoService.getSystemEntityById(dto.getSystemId())
+                    .orElseThrow(() -> new IllegalArgumentException("Geçersiz sistem ID"));
+            existingEntity.setSystemName(systemInfo.getSystemName());
+        }
+
         // Envanter kategori bilgilerini güncelle (eğer kategori değişmişse)
         if (!existingEntity.getInventoryCategoryId().equals(dto.getInventoryCategoryId())) {
-            InventoryCategory inventoryCategory = inventoryCategoryRepository.findById(dto.getInventoryCategoryId())
+            InventoryCategory inventoryCategory = inventoryCategoryService.getCategoryEntityById(dto.getInventoryCategoryId())
                     .orElseThrow(() -> new IllegalArgumentException("Geçersiz envanter kategori ID"));
-            existingEntity.setSystemName(inventoryCategory.getCategoryName());
-            existingEntity.setCategoryHierarchy(buildCategoryHierarchy(inventoryCategory));
+            existingEntity.setInventoryCategoryName(buildCategoryHierarchy(inventoryCategory));
+            existingEntity.setProductName(inventoryCategory.getCategoryName());
         }
 
         // Diğer alanları güncelle
         existingEntity.setSiteId(dto.getSiteId());
-        existingEntity.setAda(dto.getAda());
-        existingEntity.setBlockName(dto.getBlockName());
-        existingEntity.setApartmentNumber(dto.getApartmentNumber());
+        existingEntity.setBlockId(dto.getBlockId());
+        existingEntity.setDoorNo(dto.getDoorNo());
         existingEntity.setFloor(dto.getFloor());
         existingEntity.setLocation(dto.getLocation());
+        existingEntity.setSystemId(dto.getSystemId());
         existingEntity.setInventoryCategoryId(dto.getInventoryCategoryId());
-        existingEntity.setDeviceSpecification(dto.getDeviceSpecification());
         existingEntity.setIsActive(dto.getIsActive());
         existingEntity.setUpdatedBy(dto.getUpdatedBy());
 
@@ -161,20 +186,28 @@ public class SiteDeviceInventoryInfoService {
     }
 
     /**
-     * Site, ada ve blok bilgisine göre cihazları getir
+     * Site, square ve blok bilgisine göre cihazları getir
      */
-    public List<SiteDeviceInventoryInfoDto> getDevicesBySiteAdaBlock(String siteId, String ada, String blockName) {
+    public List<SiteDeviceInventoryInfoDto> getDevicesBySiteSquareBlock(String siteId, String squareId, String blockId) {
         List<SiteDeviceInventoryInfo> entities = siteDeviceInventoryInfoRepository
-                .findBySiteIdAndAdaAndBlockName(siteId, ada, blockName);
+                .findBySiteIdAndSquareIdAndBlockId(siteId, squareId, blockId);
         return siteDeviceInventoryInfoMapper.convertAllToDTO(entities);
     }
 
     /**
      * Kriterlere göre cihaz arama
      */
-    public List<SiteDeviceInventoryInfoDto> searchDevices(String siteId, String ada, String blockName, Boolean isActive) {
+    public List<SiteDeviceInventoryInfoDto> searchDevices(String siteId, String squareId, String blockId, Boolean isActive) {
         List<SiteDeviceInventoryInfo> entities = siteDeviceInventoryInfoRepository
-                .findByCriteria(siteId, ada, blockName, isActive);
+                .findByCriteria(siteId, squareId, blockId, isActive);
+        return siteDeviceInventoryInfoMapper.convertAllToDTO(entities);
+    }
+
+    /**
+     * Sistem ID'ye göre cihazları getir
+     */
+    public List<SiteDeviceInventoryInfoDto> getDevicesBySystemId(String systemId) {
+        List<SiteDeviceInventoryInfo> entities = siteDeviceInventoryInfoRepository.findBySystemId(systemId);
         return siteDeviceInventoryInfoMapper.convertAllToDTO(entities);
     }
 
@@ -205,77 +238,32 @@ public class SiteDeviceInventoryInfoService {
     }
 
     /**
-     * Dummy data oluştur
+     * Oluşturma validasyonu
      */
-    @Transactional
-    public void createDefaultDevices() {
-        try {
-            // Mevcut site ve kategori verilerini al
-            List<SitesInfo> sites = sitesInfoRepository.findAll();
-            List<InventoryCategory> categories = inventoryCategoryRepository.findAll();
-
-            if (sites.isEmpty() || categories.isEmpty()) {
-                throw new IllegalStateException("Önce site ve envanter kategorileri oluşturulmalı");
-            }
-
-            // Örnek cihazlar oluştur
-            createSampleDevice(sites.get(0), categories.get(0), "Ada", "123.Blok", "1A", 2, "Makine Isı Odası");
-            createSampleDevice(sites.get(0), categories.get(0), "Ada", "456.Blok", null, -2, "Makine Dairesi");
-
-            if (sites.size() > 1 && categories.size() > 1) {
-                createSampleDevice(sites.get(1), categories.get(1), "Güzeller OSGB", "Ana Bina", null, 3, "Üst Stüdyo Çekim Alanı");
-            }
-
-        } catch (Exception e) {
-            throw new RuntimeException("Dummy cihaz verileri oluşturulurken hata: " + e.getMessage());
-        }
-    }
-
-    private void createSampleDevice(SitesInfo site, InventoryCategory category, String ada, String blockName,
-                                    String apartmentNumber, Integer floor, String location) {
-        String qrCode = generateUniqueQRCode();
-        String categoryHierarchy = buildCategoryHierarchy(category);
-
-        SiteDeviceInventoryInfo device = new SiteDeviceInventoryInfo(
-                site.getId(),
-                site.getSiteName(),
-                ada,
-                blockName,
-                apartmentNumber,
-                floor,
-                location,
-                category.getId(),
-                category.getCategoryName(),
-                categoryHierarchy,
-                category.getDescription(),
-                qrCode,
-                "SYSTEM"
-        );
-
-        siteDeviceInventoryInfoRepository.save(device);
-    }
-
     private void validateCreateRequest(SiteDeviceInventoryInfoDto dto) {
         if (dto.getSiteId() == null || dto.getSiteId().trim().isEmpty()) {
             throw new IllegalArgumentException("Site seçimi zorunludur");
         }
-        if (dto.getAda() == null || dto.getAda().trim().isEmpty()) {
-            throw new IllegalArgumentException("Ada bilgisi zorunludur");
+        if (dto.getBlockId() == null || dto.getBlockId().trim().isEmpty()) {
+            throw new IllegalArgumentException("Blok seçimi zorunludur");
         }
-        if (dto.getBlockName() == null || dto.getBlockName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Blok adı zorunludur");
-        }
-        if (dto.getFloor() == null) {
-            throw new IllegalArgumentException("Kat bilgisi zorunludur");
-        }
-        if (dto.getLocation() == null || dto.getLocation().trim().isEmpty()) {
-            throw new IllegalArgumentException("Lokasyon bilgisi zorunludur");
+        if (dto.getSystemId() == null || dto.getSystemId().trim().isEmpty()) {
+            throw new IllegalArgumentException("Sistem seçimi zorunludur");
         }
         if (dto.getInventoryCategoryId() == null || dto.getInventoryCategoryId().trim().isEmpty()) {
             throw new IllegalArgumentException("Envanter kategorisi seçimi zorunludur");
         }
+        if (dto.getQrCode() == null || dto.getQrCode().trim().isEmpty()) {
+            throw new IllegalArgumentException("QR kod zorunludur");
+        }
+        if (dto.getQrCode().length() != 12) {
+            throw new IllegalArgumentException("QR kod 10 basamaklı olmalıdır");
+        }
     }
 
+    /**
+     * Güncelleme validasyonu
+     */
     private void validateUpdateRequest(SiteDeviceInventoryInfoDto dto, SiteDeviceInventoryInfo existingEntity) {
         validateCreateRequest(dto);
 
@@ -287,24 +275,22 @@ public class SiteDeviceInventoryInfoService {
         }
     }
 
-    private String generateUniqueQRCode() {
-        String qrCode;
-        do {
-            qrCode = qrCodeGenerator.generateQRCode();
-        } while (siteDeviceInventoryInfoRepository.existsByQrCode(qrCode));
-        return qrCode;
-    }
-
+    /**
+     * Kategori hiyerarşisini oluştur
+     */
     private String buildCategoryHierarchy(InventoryCategory category) {
         StringBuilder hierarchy = new StringBuilder();
         buildHierarchyRecursive(category, hierarchy);
         return hierarchy.toString();
     }
 
+    /**
+     * Rekürsif olarak kategori hiyerarşisini oluştur
+     */
     private void buildHierarchyRecursive(InventoryCategory category, StringBuilder hierarchy) {
         // Ana kategorisi varsa önce onu ekle
         if (category.getMainCategoryId() != null && !category.getMainCategoryId().isEmpty()) {
-            Optional<InventoryCategory> mainCategory = inventoryCategoryRepository.findById(category.getMainCategoryId());
+            Optional<InventoryCategory> mainCategory = inventoryCategoryService.getCategoryEntityById(category.getMainCategoryId());
             if (mainCategory.isPresent()) {
                 buildHierarchyRecursive(mainCategory.get(), hierarchy);
                 hierarchy.append(" > ");

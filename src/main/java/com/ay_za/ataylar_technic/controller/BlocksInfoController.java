@@ -73,7 +73,7 @@ public class BlocksInfoController {
     /**
      * Tüm blokları getir
      */
-    @GetMapping
+    @GetMapping("/get-all")
     @Operation(summary = "Tüm blokları listele", description = "Sistemdeki tüm blok kayıtlarını getirir")
     public ResponseEntity<List<BlocksInfoDto>> getAllBlocks() {
         List<BlocksInfoDto> blocks = blocksInfoService.getAllBlocks();
@@ -135,6 +135,7 @@ public class BlocksInfoController {
                 block.getBlockName(),
                 block.getBlockCode(),
                 block.getSquareId(),
+                block.getSquareName(),
                 block.getDescription(),
                 block.getCreatedDate(),
                 block.getUpdatedDate(),
@@ -156,6 +157,7 @@ public class BlocksInfoController {
                 block.getBlockName(),
                 block.getBlockCode(),
                 block.getSquareId(),
+                block.getSquareName(),
                 block.getDescription(),
                 block.getCreatedDate(),
                 block.getUpdatedDate(),

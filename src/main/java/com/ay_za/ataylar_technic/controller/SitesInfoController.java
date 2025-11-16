@@ -36,7 +36,7 @@ public class SitesInfoController {
             @ApiResponse(responseCode = "400", description = "Geçersiz istek"),
             @ApiResponse(responseCode = "500", description = "Sunucu hatası")
     })
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Map<String, Object>> createSite(@RequestBody SitesInfoDto sitesInfoDto) {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -62,7 +62,7 @@ public class SitesInfoController {
      * Site güncelle
      */
     @Operation(summary = "Site güncelle", description = "Mevcut siteyi günceller")
-    @PutMapping("/update/{siteId}")
+    @PutMapping("/{siteId}")
     public ResponseEntity<Map<String, Object>> updateSite(
             @PathVariable String siteId,
             @RequestBody SitesInfoDto sitesInfoDto) {
@@ -90,7 +90,7 @@ public class SitesInfoController {
      * Site sil
      */
     @Operation(summary = "Site sil", description = "Siteyi siler")
-    @DeleteMapping("/delete/{siteId}")
+    @DeleteMapping("/{siteId}")
     public ResponseEntity<Map<String, Object>> deleteSite(@PathVariable String siteId) {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -115,7 +115,7 @@ public class SitesInfoController {
      * ID'ye göre site getir
      */
     @Operation(summary = "Site getir", description = "ID'ye göre site bilgilerini getirir")
-    @GetMapping("/get/{siteId}")
+    @GetMapping("/{siteId}")
     public ResponseEntity<Map<String, Object>> getSiteById(@PathVariable String siteId) {
         Map<String, Object> response = new HashMap<>();
         try {

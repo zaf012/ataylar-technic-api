@@ -26,6 +26,9 @@ public class BlocksInfo {
     @Column(name = "square_id", nullable = false, length = 200)
     private String squareId;
 
+    @Column(name = "square_name", nullable = false, length = 200)
+    private String squareName;
+
     @Column(name = "description", length = 500)
     private String description;
 
@@ -46,12 +49,14 @@ public class BlocksInfo {
     public BlocksInfo() {
     }
 
-    public BlocksInfo(String id, String blockName, String blockCode, String squareId, String description,
-                      LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy) {
+    public BlocksInfo(String id, String blockName, String blockCode, String squareId, String squareName,
+                      String description, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy,
+                      String updatedBy) {
         this.id = id;
         this.blockName = blockName;
         this.blockCode = blockCode;
         this.squareId = squareId;
+        this.squareName = squareName;
         this.description = description;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -89,6 +94,14 @@ public class BlocksInfo {
 
     public void setSquareId(String squareId) {
         this.squareId = squareId;
+    }
+
+    public String getSquareName() {
+        return squareName;
+    }
+
+    public void setSquareName(String squareName) {
+        this.squareName = squareName;
     }
 
     public String getDescription() {
@@ -138,6 +151,7 @@ public class BlocksInfo {
                 ", blockName='" + blockName + '\'' +
                 ", blockCode='" + blockCode + '\'' +
                 ", squareId='" + squareId + '\'' +
+                ", squareName='" + squareName + '\'' +
                 ", description='" + description + '\'' +
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +

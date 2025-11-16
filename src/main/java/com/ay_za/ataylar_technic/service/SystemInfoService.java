@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -103,6 +104,13 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         SystemInfo system = systemInfoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sistem bulunamadı: " + id));
         return systemInfoMapper.convertToDTO(system);
+    }
+
+    /**
+     * Sistem ID'ye göre sistem entity getir
+     */
+    public Optional<SystemInfo> getSystemEntityById(String id) {
+        return systemInfoRepository.findById(id);
     }
 
     // Çeklist/Arıza maddeleri için metodlar

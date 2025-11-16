@@ -10,6 +10,7 @@ public class BlocksInfoDto {
     private String blockName;
     private String blockCode;
     private String squareId;
+    private String squareName;
     private String description;
 
     @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
@@ -24,12 +25,14 @@ public class BlocksInfoDto {
     public BlocksInfoDto() {
     }
 
-    public BlocksInfoDto(String id, String blockName, String blockCode, String squareId, String description,
-                         LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy) {
+    public BlocksInfoDto(String id, String blockName, String blockCode, String squareId, String squareName,
+                         String description, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy,
+                         String updatedBy) {
         this.id = id;
         this.blockName = blockName;
         this.blockCode = blockCode;
         this.squareId = squareId;
+        this.squareName = squareName;
         this.description = description;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -67,6 +70,14 @@ public class BlocksInfoDto {
 
     public void setSquareId(String squareId) {
         this.squareId = squareId;
+    }
+
+    public String getSquareName() {
+        return squareName;
+    }
+
+    public void setSquareName(String squareName) {
+        this.squareName = squareName;
     }
 
     public String getDescription() {
@@ -116,6 +127,7 @@ public class BlocksInfoDto {
                 ", blockName='" + blockName + '\'' +
                 ", blockCode='" + blockCode + '\'' +
                 ", squareId='" + squareId + '\'' +
+                ", squareName='" + squareName + '\'' +
                 ", description='" + description + '\'' +
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +

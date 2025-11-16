@@ -1,5 +1,6 @@
 package com.ay_za.ataylar_technic.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -23,6 +24,10 @@ public class InventoryCategory {
     @Column(name = "main_category_id", length = 200)
     private String mainCategoryId;
 
+    @Column(name = "main_category_name", length = 200)
+    private String mainCategoryName;
+
+    @JsonProperty("isMainCategory")
     @Column(name = "is_main_category")
     private Boolean isMainCategory;
 
@@ -32,18 +37,10 @@ public class InventoryCategory {
     @Column(name = "product_name", length = 200)
     private String productName;
 
-    @Column(name = "category_code", unique = true, length = 50)
-    private String categoryCode;
+    @Column(name = "brand_name", length = 200)
+    private String brandName;
 
-    @Column(name = "qr_code", unique = true, length = 12)
-    private String qrCode;
-
-    @Column(name = "description", length = 500)
-    private String description;
-
-    @Column(name = "sort_order")
-    private Integer sortOrder;
-
+    @JsonProperty("isActive")
     @Column(name = "is_active")
     private Boolean isActive;
 
@@ -66,21 +63,18 @@ public class InventoryCategory {
     public InventoryCategory() {
     }
 
-    public InventoryCategory(String id, String categoryName, String mainCategoryId, Boolean isMainCategory,
-                           String marketCode, String productName, String categoryCode, String qrCode,
-                           String description, Integer sortOrder, Boolean isActive,
-                           LocalDateTime createdDate, LocalDateTime updatedDate,
-                           String createdBy, String updatedBy) {
+    public InventoryCategory(String id, String categoryName, String mainCategoryId, String mainCategoryName,
+                             Boolean isMainCategory, String marketCode, String productName, String brandName, Boolean isActive,
+                             LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy,
+                             String updatedBy) {
         this.id = id;
         this.categoryName = categoryName;
         this.mainCategoryId = mainCategoryId;
+        this.mainCategoryName = mainCategoryName;
         this.isMainCategory = isMainCategory;
         this.marketCode = marketCode;
         this.productName = productName;
-        this.categoryCode = categoryCode;
-        this.qrCode = qrCode;
-        this.description = description;
-        this.sortOrder = sortOrder;
+        this.brandName = brandName;
         this.isActive = isActive;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -89,6 +83,8 @@ public class InventoryCategory {
     }
 
     // Getters and Setters
+
+
     public String getId() {
         return id;
     }
@@ -111,6 +107,14 @@ public class InventoryCategory {
 
     public void setMainCategoryId(String mainCategoryId) {
         this.mainCategoryId = mainCategoryId;
+    }
+
+    public String getMainCategoryName() {
+        return mainCategoryName;
+    }
+
+    public void setMainCategoryName(String mainCategoryName) {
+        this.mainCategoryName = mainCategoryName;
     }
 
     public Boolean getIsMainCategory() {
@@ -137,36 +141,12 @@ public class InventoryCategory {
         this.productName = productName;
     }
 
-    public String getCategoryCode() {
-        return categoryCode;
+    public String getBrandName() {
+        return brandName;
     }
 
-    public void setCategoryCode(String categoryCode) {
-        this.categoryCode = categoryCode;
-    }
-
-    public String getQrCode() {
-        return qrCode;
-    }
-
-    public void setQrCode(String qrCode) {
-        this.qrCode = qrCode;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(Integer sortOrder) {
-        this.sortOrder = sortOrder;
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
     }
 
     public Boolean getIsActive() {
@@ -207,14 +187,5 @@ public class InventoryCategory {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
-    }
-
-    // Utility methods
-    public boolean isMainCategoryType() {
-        return Boolean.TRUE.equals(isMainCategory);
-    }
-
-    public boolean hasMainCategory() {
-        return mainCategoryId != null && !mainCategoryId.isEmpty();
     }
 }

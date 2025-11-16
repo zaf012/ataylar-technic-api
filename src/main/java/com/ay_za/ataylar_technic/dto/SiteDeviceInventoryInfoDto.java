@@ -9,15 +9,18 @@ public class SiteDeviceInventoryInfoDto {
     private String id;
     private String siteId;
     private String siteName;
-    private String ada;
+    private String squareId;
+    private String squareName;
+    private String blockId;
     private String blockName;
-    private String apartmentNumber;
-    private Integer floor;
-    private String location;
-    private String inventoryCategoryId;
+    private String doorNo; // Opsiyonel
+    private Integer floor; // Opsiyonel
+    private String location; // Opsiyonel
+    private String systemId;
     private String systemName;
-    private String categoryHierarchy;
-    private String deviceSpecification;
+    private String inventoryCategoryId;
+    private String inventoryCategoryName; // Hiyerarşik
+    private String productName;
     private String qrCode;
     private Boolean isActive;
 
@@ -36,24 +39,27 @@ public class SiteDeviceInventoryInfoDto {
     }
 
     // Constructor
-    public SiteDeviceInventoryInfoDto(String id, String siteId, String siteName, String ada, String blockName,
-                                      String apartmentNumber, Integer floor, String location,
-                                      String inventoryCategoryId, String systemName, String categoryHierarchy,
-                                      String deviceSpecification, String qrCode, Boolean isActive,
+    public SiteDeviceInventoryInfoDto(String id, String siteId, String siteName, String squareId, String squareName,
+                                      String blockId, String blockName, String doorNo, Integer floor, String location,
+                                      String systemId, String systemName, String inventoryCategoryId,
+                                      String inventoryCategoryName, String productName, String qrCode, Boolean isActive,
                                       LocalDateTime createdDate, String createdBy,
                                       LocalDateTime updatedDate, String updatedBy) {
         this.id = id;
         this.siteId = siteId;
         this.siteName = siteName;
-        this.ada = ada;
+        this.squareId = squareId;
+        this.squareName = squareName;
+        this.blockId = blockId;
         this.blockName = blockName;
-        this.apartmentNumber = apartmentNumber;
+        this.doorNo = doorNo;
         this.floor = floor;
         this.location = location;
-        this.inventoryCategoryId = inventoryCategoryId;
+        this.systemId = systemId;
         this.systemName = systemName;
-        this.categoryHierarchy = categoryHierarchy;
-        this.deviceSpecification = deviceSpecification;
+        this.inventoryCategoryId = inventoryCategoryId;
+        this.inventoryCategoryName = inventoryCategoryName;
+        this.productName = productName;
         this.qrCode = qrCode;
         this.isActive = isActive;
         this.createdDate = createdDate;
@@ -87,12 +93,28 @@ public class SiteDeviceInventoryInfoDto {
         this.siteName = siteName;
     }
 
-    public String getAda() {
-        return ada;
+    public String getSquareId() {
+        return squareId;
     }
 
-    public void setAda(String ada) {
-        this.ada = ada;
+    public void setSquareId(String squareId) {
+        this.squareId = squareId;
+    }
+
+    public String getSquareName() {
+        return squareName;
+    }
+
+    public void setSquareName(String squareName) {
+        this.squareName = squareName;
+    }
+
+    public String getBlockId() {
+        return blockId;
+    }
+
+    public void setBlockId(String blockId) {
+        this.blockId = blockId;
     }
 
     public String getBlockName() {
@@ -103,12 +125,12 @@ public class SiteDeviceInventoryInfoDto {
         this.blockName = blockName;
     }
 
-    public String getApartmentNumber() {
-        return apartmentNumber;
+    public String getDoorNo() {
+        return doorNo;
     }
 
-    public void setApartmentNumber(String apartmentNumber) {
-        this.apartmentNumber = apartmentNumber;
+    public void setDoorNo(String doorNo) {
+        this.doorNo = doorNo;
     }
 
     public Integer getFloor() {
@@ -127,12 +149,12 @@ public class SiteDeviceInventoryInfoDto {
         this.location = location;
     }
 
-    public String getInventoryCategoryId() {
-        return inventoryCategoryId;
+    public String getSystemId() {
+        return systemId;
     }
 
-    public void setInventoryCategoryId(String inventoryCategoryId) {
-        this.inventoryCategoryId = inventoryCategoryId;
+    public void setSystemId(String systemId) {
+        this.systemId = systemId;
     }
 
     public String getSystemName() {
@@ -143,20 +165,28 @@ public class SiteDeviceInventoryInfoDto {
         this.systemName = systemName;
     }
 
-    public String getCategoryHierarchy() {
-        return categoryHierarchy;
+    public String getInventoryCategoryId() {
+        return inventoryCategoryId;
     }
 
-    public void setCategoryHierarchy(String categoryHierarchy) {
-        this.categoryHierarchy = categoryHierarchy;
+    public void setInventoryCategoryId(String inventoryCategoryId) {
+        this.inventoryCategoryId = inventoryCategoryId;
     }
 
-    public String getDeviceSpecification() {
-        return deviceSpecification;
+    public String getInventoryCategoryName() {
+        return inventoryCategoryName;
     }
 
-    public void setDeviceSpecification(String deviceSpecification) {
-        this.deviceSpecification = deviceSpecification;
+    public void setInventoryCategoryName(String inventoryCategoryName) {
+        this.inventoryCategoryName = inventoryCategoryName;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public String getQrCode() {
@@ -213,15 +243,18 @@ public class SiteDeviceInventoryInfoDto {
                 "id='" + id + '\'' +
                 ", siteId='" + siteId + '\'' +
                 ", siteName='" + siteName + '\'' +
-                ", ada='" + ada + '\'' +
+                ", squareId='" + squareId + '\'' +
+                ", squareName='" + squareName + '\'' +
+                ", blockId='" + blockId + '\'' +
                 ", blockName='" + blockName + '\'' +
-                ", apartmentNumber='" + apartmentNumber + '\'' +
+                ", doorNo='" + doorNo + '\'' +
                 ", floor=" + floor +
                 ", location='" + location + '\'' +
-                ", inventoryCategoryId='" + inventoryCategoryId + '\'' +
+                ", systemId='" + systemId + '\'' +
                 ", systemName='" + systemName + '\'' +
-                ", categoryHierarchy='" + categoryHierarchy + '\'' +
-                ", deviceSpecification='" + deviceSpecification + '\'' +
+                ", inventoryCategoryId='" + inventoryCategoryId + '\'' +
+                ", inventoryCategoryName='" + inventoryCategoryName + '\'' +
+                ", productName='" + productName + '\'' +
                 ", qrCode='" + qrCode + '\'' +
                 ", isActive=" + isActive +
                 ", createdDate=" + createdDate +

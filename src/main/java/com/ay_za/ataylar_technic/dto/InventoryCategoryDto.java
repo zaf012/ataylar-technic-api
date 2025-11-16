@@ -1,21 +1,22 @@
 package com.ay_za.ataylar_technic.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class InventoryCategoryDto {
 
     private String id;
     private String categoryName;
     private String mainCategoryId;
+    private String mainCategoryName;
+    @JsonProperty("isMainCategory")
     private Boolean isMainCategory;
     private String marketCode;
     private String productName;
-    private String categoryCode;
-    private String qrCode;
-    private String description;
-    private Integer sortOrder;
+    private String brandName;
+    @JsonProperty("isActive")
     private Boolean isActive;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -27,31 +28,23 @@ public class InventoryCategoryDto {
     private String createdBy;
     private String updatedBy;
 
-    // Alt kategorileri getirmek için (opsiyonel)
-    private List<InventoryCategoryDto> subCategories;
-
-    // Ana kategori bilgisi (opsiyonel)
-    private String mainCategoryName;
 
     // Constructors
     public InventoryCategoryDto() {
     }
 
-    public InventoryCategoryDto(String id, String categoryName, String mainCategoryId, Boolean isMainCategory,
-                              String marketCode, String productName, String categoryCode, String qrCode,
-                              String description, Integer sortOrder, Boolean isActive,
-                              LocalDateTime createdDate, LocalDateTime updatedDate,
-                              String createdBy, String updatedBy) {
+    public InventoryCategoryDto(String id, String categoryName, String mainCategoryId, String mainCategoryName,
+                                Boolean isMainCategory, String marketCode, String productName, String brandName, Boolean isActive,
+                                LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy,
+                                String updatedBy) {
         this.id = id;
         this.categoryName = categoryName;
         this.mainCategoryId = mainCategoryId;
+        this.mainCategoryName = mainCategoryName;
         this.isMainCategory = isMainCategory;
         this.marketCode = marketCode;
         this.productName = productName;
-        this.categoryCode = categoryCode;
-        this.qrCode = qrCode;
-        this.description = description;
-        this.sortOrder = sortOrder;
+        this.brandName = brandName;
         this.isActive = isActive;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -59,7 +52,6 @@ public class InventoryCategoryDto {
         this.updatedBy = updatedBy;
     }
 
-    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -82,6 +74,14 @@ public class InventoryCategoryDto {
 
     public void setMainCategoryId(String mainCategoryId) {
         this.mainCategoryId = mainCategoryId;
+    }
+
+    public String getMainCategoryName() {
+        return mainCategoryName;
+    }
+
+    public void setMainCategoryName(String mainCategoryName) {
+        this.mainCategoryName = mainCategoryName;
     }
 
     public Boolean getIsMainCategory() {
@@ -108,36 +108,12 @@ public class InventoryCategoryDto {
         this.productName = productName;
     }
 
-    public String getCategoryCode() {
-        return categoryCode;
+    public String getBrandName() {
+        return brandName;
     }
 
-    public void setCategoryCode(String categoryCode) {
-        this.categoryCode = categoryCode;
-    }
-
-    public String getQrCode() {
-        return qrCode;
-    }
-
-    public void setQrCode(String qrCode) {
-        this.qrCode = qrCode;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(Integer sortOrder) {
-        this.sortOrder = sortOrder;
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
     }
 
     public Boolean getIsActive() {
@@ -178,22 +154,6 @@ public class InventoryCategoryDto {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
-    }
-
-    public List<InventoryCategoryDto> getSubCategories() {
-        return subCategories;
-    }
-
-    public void setSubCategories(List<InventoryCategoryDto> subCategories) {
-        this.subCategories = subCategories;
-    }
-
-    public String getMainCategoryName() {
-        return mainCategoryName;
-    }
-
-    public void setMainCategoryName(String mainCategoryName) {
-        this.mainCategoryName = mainCategoryName;
     }
 }
 

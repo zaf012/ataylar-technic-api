@@ -1,6 +1,7 @@
 package com.ay_za.ataylar_technic.exception;
 
 import com.ay_za.ataylar_technic.error.ErrorLoggingService;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +11,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -145,6 +146,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
         errorLoggingService.logError(ex, "JSON_PARSE_ERROR", "WARN");
         return createErrorResponse("Geçersiz JSON formatı", "JSON_PARSE_ERROR", HttpStatus.BAD_REQUEST);
+    }
+
+    // NoResourceFoundException - Spring'in statik kaynak hatalarını yakala ama log'lama
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNoResourceFound(NoResourceFoundException ex) {
+        // Bu hatayı log'lamıyoruz çünkü normal bir durum (API endpoint'i yok)
+        return createErrorResponse("Endpoint bulunamadı: " + ex.getResourcePath(), "NOT_FOUND", HttpStatus.NOT_FOUND);
     }
 
     // Genel Exception Handler - En son yakalanır

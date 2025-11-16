@@ -22,37 +22,46 @@ public class SiteDeviceInventoryInfo {
     @Column(name = "site_name", nullable = false, length = 200)
     private String siteName;
 
-    @Column(name = "ada", nullable = false, length = 100)
-    private String ada;
+    @Column(name = "square_id", nullable = false, length = 200)
+    private String squareId;
 
-    @Column(name = "block_name", nullable = false, length = 100)
+    @Column(name = "square_name", nullable = false, length = 200)
+    private String squareName;
+
+    @Column(name = "block_id", nullable = false, length = 200)
+    private String blockId;
+
+    @Column(name = "block_name", nullable = false, length = 200)
     private String blockName;
 
-    // Manuel girilen bilgiler
-    @Column(name = "apartment_number", length = 100)
-    private String apartmentNumber; // Daire numarası (opsiyonel)
+    // Manuel girilen bilgiler (opsiyonel)
+    @Column(name = "door_no", length = 100)
+    private String doorNo; // Daire numarası (opsiyonel)
 
-    @Column(name = "floor", nullable = false)
-    private Integer floor; // Bulunduğu kat
+    @Column(name = "floor")
+    private Integer floor; // Bulunduğu kat (opsiyonel)
 
-    @Column(name = "location", nullable = false, length = 200)
-    private String location; // Bulunduğu lokasyon
+    @Column(name = "location", length = 200)
+    private String location; // Bulunduğu lokasyon (opsiyonel)
 
     // Envanter bilgileri
-    @Column(name = "inventory_category_id", nullable = false, length = 200)
-    private String inventoryCategoryId;
+    @Column(name = "system_id", nullable = false, length = 200)
+    private String systemId;
 
     @Column(name = "system_name", nullable = false, length = 200)
     private String systemName; // Envanter (Sistem) Tanımı
 
-    @Column(name = "category_hierarchy", nullable = false, length = 500)
-    private String categoryHierarchy; // Envanter Kategorisi (hiyerarşi string)
+    @Column(name = "inventory_category_id", nullable = false, length = 200)
+    private String inventoryCategoryId; // Seçili olan productName'in ID'si
 
-    @Column(name = "device_specification", length = 200)
-    private String deviceSpecification; // Ürün (cihaz) seçiniz
+    @Column(name = "inventory_category_name", nullable = false, length = 500)
+    private String inventoryCategoryName; // Hiyerarşik kategori adı (örn: Eşanjör Sistemleri > Eşanjör Denge Kabları > Wates)
+
+    @Column(name = "product_name", nullable = false, length = 200)
+    private String productName; // En alt kategori adı (örn: Wates, 2500/16)
 
     @Column(name = "qr_code", unique = true, nullable = false, length = 12)
-    private String qrCode;
+    private String qrCode; // 10 basamaklı QR kod
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
@@ -76,22 +85,25 @@ public class SiteDeviceInventoryInfo {
     }
 
     // Constructor for creating new entity
-    public SiteDeviceInventoryInfo(String siteId, String siteName, String ada, String blockName,
-                                   String apartmentNumber, Integer floor, String location,
-                                   String inventoryCategoryId, String systemName, String categoryHierarchy,
-                                   String deviceSpecification, String qrCode, String createdBy) {
+    public SiteDeviceInventoryInfo(String siteId, String siteName, String squareId, String squareName,
+                                   String blockId, String blockName, String doorNo, Integer floor, String location,
+                                   String systemId, String systemName, String inventoryCategoryId,
+                                   String inventoryCategoryName, String productName, String qrCode, String createdBy) {
         this.id = UUID.randomUUID().toString();
         this.siteId = siteId;
         this.siteName = siteName;
-        this.ada = ada;
+        this.squareId = squareId;
+        this.squareName = squareName;
+        this.blockId = blockId;
         this.blockName = blockName;
-        this.apartmentNumber = apartmentNumber;
+        this.doorNo = doorNo;
         this.floor = floor;
         this.location = location;
-        this.inventoryCategoryId = inventoryCategoryId;
+        this.systemId = systemId;
         this.systemName = systemName;
-        this.categoryHierarchy = categoryHierarchy;
-        this.deviceSpecification = deviceSpecification;
+        this.inventoryCategoryId = inventoryCategoryId;
+        this.inventoryCategoryName = inventoryCategoryName;
+        this.productName = productName;
         this.qrCode = qrCode;
         this.isActive = true;
         this.createdBy = createdBy;
@@ -122,12 +134,28 @@ public class SiteDeviceInventoryInfo {
         this.siteName = siteName;
     }
 
-    public String getAda() {
-        return ada;
+    public String getSquareId() {
+        return squareId;
     }
 
-    public void setAda(String ada) {
-        this.ada = ada;
+    public void setSquareId(String squareId) {
+        this.squareId = squareId;
+    }
+
+    public String getSquareName() {
+        return squareName;
+    }
+
+    public void setSquareName(String squareName) {
+        this.squareName = squareName;
+    }
+
+    public String getBlockId() {
+        return blockId;
+    }
+
+    public void setBlockId(String blockId) {
+        this.blockId = blockId;
     }
 
     public String getBlockName() {
@@ -138,12 +166,12 @@ public class SiteDeviceInventoryInfo {
         this.blockName = blockName;
     }
 
-    public String getApartmentNumber() {
-        return apartmentNumber;
+    public String getDoorNo() {
+        return doorNo;
     }
 
-    public void setApartmentNumber(String apartmentNumber) {
-        this.apartmentNumber = apartmentNumber;
+    public void setDoorNo(String doorNo) {
+        this.doorNo = doorNo;
     }
 
     public Integer getFloor() {
@@ -162,12 +190,12 @@ public class SiteDeviceInventoryInfo {
         this.location = location;
     }
 
-    public String getInventoryCategoryId() {
-        return inventoryCategoryId;
+    public String getSystemId() {
+        return systemId;
     }
 
-    public void setInventoryCategoryId(String inventoryCategoryId) {
-        this.inventoryCategoryId = inventoryCategoryId;
+    public void setSystemId(String systemId) {
+        this.systemId = systemId;
     }
 
     public String getSystemName() {
@@ -178,20 +206,28 @@ public class SiteDeviceInventoryInfo {
         this.systemName = systemName;
     }
 
-    public String getCategoryHierarchy() {
-        return categoryHierarchy;
+    public String getInventoryCategoryId() {
+        return inventoryCategoryId;
     }
 
-    public void setCategoryHierarchy(String categoryHierarchy) {
-        this.categoryHierarchy = categoryHierarchy;
+    public void setInventoryCategoryId(String inventoryCategoryId) {
+        this.inventoryCategoryId = inventoryCategoryId;
     }
 
-    public String getDeviceSpecification() {
-        return deviceSpecification;
+    public String getInventoryCategoryName() {
+        return inventoryCategoryName;
     }
 
-    public void setDeviceSpecification(String deviceSpecification) {
-        this.deviceSpecification = deviceSpecification;
+    public void setInventoryCategoryName(String inventoryCategoryName) {
+        this.inventoryCategoryName = inventoryCategoryName;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public String getQrCode() {
@@ -240,29 +276,5 @@ public class SiteDeviceInventoryInfo {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
-    }
-
-    @Override
-    public String toString() {
-        return "SiteDeviceInventoryInfo{" +
-                "id='" + id + '\'' +
-                ", siteId='" + siteId + '\'' +
-                ", siteName='" + siteName + '\'' +
-                ", ada='" + ada + '\'' +
-                ", blockName='" + blockName + '\'' +
-                ", apartmentNumber='" + apartmentNumber + '\'' +
-                ", floor=" + floor +
-                ", location='" + location + '\'' +
-                ", inventoryCategoryId='" + inventoryCategoryId + '\'' +
-                ", systemName='" + systemName + '\'' +
-                ", categoryHierarchy='" + categoryHierarchy + '\'' +
-                ", deviceSpecification='" + deviceSpecification + '\'' +
-                ", qrCode='" + qrCode + '\'' +
-                ", isActive=" + isActive +
-                ", createdDate=" + createdDate +
-                ", createdBy='" + createdBy + '\'' +
-                ", updatedDate=" + updatedDate +
-                ", updatedBy='" + updatedBy + '\'' +
-                '}';
     }
 }

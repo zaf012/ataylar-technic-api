@@ -72,7 +72,7 @@ public class SquaresInfoController {
     /**
      * Tüm adaları getir
      */
-    @GetMapping
+    @GetMapping("/get-all")
     @Operation(summary = "Tüm adaları listele", description = "Sistemdeki tüm ada kayıtlarını getirir")
     public ResponseEntity<List<SquaresInfoDto>> getAllSquares() {
         List<SquaresInfoDto> squares = squaresInfoService.getAllSquares();

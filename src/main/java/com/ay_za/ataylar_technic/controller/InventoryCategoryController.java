@@ -1,7 +1,7 @@
 package com.ay_za.ataylar_technic.controller;
 
 import com.ay_za.ataylar_technic.dto.InventoryCategoryDto;
-import com.ay_za.ataylar_technic.service.InventoryCategoryService;
+import com.ay_za.ataylar_technic.service.base.InventoryCategoryServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -15,9 +15,9 @@ import java.util.List;
 @Tag(name = "Inventory Category", description = "Envanter Kategori Yönetimi")
 public class InventoryCategoryController {
 
-    private final InventoryCategoryService service;
+    private final InventoryCategoryServiceImpl service;
 
-    public InventoryCategoryController(InventoryCategoryService service) {
+    public InventoryCategoryController(InventoryCategoryServiceImpl service) {
         this.service = service;
     }
 
@@ -72,20 +72,6 @@ public class InventoryCategoryController {
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/hierarchy")
-    @Operation(summary = "Hiyerarşik yapı", description = "Tüm kategorileri hiyerarşik yapıda getirir")
-    public ResponseEntity<List<InventoryCategoryDto>> getCategoryHierarchy() {
-        List<InventoryCategoryDto> hierarchy = service.getCategoryHierarchy();
-        return ResponseEntity.ok(hierarchy);
-    }
-
-    @GetMapping("/{id}/with-subs")
-    @Operation(summary = "Alt kategorilerle birlikte getir", description = "Kategoriyi alt kategorileriyle birlikte getirir")
-    public ResponseEntity<InventoryCategoryDto> getCategoryWithSubCategories(@PathVariable String id) {
-        InventoryCategoryDto category = service.getCategoryWithSubCategories(id);
-        return ResponseEntity.ok(category);
-    }
-
     @GetMapping("/active")
     @Operation(summary = "Aktif kategorileri listele", description = "Sadece aktif kategorileri getirir")
     public ResponseEntity<List<InventoryCategoryDto>> getActiveCategories() {
@@ -107,20 +93,6 @@ public class InventoryCategoryController {
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/by-code/{categoryCode}")
-    @Operation(summary = "Kategori koduna göre getir", description = "Kategori koduna göre kategori getirir")
-    public ResponseEntity<InventoryCategoryDto> getCategoryByCategoryCode(@PathVariable String categoryCode) {
-        InventoryCategoryDto category = service.getCategoryByCategoryCode(categoryCode);
-        return ResponseEntity.ok(category);
-    }
-
-    @GetMapping("/by-qr/{qrCode}")
-    @Operation(summary = "QR koduna göre getir", description = "QR koduna göre kategori getirir")
-    public ResponseEntity<InventoryCategoryDto> getCategoryByQrCode(@PathVariable String qrCode) {
-        InventoryCategoryDto category = service.getCategoryByQrCode(qrCode);
-        return ResponseEntity.ok(category);
-    }
-
     @GetMapping("/search")
     @Operation(summary = "İsme göre ara", description = "Kategori adına göre arama yapar")
     public ResponseEntity<List<InventoryCategoryDto>> searchCategoriesByName(@RequestParam String name) {
@@ -133,20 +105,6 @@ public class InventoryCategoryController {
     public ResponseEntity<List<InventoryCategoryDto>> getCategoriesByMarketCode(@PathVariable String marketCode) {
         List<InventoryCategoryDto> categories = service.getCategoriesByMarketCode(marketCode);
         return ResponseEntity.ok(categories);
-    }
-
-    @GetMapping("/exists/code/{categoryCode}")
-    @Operation(summary = "Kategori kodu kontrolü", description = "Kategori kodunun kullanılıp kullanılmadığını kontrol eder")
-    public ResponseEntity<Boolean> existsByCategoryCode(@PathVariable String categoryCode) {
-        boolean exists = service.existsByCategoryCode(categoryCode);
-        return ResponseEntity.ok(exists);
-    }
-
-    @GetMapping("/exists/qr/{qrCode}")
-    @Operation(summary = "QR kodu kontrolü", description = "QR kodunun kullanılıp kullanılmadığını kontrol eder")
-    public ResponseEntity<Boolean> existsByQrCode(@PathVariable String qrCode) {
-        boolean exists = service.existsByQrCode(qrCode);
-        return ResponseEntity.ok(exists);
     }
 }
 
