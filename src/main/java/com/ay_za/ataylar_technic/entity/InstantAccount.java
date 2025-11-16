@@ -1,10 +1,12 @@
 package com.ay_za.ataylar_technic.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -98,12 +100,6 @@ public class InstantAccount {
     @Column(name = "bank_address", length = 200)
     private String bankAddress;
 
-    @Column(name = "risk_limit", precision = 15, scale = 2)
-    private BigDecimal riskLimit;
-
-    @Column(name = "risk_limit_explanation", length = 200)
-    private String riskLimitExplanation;
-
     @Column(name = "user_status")
     private Boolean userStatus = true;
 
@@ -130,14 +126,7 @@ public class InstantAccount {
 
     // Constructor with required fields
 
-    public InstantAccount(String id, String accountGroupId, String accountGroupName, String siteId, String siteName,
-                          Integer userTypeId, String userTypeName, String username, String password, String firmId,
-                          String firmName, String projectId, String projectName, String authorizedPersonnel,
-                          String companyShortName, String phoneCountryCode, String phone, String gsmCountryCode,
-                          String gsm, String address, String fax, String email, String pttBox, String postalCode,
-                          String taxNumber, String taxOffice, String tcIdentityNo, String bankAddress, BigDecimal riskLimit,
-                          String riskLimitExplanation, Boolean userStatus, LocalDateTime createdDate,
-                          LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
+    public InstantAccount(String id, String accountGroupId, String accountGroupName, String siteId, String siteName, Integer userTypeId, String userTypeName, String username, String password, String firmId, String firmName, String projectId, String projectName, String authorizedPersonnel, String companyShortName, String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address, String fax, String email, String pttBox, String postalCode, String taxNumber, String taxOffice, String tcIdentityNo, String bankAddress, Boolean userStatus, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
         this.id = id;
         this.accountGroupId = accountGroupId;
         this.accountGroupName = accountGroupName;
@@ -166,8 +155,6 @@ public class InstantAccount {
         this.taxOffice = taxOffice;
         this.tcIdentityNo = tcIdentityNo;
         this.bankAddress = bankAddress;
-        this.riskLimit = riskLimit;
-        this.riskLimitExplanation = riskLimitExplanation;
         this.userStatus = userStatus;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -402,22 +389,6 @@ public class InstantAccount {
 
     public void setBankAddress(String bankAddress) {
         this.bankAddress = bankAddress;
-    }
-
-    public BigDecimal getRiskLimit() {
-        return riskLimit;
-    }
-
-    public void setRiskLimit(BigDecimal riskLimit) {
-        this.riskLimit = riskLimit;
-    }
-
-    public String getRiskLimitExplanation() {
-        return riskLimitExplanation;
-    }
-
-    public void setRiskLimitExplanation(String riskLimitExplanation) {
-        this.riskLimitExplanation = riskLimitExplanation;
     }
 
     public Boolean getUserStatus() {

@@ -76,8 +76,6 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         accountData.setTaxOffice(accountData.getTaxOffice());
         accountData.setTcIdentityNo(accountData.getTcIdentityNo());
         accountData.setBankAddress(accountData.getBankAddress());
-        accountData.setRiskLimit(accountData.getRiskLimit());
-        accountData.setRiskLimitExplanation(accountData.getRiskLimitExplanation());
         accountData.setUserStatus(accountData.getUserStatus());
         accountData.setCreatedDate(LocalDateTime.now());
         accountData.setUpdatedDate(null);
@@ -185,9 +183,6 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         if (account.getActive()) {
             throw new IllegalArgumentException("Hesap zaten aktif");
         }
-
-        // Aktif yaparken benzersizlik kontrolleri
-        validateUniqueFieldsForActivation(account, accountId);
 
         account.setActive(true);
         account.setUpdatedBy(updatedBy);
@@ -306,58 +301,6 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         if (account.getUsername() != null && account.getUsername().trim().length() < 3) {
             throw new IllegalArgumentException("Kullanıcı adı en az 3 karakter olmalıdır");
         }
-
-        // Email format kontrolü
-        if (account.getEmail() != null && !account.getEmail().trim().isEmpty()) {
-            if (!isValidEmail(account.getEmail().trim())) {
-                throw new IllegalArgumentException("Geçerli bir email adresi giriniz");
-            }
-        }
-
-        // TC Kimlik No kontrolü
-        if (account.getTcIdentityNo() != null && !account.getTcIdentityNo().trim().isEmpty()) {
-            if (account.getTcIdentityNo().trim().length() != 11) {
-                throw new IllegalArgumentException("TC Kimlik No 11 haneli olmalıdır");
-            }
-        }
-    }
-
-    private boolean isValidEmail(String email) {
-        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
-    }
-
-    private void validateUniqueFieldsForActivation(InstantAccount account, String accountId) {
-        // Username kontrolü
-        if (account.getUsername() != null) {
-            Optional<InstantAccount> existingByUsername = instantAccountRepository.findByUsernameAndIsActiveTrue(account.getUsername());
-            if (existingByUsername.isPresent() && !existingByUsername.get().getId().equals(accountId)) {
-                throw new IllegalArgumentException("Bu kullanıcı adı zaten aktif bir hesapta kullanılıyor");
-            }
-        }
-
-        // Email kontrolü
-        if (account.getEmail() != null) {
-            Optional<InstantAccount> existingByEmail = instantAccountRepository.findByEmailAndIsActiveTrue(account.getEmail());
-            if (existingByEmail.isPresent() && !existingByEmail.get().getId().equals(accountId)) {
-                throw new IllegalArgumentException("Bu email adresi zaten aktif bir hesapta kullanılıyor");
-            }
-        }
-
-        // TC Kimlik No kontrolü
-        if (account.getTcIdentityNo() != null) {
-            Optional<InstantAccount> existingByTc = instantAccountRepository.findByTcIdentityNoAndIsActiveTrue(account.getTcIdentityNo());
-            if (existingByTc.isPresent() && !existingByTc.get().getId().equals(accountId)) {
-                throw new IllegalArgumentException("Bu TC Kimlik No zaten aktif bir hesapta kayıtlı");
-            }
-        }
-
-        // Vergi No kontrolü
-        if (account.getTaxNumber() != null) {
-            Optional<InstantAccount> existingByTax = instantAccountRepository.findByTaxNumberAndIsActiveTrue(account.getTaxNumber());
-            if (existingByTax.isPresent() && !existingByTax.get().getId().equals(accountId)) {
-                throw new IllegalArgumentException("Bu Vergi No zaten aktif bir hesapta kayıtlı");
-            }
-        }
     }
 
     private void updateAccountFields(InstantAccount existing, InstantAccountDto updated) {
@@ -387,9 +330,9 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         existing.setTaxOffice(updated.getTaxOffice());
         existing.setTcIdentityNo(updated.getTcIdentityNo());
         existing.setBankAddress(updated.getBankAddress());
-        existing.setRiskLimit(updated.getRiskLimit());
-        existing.setRiskLimitExplanation(updated.getRiskLimitExplanation());
         existing.setUserStatus(updated.getUserStatus());
+        existing.setUpdatedBy("admin");
+        existing.setUpdatedDate(LocalDateTime.now());
     }
 
 
@@ -428,13 +371,12 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         }
         ProjectsInfo randomProject = randomProjectOpt.get();
 
-         // Rastgele SitesInfo al - güvenli yaklaşım
+        // Rastgele SitesInfo al - güvenli yaklaşım
         Optional<SitesInfo> randomSiteOpt = sitesInfoServiceImpl.getRandomSite();
         if (randomSiteOpt.isEmpty()) {
             throw new RuntimeException("Hiç site bulunamadı. Önce site oluşturun.");
         }
         SitesInfo randomSite = randomSiteOpt.get();
-
 
 
         // Rastgele kullanıcı adı ve email oluştur
@@ -497,15 +439,14 @@ public class InstantAccountService implements InstantAccountServiceImpl {
 
         // Vergi daireleri listesi
         String[] taxOffices = {"Beyoğlu Vergi Dairesi", "Kadıköy Vergi Dairesi", "Şişli Vergi Dairesi",
-                              "Beşiktaş Vergi Dairesi", "Ümraniye Vergi Dairesi", "Fatih Vergi Dairesi",
-                              "Bakırköy Vergi Dairesi", "Üsküdar Vergi Dairesi", "Pendik Vergi Dairesi"};
+                "Beşiktaş Vergi Dairesi", "Ümraniye Vergi Dairesi", "Fatih Vergi Dairesi",
+                "Bakırköy Vergi Dairesi", "Üsküdar Vergi Dairesi", "Pendik Vergi Dairesi"};
         instantAccountDto.setTaxOffice(taxOffices[(int) (Math.random() * taxOffices.length)]);
 
         instantAccountDto.setTcIdentityNo(String.format("%011d", (int) (Math.random() * 99999999999L + 1)));
         String[] banks = {"Ziraat Bankası", "İş Bankası", "Garanti BBVA", "Akbank", "Yapı Kredi"};
 
         instantAccountDto.setBankAddress(banks[(int) (Math.random() * banks.length)] + " " + city + " " + province + " Şubesi");
-        instantAccountDto.setRiskLimitExplanation("dummy data");
         instantAccountDto.setUserStatus(true);
         instantAccountDto.setActive(true);
         instantAccountDto.setCreatedBy(createdBy);

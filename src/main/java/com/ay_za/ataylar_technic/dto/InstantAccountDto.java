@@ -1,6 +1,5 @@
 package com.ay_za.ataylar_technic.dto;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class InstantAccountDto {
@@ -33,8 +32,6 @@ public class InstantAccountDto {
     private String taxOffice;
     private String tcIdentityNo;
     private String bankAddress;
-    private BigDecimal riskLimit;
-    private String riskLimitExplanation;
     private Boolean userStatus;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
@@ -45,14 +42,7 @@ public class InstantAccountDto {
     public InstantAccountDto() {
     }
 
-    public InstantAccountDto(String id, String accountGroupId, String accountGroupName, String siteId, String siteName,
-                             Integer userTypeId, String userTypeName, String username, String password, String firmId,
-                             String firmName, String projectId, String projectName, String authorizedPersonnel,
-                             String companyShortName, String phoneCountryCode, String phone, String gsmCountryCode,
-                             String gsm, String address, String fax, String email, String pttBox, String postalCode,
-                             String taxNumber, String taxOffice, String tcIdentityNo, String bankAddress, BigDecimal riskLimit,
-                             String riskLimitExplanation, Boolean userStatus, LocalDateTime createdDate,
-                             LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
+    public InstantAccountDto(String id, String accountGroupId, String accountGroupName, String siteId, String siteName, Integer userTypeId, String userTypeName, String username, String password, String firmId, String firmName, String projectId, String projectName, String authorizedPersonnel, String companyShortName, String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address, String fax, String email, String pttBox, String postalCode, String taxNumber, String taxOffice, String tcIdentityNo, String bankAddress, Boolean userStatus, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
         this.id = id;
         this.accountGroupId = accountGroupId;
         this.accountGroupName = accountGroupName;
@@ -81,8 +71,6 @@ public class InstantAccountDto {
         this.taxOffice = taxOffice;
         this.tcIdentityNo = tcIdentityNo;
         this.bankAddress = bankAddress;
-        this.riskLimit = riskLimit;
-        this.riskLimitExplanation = riskLimitExplanation;
         this.userStatus = userStatus;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -315,22 +303,6 @@ public class InstantAccountDto {
 
     public void setBankAddress(String bankAddress) {
         this.bankAddress = bankAddress;
-    }
-
-    public BigDecimal getRiskLimit() {
-        return riskLimit;
-    }
-
-    public void setRiskLimit(BigDecimal riskLimit) {
-        this.riskLimit = riskLimit;
-    }
-
-    public String getRiskLimitExplanation() {
-        return riskLimitExplanation;
-    }
-
-    public void setRiskLimitExplanation(String riskLimitExplanation) {
-        this.riskLimitExplanation = riskLimitExplanation;
     }
 
     public Boolean getUserStatus() {
