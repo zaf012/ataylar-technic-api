@@ -1,32 +1,34 @@
 package com.ay_za.ataylar_technic.mapper;
 
-import com.ay_za.ataylar_technic.dto.InventoryCategoryDto;
-import com.ay_za.ataylar_technic.entity.InventoryCategory;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.ay_za.ataylar_technic.dto.ProductInventoryDetailDto;
+import com.ay_za.ataylar_technic.entity.ProductInventoryDetail;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Ürün Envanter Detayı Mapper
+ */
 @Component
-@Qualifier("inventoryCategoryCustomMapper")
-public class InventoryCategoryMapper {
+public class ProductInventoryDetailMapper {
 
-    public InventoryCategoryDto toDto(InventoryCategory entity) {
+    /**
+     * Entity'yi DTO'ya dönüştür
+     */
+    public ProductInventoryDetailDto toDto(ProductInventoryDetail entity) {
         if (entity == null) {
             return null;
         }
 
-        InventoryCategoryDto dto = new InventoryCategoryDto();
+        ProductInventoryDetailDto dto = new ProductInventoryDetailDto();
         dto.setId(entity.getId());
+        dto.setCategoryId(entity.getCategoryId());
         dto.setCategoryName(entity.getCategoryName());
-        dto.setMainCategoryId(entity.getMainCategoryId());
-        dto.setMainCategoryName(entity.getMainCategoryName());
-        dto.setIsMainCategory(entity.getIsMainCategory());
         dto.setMarketCode(entity.getMarketCode());
-        dto.setProductName(entity.getProductName());
         dto.setBrandName(entity.getBrandName());
-        dto.setIsActive(entity.getIsActive());
+        dto.setProductName(entity.getProductName());
+        dto.setActive(entity.getActive());
         dto.setCreatedDate(entity.getCreatedDate());
         dto.setUpdatedDate(entity.getUpdatedDate());
         dto.setCreatedBy(entity.getCreatedBy());
@@ -35,40 +37,51 @@ public class InventoryCategoryMapper {
         return dto;
     }
 
-    public InventoryCategory toEntity(InventoryCategoryDto dto) {
+    /**
+     * DTO'yu Entity'ye dönüştür
+     */
+    public ProductInventoryDetail toEntity(ProductInventoryDetailDto dto) {
         if (dto == null) {
             return null;
         }
 
-        InventoryCategory entity = new InventoryCategory();
+        ProductInventoryDetail entity = new ProductInventoryDetail();
         entity.setId(dto.getId());
+        entity.setCategoryId(dto.getCategoryId());
         entity.setCategoryName(dto.getCategoryName());
-        entity.setMainCategoryId(dto.getMainCategoryId());
-        entity.setMainCategoryName(dto.getMainCategoryName());
-        entity.setIsMainCategory(dto.getIsMainCategory());
         entity.setMarketCode(dto.getMarketCode());
-        entity.setProductName(dto.getProductName());
         entity.setBrandName(dto.getBrandName());
-        entity.setIsActive(dto.getIsActive());
+        entity.setProductName(dto.getProductName());
+        entity.setActive(dto.getActive());
+        entity.setCreatedDate(dto.getCreatedDate());
+        entity.setUpdatedDate(dto.getUpdatedDate());
         entity.setCreatedBy(dto.getCreatedBy());
         entity.setUpdatedBy(dto.getUpdatedBy());
 
         return entity;
     }
 
-    public List<InventoryCategoryDto> toDtoList(List<InventoryCategory> entities) {
+    /**
+     * Entity listesini DTO listesine dönüştür
+     */
+    public List<ProductInventoryDetailDto> toDtoList(List<ProductInventoryDetail> entities) {
         if (entities == null) {
             return null;
         }
+
         return entities.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<InventoryCategory> toEntityList(List<InventoryCategoryDto> dtos) {
+    /**
+     * DTO listesini Entity listesine dönüştür
+     */
+    public List<ProductInventoryDetail> toEntityList(List<ProductInventoryDetailDto> dtos) {
         if (dtos == null) {
             return null;
         }
+
         return dtos.stream()
                 .map(this::toEntity)
                 .collect(Collectors.toList());
