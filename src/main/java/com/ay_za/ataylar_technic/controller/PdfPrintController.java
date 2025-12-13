@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/pdf-print")
@@ -29,20 +27,5 @@ public class PdfPrintController {
     public ResponseEntity<FileResponseVM> exportPdf(@RequestBody MaintenanceChecklistModel maintenanceChecklistModel) throws IOException {
         FileResponseVM fileResponseVM = maintenanceChecklistPdfServiceImpl.exportPdf(maintenanceChecklistModel);
         return ResponseEntity.ok(fileResponseVM);
-    }
-
-    @GetMapping("/test-pdf")
-    @Operation(summary = "PDF Test", description = "Test verisiyle PDF oluşturur ve pdf-files klasörüne kaydeder")
-    public ResponseEntity<Map<String, String>> testPdf() throws IOException {
-
-        String filePath = maintenanceChecklistPdfServiceImpl.testGenerateAndSavePdf();
-
-        Map<String, String> response = new HashMap<>();
-        response.put("success", "true");
-        response.put("message", "PDF başarıyla oluşturuldu ve kaydedildi");
-        response.put("filePath", filePath);
-        response.put("instruction", "Dosyayı açmak için: open \"" + filePath + "\"");
-
-        return ResponseEntity.ok(response);
     }
 }
