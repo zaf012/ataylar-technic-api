@@ -1,9 +1,12 @@
 package com.ay_za.ataylar_technic.controller;
 
 import com.ay_za.ataylar_technic.dto.MaintenancePdfRecordDto;
+import com.ay_za.ataylar_technic.dto.PdfMergeRequestDto;
 import com.ay_za.ataylar_technic.service.base.MaintenancePdfRecordServiceImpl;
+import com.ay_za.ataylar_technic.service.base.PdfMergeServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -20,9 +25,13 @@ import java.util.List;
 public class MaintenancePdfRecordController {
 
     private final MaintenancePdfRecordServiceImpl pdfRecordService;
+    private final PdfMergeServiceImpl pdfMergeService;
 
-    public MaintenancePdfRecordController(MaintenancePdfRecordServiceImpl pdfRecordService) {
+    public MaintenancePdfRecordController(
+            MaintenancePdfRecordServiceImpl pdfRecordService,
+            PdfMergeServiceImpl pdfMergeService) {
         this.pdfRecordService = pdfRecordService;
+        this.pdfMergeService = pdfMergeService;
     }
 
     @GetMapping("/list")
@@ -93,6 +102,32 @@ public class MaintenancePdfRecordController {
 
         List<MaintenancePdfRecordDto> dtos = pdfRecordService.getPdfsBySystem(systemName);
         return ResponseEntity.ok(dtos);
+    }
+
+    @PostMapping("/merge")
+    @Operation(
+            summary = "PDF'leri Birleştir",
+            description = "Seçilen PDF'leri template sayfalarıyla birleştirir. " +
+                    "Sıralama: İlk sayfa (1 sayfa) → Seçilen PDF'ler → Son sayfalar (17 sayfa). " +
+                    "HİÇBİR VERİ SAKLANMAZ, sadece birleştirilmiş PDF döner."
+    )
+    public ResponseEntity<Resource> mergePdfs(@RequestBody PdfMergeRequestDto request) throws Exception {
+        // PDF'leri birleştir
+        byte[] mergedPdfBytes = pdfMergeService.mergePdfsWithTemplate(request.getPdfRecordIds());
+
+        // Dosya adı oluştur (timestamp ile)
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String fileName = "merged_maintenance_" + timestamp + ".pdf";
+
+        // ByteArrayResource oluştur
+        ByteArrayResource resource = new ByteArrayResource(mergedPdfBytes);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + fileName + "\"")
+                .contentType(MediaType.APPLICATION_PDF)
+                .contentLength(mergedPdfBytes.length)
+                .body(resource);
     }
 }
 
