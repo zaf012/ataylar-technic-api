@@ -2,6 +2,7 @@ package com.ay_za.ataylar_technic.service;
 
 import com.ay_za.ataylar_technic.dto.SystemInfoDto;
 import com.ay_za.ataylar_technic.service.base.MaintenanceChecklistPdfServiceImpl;
+import com.ay_za.ataylar_technic.service.base.MaintenancePdfRecordServiceImpl;
 import com.ay_za.ataylar_technic.service.base.SystemInfoServiceImpl;
 import com.ay_za.ataylar_technic.service.model.MaintenanceChecklistItemDto;
 import com.ay_za.ataylar_technic.service.model.MaintenanceChecklistModel;
@@ -12,28 +13,40 @@ import com.ay_za.ataylar_technic.util.TimeHelper;
 import com.ay_za.ataylar_technic.vm.FileResponseVM;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
 public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfServiceImpl {
 
     private final SystemInfoServiceImpl systemInfoServiceImpl;
+    private final MaintenancePdfRecordServiceImpl maintenancePdfRecordServiceImpl;
 
-    public MaintenanceChecklistPdfService(SystemInfoServiceImpl systemInfoServiceImpl) {
+
+    @Value("${pdf.storage.path:pdf-files}")
+    private String pdfStoragePath;
+
+    public MaintenanceChecklistPdfService(
+            SystemInfoServiceImpl systemInfoServiceImpl, MaintenancePdfRecordServiceImpl maintenancePdfRecordServiceImpl) {
         this.systemInfoServiceImpl = systemInfoServiceImpl;
+        this.maintenancePdfRecordServiceImpl = maintenancePdfRecordServiceImpl;
     }
 
 
     @Override
     public FileResponseVM exportPdf(MaintenanceChecklistModel report) throws IOException {
-
 
         if (Objects.isNull(report)) {
             return null;
@@ -72,14 +85,18 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
 
         ByteArrayOutputStream byteArrayOutputStream = this.buildPdfForMaintenanceChecklist(report);
 
+        // Dosya adını oluştur
+        String fileName = report.getCustomerFirmName() + "_" + dateInTrFormat + ".pdf";
+
+        // PDF'i dosya sistemine kaydet
+        String savedPath = savePdfToFileSystem(byteArrayOutputStream, fileName);
+
+        // Metadata'yı veritabanına kaydet
+        maintenancePdfRecordServiceImpl.savePdfMetadata(report, fileName, savedPath, byteArrayOutputStream.size());
+
         FileResponseVM fileResponseVM = new FileResponseVM();
         fileResponseVM.setExtension("pdf");
-        fileResponseVM.setFilename(
-                report.getCustomerFirmName()
-                        + "_"
-                        + dateInTrFormat
-                        + "."
-                        + fileResponseVM.getExtension());
+        fileResponseVM.setFilename(fileName);
         fileResponseVM.setFileContent(byteArrayOutputStream.toByteArray());
 
         return fileResponseVM;
@@ -177,97 +194,38 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
         return simpleReportFiller.getJasperPrint();
     }
 
-//    /**
-//     * PDF çıktısını dosyaya kaydetme metodu
-//     *
-//     * @param byteArrayOutputStream PDF içeriği
-//     * @param fileName              Dosya adı
-//     * @return Kaydedilen dosyanın tam yolu
-//     * @throws IOException Dosya yazma hatası
-//     */
-//    public String savePdfToFile(ByteArrayOutputStream byteArrayOutputStream, String fileName) throws IOException {
-//        // pdf-files klasörünün yolunu belirle
-//        Path pdfDirectory = Paths.get("pdf-files");
-//
-//        // Klasör yoksa oluştur
-//        if (!Files.exists(pdfDirectory)) {
-//            Files.createDirectories(pdfDirectory);
-//        }
-//
-//        // Dosya adını temizle (Türkçe karakter ve özel karakterleri düzelt)
-//        String cleanFileName = fileName
-//                .replaceAll("[^a-zA-Z0-9.-]", "_")
-//                .replaceAll("_{2,}", "_");
-//
-//        // Tam dosya yolunu oluştur
-//        Path filePath = pdfDirectory.resolve(cleanFileName);
-//
-//        // PDF'i dosyaya yaz
-//        try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
-//            byteArrayOutputStream.writeTo(fos);
-//            fos.flush();
-//        }
-//
-//        return filePath.toAbsolutePath().toString();
-//    }
+    /**
+     * PDF dosyasını dosya sistemine kaydeder
+     *
+     * @param pdfStream PDF içeriği
+     * @param fileName  Dosya adı
+     * @return Kaydedilen dosyanın tam yolu
+     * @throws IOException Dosya yazma hatası
+     */
+    private String savePdfToFileSystem(ByteArrayOutputStream pdfStream, String fileName) throws IOException {
+        Path directory = Paths.get(pdfStoragePath);
 
-//    /**
-//     * ByteArrayOutputStream'i PDF dosyası olarak kaydeder
-//     *
-//     * @param pdfStream    PDF içeriği
-//     * @param baseFileName Dosya adı (örn: "bakim-listesi")
-//     * @return Kaydedilen dosyanın tam yolu
-//     * @throws IOException Dosya yazma hatası
-//     */
-//    public String savePdfStreamToFile(ByteArrayOutputStream pdfStream, String baseFileName) throws IOException {
-//        if (pdfStream == null || pdfStream.size() == 0) {
-//            throw new IllegalArgumentException("PDF stream boş olamaz!");
-//        }
-//
-//        // Klasör yolunu belirle
-//        Path pdfDirectory = Paths.get("pdf-files");
-//
-//        // Klasör yoksa oluştur
-//        if (!Files.exists(pdfDirectory)) {
-//            Files.createDirectories(pdfDirectory);
-//            System.out.println("✓ pdf-files klasörü oluşturuldu: " + pdfDirectory.toAbsolutePath());
-//        }
-//
-//        // Dosya adını oluştur (timestamp ile unique yap)
-//        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-//        String fileName = String.format("%s_%s.pdf", baseFileName, timestamp);
-//
-//        // Tam dosya yolunu oluştur
-//        Path filePath = pdfDirectory.resolve(fileName);
-//
-//        // PDF'i dosyaya yaz
-//        try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
-//            pdfStream.writeTo(fos);
-//            System.out.println("✓ PDF dosyası kaydedildi: " + filePath.toAbsolutePath());
-//        }
-//
-//        return filePath.toAbsolutePath().toString();
-//    }
+        // Klasör yoksa oluştur
+        if (!Files.exists(directory)) {
+            Files.createDirectories(directory);
+        }
 
-//    @Override
-//    public String testGenerateAndSavePdf() throws IOException {
-//        System.out.println("=== PDF OLUŞTURMA TESTİ BAŞLIYOR ===");
-//
-//        // Test verisi oluştur
-//        MaintenanceChecklistModel report = this.test();
-//
-//        System.out.println("\n✓ PDF oluşturuluyor...");
-//        ByteArrayOutputStream pdfStream = buildPdfForMaintenanceChecklist(report);
-//
-//        System.out.println("✓ PDF boyutu: " + pdfStream.size() + " bytes");
-//
-//        // PDF'i dosyaya kaydet
-//        String savedPath = savePdfStreamToFile(pdfStream, "periyodik-bakim-listesi");
-//
-//        System.out.println("✓ PDF kaydedildi: " + savedPath);
-//        System.out.println("=== TEST TAMAMLANDI ===\n");
-//
-//        return savedPath;
-//    }
+        // Dosya adını temizle (Türkçe karakter ve özel karakterler için)
+        String cleanFileName = fileName
+                .replaceAll("[^a-zA-Z0-9.-]", "_")
+                .replaceAll("_{2,}", "_");
 
+        // Timestamp ekle (dosya adı unique olsun)
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String uniqueFileName = cleanFileName.replace(".pdf", "_" + timestamp + ".pdf");
+
+        Path filePath = directory.resolve(uniqueFileName);
+
+        // PDF'i dosyaya yaz
+        try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
+            pdfStream.writeTo(fos);
+        }
+
+        return filePath.toAbsolutePath().toString();
+    }
 }
