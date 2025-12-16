@@ -231,6 +231,11 @@ public class SystemInfoService implements SystemInfoServiceImpl {
     }
 
     @Override
+    public List<String> getActiveChecklistSystemNames() {
+        return systemInfoRepository.findDistinctActiveChecklistSystemNames();
+    }
+
+    @Override
     public List<SystemInfoDto> getAllBySystemName(String systemName) {
         List<SystemInfo> allRecords = systemInfoRepository.findAllBySystemName(systemName);
         return allRecords.stream()

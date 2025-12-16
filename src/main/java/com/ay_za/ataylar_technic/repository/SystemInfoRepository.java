@@ -54,7 +54,11 @@ public interface SystemInfoRepository extends JpaRepository<SystemInfo, String> 
     @Query("SELECT DISTINCT s.systemName FROM SystemInfo s WHERE s.systemName IS NOT NULL ORDER BY s.systemName")
     List<String> findDistinctSystemNames();
 
-    // Son sistem sıra numarasını getir
+    // Aktif ve checklist olan benzersiz sistem adlarını getir
+    @Query("SELECT DISTINCT s.systemName FROM SystemInfo s WHERE s.isChecklist = true AND s.isActive = true AND s.systemName IS NOT NULL ORDER BY s.systemName")
+    List<String> findDistinctActiveChecklistSystemNames();
+
+    // ...existing code...
     @Query("SELECT MAX(s.systemOrderNo) FROM SystemInfo s WHERE s.description IS NULL OR s.description = ''")
     Integer findMaxSystemOrderNo();
 

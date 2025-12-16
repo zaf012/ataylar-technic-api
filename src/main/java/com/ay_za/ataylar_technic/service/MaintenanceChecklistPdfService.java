@@ -81,7 +81,7 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
         report.setImage3(report.getImage3());
         report.setSystemInfoDtoList(checklistsBySystemName);
 
-        String dateInTrFormat = DateUtil.trDateFormat.format(LocalDateTime.now());
+        String dateInTrFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         ByteArrayOutputStream byteArrayOutputStream = this.buildPdfForMaintenanceChecklist(report);
 
@@ -96,6 +96,8 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
 
         FileResponseVM fileResponseVM = new FileResponseVM();
         fileResponseVM.setExtension("pdf");
+        fileResponseVM.setFileType("pdf");
+        fileResponseVM.setContentType("application/pdf");
         fileResponseVM.setFilename(fileName);
         fileResponseVM.setFileContent(byteArrayOutputStream.toByteArray());
 
@@ -105,10 +107,6 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
     public ByteArrayOutputStream buildPdfForMaintenanceChecklist(MaintenanceChecklistModel report)
             throws IOException {
 
-        // List<SystemInfoDto> systemInfoList = systemInfoServiceImpl.getChecklistsBySystemName(report.getSystemName());
-        //report.setSystemInfoDtoList(systemInfoList);
-
-
         // SystemInfoDto listesini MaintenanceChecklistItemDto listesine dönüştür
         List<MaintenanceChecklistItemDto> checklistItems = new ArrayList<>();
         for (SystemInfoDto systemInfo : report.getSystemInfoDtoList()) {
@@ -116,8 +114,8 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
 
             // CHECKED/UNCHECKED ATAMASI
             if (report.getCheckedItems() != null && !report.getCheckedItems().isEmpty()) {
-                Integer systemOrderNo = systemInfo.getSystemOrderNo();
-                Boolean isChecked = report.getCheckedItems().get(systemOrderNo);
+                Integer controlPointOrder = systemInfo.getControlPointOrder();
+                Boolean isChecked = report.getCheckedItems().get(controlPointOrder);
 
                 if (Boolean.TRUE.equals(isChecked)) {
                     item.setChecked("X");
@@ -210,14 +208,9 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
             Files.createDirectories(directory);
         }
 
-        // Dosya adını temizle (Türkçe karakter ve özel karakterler için)
-        String cleanFileName = fileName
-                .replaceAll("[^a-zA-Z0-9.-]", "_")
-                .replaceAll("_{2,}", "_");
-
         // Timestamp ekle (dosya adı unique olsun)
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-        String uniqueFileName = cleanFileName.replace(".pdf", "_" + timestamp + ".pdf");
+        String uniqueFileName = fileName.replace(".pdf", "_" + timestamp + ".pdf");
 
         Path filePath = directory.resolve(uniqueFileName);
 

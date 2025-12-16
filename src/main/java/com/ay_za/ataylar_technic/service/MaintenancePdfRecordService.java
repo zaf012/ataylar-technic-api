@@ -6,6 +6,7 @@ import com.ay_za.ataylar_technic.mapper.MaintenancePdfRecordMapper;
 import com.ay_za.ataylar_technic.repository.MaintenancePdfRecordRepository;
 import com.ay_za.ataylar_technic.service.base.MaintenancePdfRecordServiceImpl;
 import com.ay_za.ataylar_technic.service.model.MaintenanceChecklistModel;
+import com.ay_za.ataylar_technic.util.DateUtil;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,11 +55,12 @@ public class MaintenancePdfRecordService implements MaintenancePdfRecordServiceI
         record.setEmail(report.getEmail());
         record.setSystemName(report.getSystemName());
         record.setProductSerialNo(report.getProductSerialNo());
-        record.setServiceDate(LocalDate.parse(report.getServiceDate()));
+        record.setServiceDate(DateUtil.stringToLocalDate(report.getServiceDate()));
         record.setDescription(report.getDescription());
         record.setFileName(fileName);
         record.setFilePath(filePath);
         record.setFileSizeBytes(fileSize);
+        record.setCreatedAt(LocalDateTime.now());
         record.setCreatedBy("SYSTEM"); // İleride kullanıcı bilgisi eklenebilir
 
         pdfRecordRepository.save(record);
@@ -65,7 +68,7 @@ public class MaintenancePdfRecordService implements MaintenancePdfRecordServiceI
 
     @Override
     public List<MaintenancePdfRecordDto> listPdfRecords(String customerName, String systemName,
-                                                         LocalDate startDate, LocalDate endDate) {
+                                                        LocalDate startDate, LocalDate endDate) {
         List<MaintenancePdfRecord> records = pdfRecordRepository.findByFilters(
                 customerName, systemName, startDate, endDate
         );

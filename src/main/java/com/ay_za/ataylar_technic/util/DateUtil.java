@@ -82,8 +82,26 @@ public class DateUtil {
   }
 
   public static LocalDate stringToLocalDate(String date) {
-    LocalDate currentDate = LocalDate.parse(date);
-    return currentDate;
+    if (date == null || date.trim().isEmpty()) {
+      return null;
+    }
+
+    try {
+      // Önce Türkçe formatı dene (dd.MM.yyyy veya dd/MM/yyyy)
+      if (date.contains(".")) {
+        DateTimeFormatter turkishFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return LocalDate.parse(date, turkishFormatter);
+      } else if (date.contains("/")) {
+        DateTimeFormatter slashFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return LocalDate.parse(date, slashFormatter);
+      } else {
+        // ISO formatı (yyyy-MM-dd)
+        return LocalDate.parse(date);
+      }
+    } catch (Exception e) {
+      // Fallback: ISO formatı dene
+      return LocalDate.parse(date);
+    }
   }
 
   public static List<LocalDate> workingDaysOfMonth(String startDate) {

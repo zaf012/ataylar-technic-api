@@ -22,7 +22,7 @@ public class PdfPrintController {
         this.maintenanceChecklistPdfServiceImpl = maintenanceChecklistPdfServiceImpl;
     }
 
-    @PostMapping("/export-pdf")
+    @PostMapping(value = "/export-pdf", produces = "application/json")
     @Operation(summary = "PDF yazdır", description = "Periyodik bakım çeklistini PDF olarak yazdırır")
     public ResponseEntity<FileResponseVM> exportPdf(@RequestBody MaintenanceChecklistModel maintenanceChecklistModel) throws IOException {
         FileResponseVM fileResponseVM = maintenanceChecklistPdfServiceImpl.exportPdf(maintenanceChecklistModel);

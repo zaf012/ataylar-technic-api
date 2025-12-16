@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -153,6 +154,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleNoResourceFound(NoResourceFoundException ex) {
         // Bu hatayı log'lamıyoruz çünkü normal bir durum (API endpoint'i yok)
         return createErrorResponse("Endpoint bulunamadı: " + ex.getResourcePath(), "NOT_FOUND", HttpStatus.NOT_FOUND);
+    }
+
+    // HttpMediaTypeNotAcceptableException - Accept header hatası
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public ResponseEntity<Map<String, Object>> handleMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex) {
+        String message = "Geçersiz Accept header formatı. Lütfen 'Accept: application/json' veya 'Accept: */*' kullanın.";
+        errorLoggingService.logError(ex, "INVALID_ACCEPT_HEADER", "WARN");
+        return createErrorResponse(message, "INVALID_ACCEPT_HEADER", HttpStatus.NOT_ACCEPTABLE);
     }
 
     // Genel Exception Handler - En son yakalanır

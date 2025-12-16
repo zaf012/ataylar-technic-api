@@ -159,6 +159,13 @@ public class SystemInfoController {
         return ResponseEntity.ok(systemNames);
     }
 
+    @GetMapping("/active-checklist-system-names")
+    @Operation(summary = "Aktif çeklist sistem adları", description = "Aktif ve çeklist olan benzersiz sistem adlarını döner")
+    public ResponseEntity<List<String>> getActiveChecklistSystemNames() {
+        List<String> systemNames = systemInfoService.getActiveChecklistSystemNames();
+        return ResponseEntity.ok(systemNames);
+    }
+
     @GetMapping("/systems/{systemName}/all")
     @Operation(summary = "Sistem ve tüm maddeleri", description = "Belirtilen sistem ve ona ait tüm çeklist/arıza maddelerini döner")
     public ResponseEntity<List<SystemInfoDto>> getAllBySystemName(

@@ -40,6 +40,7 @@ public interface SystemInfoServiceImpl {
 
     // Yardımcı metodlar
     List<String> getAllSystemNames();
+    List<String> getActiveChecklistSystemNames();
     List<SystemInfoDto> getAllBySystemName(String systemName);
 
 }
