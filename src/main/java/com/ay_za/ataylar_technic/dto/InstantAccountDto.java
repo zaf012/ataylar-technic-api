@@ -1,5 +1,7 @@
 package com.ay_za.ataylar_technic.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 
 public class InstantAccountDto {
@@ -13,12 +15,7 @@ public class InstantAccountDto {
     private String userTypeName;
     private String username;
     private String password;
-    private String firmId;
-    private String firmName;
-    private String projectId;
-    private String projectName;
     private String authorizedPersonnel;
-    private String companyShortName;
     private String phoneCountryCode;
     private String phone;
     private String gsmCountryCode;
@@ -26,23 +23,23 @@ public class InstantAccountDto {
     private String address;
     private String fax;
     private String email;
-    private String pttBox;
     private String postalCode;
     private String taxNumber;
     private String taxOffice;
     private String tcIdentityNo;
-    private String bankAddress;
+    private String iban;
     private Boolean userStatus;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private String createdBy;
     private String updatedBy;
+    @JsonProperty("isActive")
     private Boolean isActive;
 
     public InstantAccountDto() {
     }
 
-    public InstantAccountDto(String id, String accountGroupId, String accountGroupName, String siteId, String siteName, Integer userTypeId, String userTypeName, String username, String password, String firmId, String firmName, String projectId, String projectName, String authorizedPersonnel, String companyShortName, String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address, String fax, String email, String pttBox, String postalCode, String taxNumber, String taxOffice, String tcIdentityNo, String bankAddress, Boolean userStatus, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
+    public InstantAccountDto(String id, String accountGroupId, String accountGroupName, String siteId, String siteName, Integer userTypeId, String userTypeName, String username, String password, String authorizedPersonnel, String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address, String fax, String email, String postalCode, String taxNumber, String taxOffice, String tcIdentityNo, String iban, Boolean userStatus, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
         this.id = id;
         this.accountGroupId = accountGroupId;
         this.accountGroupName = accountGroupName;
@@ -52,12 +49,7 @@ public class InstantAccountDto {
         this.userTypeName = userTypeName;
         this.username = username;
         this.password = password;
-        this.firmId = firmId;
-        this.firmName = firmName;
-        this.projectId = projectId;
-        this.projectName = projectName;
         this.authorizedPersonnel = authorizedPersonnel;
-        this.companyShortName = companyShortName;
         this.phoneCountryCode = phoneCountryCode;
         this.phone = phone;
         this.gsmCountryCode = gsmCountryCode;
@@ -65,12 +57,11 @@ public class InstantAccountDto {
         this.address = address;
         this.fax = fax;
         this.email = email;
-        this.pttBox = pttBox;
         this.postalCode = postalCode;
         this.taxNumber = taxNumber;
         this.taxOffice = taxOffice;
         this.tcIdentityNo = tcIdentityNo;
-        this.bankAddress = bankAddress;
+        this.iban = iban;
         this.userStatus = userStatus;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -153,52 +144,12 @@ public class InstantAccountDto {
         this.password = password;
     }
 
-    public String getFirmId() {
-        return firmId;
-    }
-
-    public void setFirmId(String firmId) {
-        this.firmId = firmId;
-    }
-
-    public String getFirmName() {
-        return firmName;
-    }
-
-    public void setFirmName(String firmName) {
-        this.firmName = firmName;
-    }
-
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
     public String getAuthorizedPersonnel() {
         return authorizedPersonnel;
     }
 
     public void setAuthorizedPersonnel(String authorizedPersonnel) {
         this.authorizedPersonnel = authorizedPersonnel;
-    }
-
-    public String getCompanyShortName() {
-        return companyShortName;
-    }
-
-    public void setCompanyShortName(String companyShortName) {
-        this.companyShortName = companyShortName;
     }
 
     public String getPhoneCountryCode() {
@@ -257,14 +208,6 @@ public class InstantAccountDto {
         this.email = email;
     }
 
-    public String getPttBox() {
-        return pttBox;
-    }
-
-    public void setPttBox(String pttBox) {
-        this.pttBox = pttBox;
-    }
-
     public String getPostalCode() {
         return postalCode;
     }
@@ -297,12 +240,12 @@ public class InstantAccountDto {
         this.tcIdentityNo = tcIdentityNo;
     }
 
-    public String getBankAddress() {
-        return bankAddress;
+    public String getIban() {
+        return iban;
     }
 
-    public void setBankAddress(String bankAddress) {
-        this.bankAddress = bankAddress;
+    public void setIban(String iban) {
+        this.iban = iban;
     }
 
     public Boolean getUserStatus() {

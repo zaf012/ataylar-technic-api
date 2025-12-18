@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 public class MaintenancePdfRecord {
 
     @Id
-    @Column(name = "id", length = 200)
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(name = "customer_firm_name", length = 255)

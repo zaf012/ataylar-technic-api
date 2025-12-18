@@ -18,7 +18,6 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class MaintenancePdfRecordService implements MaintenancePdfRecordServiceImpl {
@@ -46,7 +45,6 @@ public class MaintenancePdfRecordService implements MaintenancePdfRecordServiceI
     public void savePdfMetadata(MaintenanceChecklistModel report, String fileName,
                                 String filePath, long fileSize) {
         MaintenancePdfRecord record = new MaintenancePdfRecord();
-        record.setId(UUID.randomUUID().toString());
         record.setCustomerFirmName(report.getCustomerFirmName());
         record.setCustomerAddress(report.getCustomerAddress());
         record.setAuthorizedPersonnel(report.getAuthorizedPersonnel());

@@ -17,7 +17,7 @@ public class ProductInventoryDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", length = 36)
+    @Column(name = "id")
     private String id;
 
     @Column(name = "category_id", nullable = false, length = 36)

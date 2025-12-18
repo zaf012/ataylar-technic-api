@@ -1,9 +1,6 @@
 package com.ay_za.ataylar_technic.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,7 +11,8 @@ import java.time.LocalDateTime;
 public class SystemInfo {
 
     @Id
-    @Column(name = "id", length = 200)
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(name = "system_name", nullable = false, length = 100)

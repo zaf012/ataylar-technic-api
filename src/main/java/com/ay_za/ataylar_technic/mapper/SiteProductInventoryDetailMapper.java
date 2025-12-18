@@ -29,7 +29,6 @@ public class SiteProductInventoryDetailMapper {
         dto.setSquareName(entity.getSquareName());
         dto.setBlockId(entity.getBlockId());
         dto.setBlockName(entity.getBlockName());
-        dto.setDoorNumber(entity.getDoorNumber());
         dto.setFloorNumber(entity.getFloorNumber());
         dto.setLocation(entity.getLocation());
         dto.setSystemId(entity.getSystemId());
@@ -64,7 +63,6 @@ public class SiteProductInventoryDetailMapper {
         entity.setSquareName(dto.getSquareName());
         entity.setBlockId(dto.getBlockId());
         entity.setBlockName(dto.getBlockName());
-        entity.setDoorNumber(dto.getDoorNumber());
         entity.setFloorNumber(dto.getFloorNumber());
         entity.setLocation(dto.getLocation());
         entity.setSystemId(dto.getSystemId());

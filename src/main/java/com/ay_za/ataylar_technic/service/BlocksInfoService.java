@@ -62,7 +62,6 @@ public class BlocksInfoService implements BlocksInfoServiceImpl {
         }
 
         BlocksInfo blocksInfo = new BlocksInfo();
-        blocksInfo.setId(UUID.randomUUID().toString());
         blocksInfo.setBlockName(blocksInfoDto.getBlockName().trim());
         blocksInfo.setBlockCode(blocksInfoDto.getBlockCode() != null ? blocksInfoDto.getBlockCode().trim() : null);
         blocksInfo.setSquareId(blocksInfoDto.getSquareId().trim());

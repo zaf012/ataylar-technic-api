@@ -1,9 +1,6 @@
 package com.ay_za.ataylar_technic.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,17 +11,12 @@ import java.time.LocalDateTime;
 public class SitesInfo {
 
     @Id
-    @Column(name = "id", length = 200)
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(name = "site_name", nullable = false, length = 100)
     private String siteName;
-
-    @Column(name = "project_id", nullable = false, length = 100)
-    private String projectId;
-
-    @Column(name = "project_name", nullable = false, length = 100)
-    private String projectName;
 
     @Column(name = "description", length = 100)
     private String description;
@@ -46,12 +38,10 @@ public class SitesInfo {
     public SitesInfo() {
     }
 
-    public SitesInfo(String id, String siteName, String projectId, String projectName, String description,
+    public SitesInfo(String id, String siteName, String description,
                      LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy) {
         this.id = id;
         this.siteName = siteName;
-        this.projectId = projectId;
-        this.projectName = projectName;
         this.description = description;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -73,22 +63,6 @@ public class SitesInfo {
 
     public void setSiteName(String siteName) {
         this.siteName = siteName;
-    }
-
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
     }
 
     public String getDescription() {
@@ -136,8 +110,6 @@ public class SitesInfo {
         return "SitesInfo{" +
                 "id='" + id + '\'' +
                 ", siteName='" + siteName + '\'' +
-                ", projectId='" + projectId + '\'' +
-                ", projectName='" + projectName + '\'' +
                 ", description='" + description + '\'' +
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +

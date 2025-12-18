@@ -1,9 +1,6 @@
 package com.ay_za.ataylar_technic.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,7 +11,8 @@ import java.time.LocalDateTime;
 public class InstantAccount {
 
     @Id
-    @Column(name = "id", length = 36)
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     // Cari Grup Id
@@ -43,23 +41,8 @@ public class InstantAccount {
     @Column(name = "password", length = 255)
     private String password;
 
-    @Column(name = "firm_id", length = 255)
-    private String firmId;
-
-    @Column(name = "firm_name", length = 200)
-    private String firmName;
-
-    @Column(name = "project_id", length = 255)
-    private String projectId;
-
-    @Column(name = "project_name", length = 200)
-    private String projectName;
-
     @Column(name = "authorized_personnel", length = 200)
     private String authorizedPersonnel;
-
-    @Column(name = "company_short_name", length = 100)
-    private String companyShortName;
 
     @Column(name = "phone_country_code", length = 10)
     private String phoneCountryCode;
@@ -82,9 +65,6 @@ public class InstantAccount {
     @Column(name = "email", length = 100)
     private String email;
 
-    @Column(name = "ptt_box", length = 20)
-    private String pttBox;
-
     @Column(name = "postal_code", length = 10)
     private String postalCode;
 
@@ -97,8 +77,8 @@ public class InstantAccount {
     @Column(name = "tc_identity_no", length = 11)
     private String tcIdentityNo;
 
-    @Column(name = "bank_address", length = 200)
-    private String bankAddress;
+    @Column(name = "iban", length = 200)
+    private String iban;
 
     @Column(name = "user_status")
     private Boolean userStatus = true;
@@ -126,7 +106,7 @@ public class InstantAccount {
 
     // Constructor with required fields
 
-    public InstantAccount(String id, String accountGroupId, String accountGroupName, String siteId, String siteName, Integer userTypeId, String userTypeName, String username, String password, String firmId, String firmName, String projectId, String projectName, String authorizedPersonnel, String companyShortName, String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address, String fax, String email, String pttBox, String postalCode, String taxNumber, String taxOffice, String tcIdentityNo, String bankAddress, Boolean userStatus, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
+    public InstantAccount(String id, String accountGroupId, String accountGroupName, String siteId, String siteName, Integer userTypeId, String userTypeName, String username, String password, String authorizedPersonnel, String phoneCountryCode, String phone, String gsmCountryCode, String gsm, String address, String fax, String email, String postalCode, String taxNumber, String taxOffice, String tcIdentityNo, String iban, Boolean userStatus, LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy, Boolean isActive) {
         this.id = id;
         this.accountGroupId = accountGroupId;
         this.accountGroupName = accountGroupName;
@@ -136,12 +116,7 @@ public class InstantAccount {
         this.userTypeName = userTypeName;
         this.username = username;
         this.password = password;
-        this.firmId = firmId;
-        this.firmName = firmName;
-        this.projectId = projectId;
-        this.projectName = projectName;
         this.authorizedPersonnel = authorizedPersonnel;
-        this.companyShortName = companyShortName;
         this.phoneCountryCode = phoneCountryCode;
         this.phone = phone;
         this.gsmCountryCode = gsmCountryCode;
@@ -149,12 +124,11 @@ public class InstantAccount {
         this.address = address;
         this.fax = fax;
         this.email = email;
-        this.pttBox = pttBox;
         this.postalCode = postalCode;
         this.taxNumber = taxNumber;
         this.taxOffice = taxOffice;
         this.tcIdentityNo = tcIdentityNo;
-        this.bankAddress = bankAddress;
+        this.iban = iban;
         this.userStatus = userStatus;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -239,37 +213,6 @@ public class InstantAccount {
         this.password = password;
     }
 
-    public String getFirmId() {
-        return firmId;
-    }
-
-    public void setFirmId(String firmId) {
-        this.firmId = firmId;
-    }
-
-    public String getFirmName() {
-        return firmName;
-    }
-
-    public void setFirmName(String firmName) {
-        this.firmName = firmName;
-    }
-
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
 
     public String getAuthorizedPersonnel() {
         return authorizedPersonnel;
@@ -277,14 +220,6 @@ public class InstantAccount {
 
     public void setAuthorizedPersonnel(String authorizedPersonnel) {
         this.authorizedPersonnel = authorizedPersonnel;
-    }
-
-    public String getCompanyShortName() {
-        return companyShortName;
-    }
-
-    public void setCompanyShortName(String companyShortName) {
-        this.companyShortName = companyShortName;
     }
 
     public String getPhoneCountryCode() {
@@ -343,14 +278,6 @@ public class InstantAccount {
         this.email = email;
     }
 
-    public String getPttBox() {
-        return pttBox;
-    }
-
-    public void setPttBox(String pttBox) {
-        this.pttBox = pttBox;
-    }
-
     public String getPostalCode() {
         return postalCode;
     }
@@ -383,12 +310,12 @@ public class InstantAccount {
         this.tcIdentityNo = tcIdentityNo;
     }
 
-    public String getBankAddress() {
-        return bankAddress;
+    public String getIban() {
+        return iban;
     }
 
-    public void setBankAddress(String bankAddress) {
-        this.bankAddress = bankAddress;
+    public void setIban(String iban) {
+        this.iban = iban;
     }
 
     public Boolean getUserStatus() {

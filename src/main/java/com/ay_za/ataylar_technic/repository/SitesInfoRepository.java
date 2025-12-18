@@ -27,10 +27,4 @@ public interface SitesInfoRepository extends JpaRepository<SitesInfo, String> {
 
     // Site adına göre arama (contains)
     List<SitesInfo> findBySiteNameContainingIgnoreCaseOrderBySiteNameAsc(String siteName);
-
-    // Proje ID'sine göre siteleri getir
-    List<SitesInfo> findByProjectIdOrderBySiteNameAsc(String projectId);
-
-    // Site adı ve proje ID kombinasyonu ile arama
-    List<SitesInfo> findBySiteNameIgnoreCaseAndProjectId(String siteName, String projectId);
 }

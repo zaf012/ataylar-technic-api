@@ -85,17 +85,6 @@ public interface SiteProductInventoryDetailRepository extends JpaRepository<Site
     List<SiteProductInventoryDetail> findActiveByBlockId(@Param("blockId") String blockId);
 
     /**
-     * Find by block, floor and door number
-     */
-    @Query("SELECT s FROM SiteProductInventoryDetail s WHERE s.blockId = :blockId " +
-           "AND (:floorNumber IS NULL OR s.floorNumber = :floorNumber) " +
-           "AND (:doorNumber IS NULL OR s.doorNumber = :doorNumber)")
-    List<SiteProductInventoryDetail> findByBlockAndFloorAndDoor(
-            @Param("blockId") String blockId,
-            @Param("floorNumber") Integer floorNumber,
-            @Param("doorNumber") Integer doorNumber);
-
-    /**
      * Location based search (site, square, block)
      */
     @Query("SELECT s FROM SiteProductInventoryDetail s WHERE s.siteId = :siteId " +

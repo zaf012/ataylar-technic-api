@@ -101,7 +101,6 @@ public class SiteProductInventoryDetailService implements SiteProductInventoryDe
         existingEntity.setSquareName(dto.getSquareName());
         existingEntity.setBlockId(dto.getBlockId());
         existingEntity.setBlockName(dto.getBlockName());
-        existingEntity.setDoorNumber(dto.getDoorNumber());
         existingEntity.setFloorNumber(dto.getFloorNumber());
         existingEntity.setLocation(dto.getLocation());
         existingEntity.setSystemId(dto.getSystemId());

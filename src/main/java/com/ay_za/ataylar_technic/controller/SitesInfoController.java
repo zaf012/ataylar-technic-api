@@ -161,29 +161,6 @@ public class SitesInfoController {
     }
 
     /**
-     * Proje ID'sine göre siteleri getir
-     */
-    @Operation(summary = "Projeye ait siteleri getir", description = "Belirtilen projeye ait tüm siteleri getirir")
-    @GetMapping("/get-by-project/{projectId}")
-    public ResponseEntity<Map<String, Object>> getSitesByProjectId(@PathVariable String projectId) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            List<SitesInfoDto> sites = sitesInfoService.getSitesByProjectId(projectId);
-
-            response.put("success", true);
-            response.put("data", sites);
-            response.put("count", sites.size());
-            response.put("projectId", projectId);
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Projeye ait siteler getirilirken hata oluştu: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
-    /**
      * Site adında arama
      */
     @Operation(summary = "Site ara", description = "Site adında arama yapar")
@@ -202,33 +179,6 @@ public class SitesInfoController {
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Arama yapılırken hata oluştu: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
-    /**
-     * Default site verilerini oluştur
-     */
-    @Operation(summary = "Default site verileri oluştur", description = "Örnek site ve blok verilerini oluşturur")
-    @PostMapping("/create-default-datas")
-    public ResponseEntity<Map<String, Object>> createDefaultSites() {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            List<SitesInfoDto> createdSites = sitesInfoService.createDefaultSites();
-
-            response.put("success", true);
-            response.put("message", createdSites.size() + " örnek site/blok oluşturuldu");
-            response.put("data", createdSites);
-            response.put("count", createdSites.size());
-
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Örnek siteler oluşturulurken hata oluştu: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

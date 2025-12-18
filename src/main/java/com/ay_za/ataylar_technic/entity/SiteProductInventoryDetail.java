@@ -17,7 +17,7 @@ public class SiteProductInventoryDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", length = 36)
+    @Column(name = "id")
     private String id;
 
     @Column(name = "site_id", nullable = false, length = 200)
@@ -37,9 +37,6 @@ public class SiteProductInventoryDetail {
 
     @Column(name = "block_name", nullable = false, length = 100)
     private String blockName;
-
-    @Column(name = "door_number")
-    private Integer doorNumber;
 
     @Column(name = "floor_number")
     private Integer floorNumber;
@@ -90,7 +87,7 @@ public class SiteProductInventoryDetail {
     }
 
     public SiteProductInventoryDetail(String id, String siteId, String siteName, String squareId, String squareName,
-                                     String blockId, String blockName, Integer doorNumber, Integer floorNumber,
+                                     String blockId, String blockName, Integer floorNumber,
                                      String location, String systemId, String systemName, String categoryId,
                                      String categoryName, String productInventoryDetailId, String productName,
                                      String qrCode, Boolean active, LocalDateTime createdDate, LocalDateTime updatedDate,
@@ -102,7 +99,6 @@ public class SiteProductInventoryDetail {
         this.squareName = squareName;
         this.blockId = blockId;
         this.blockName = blockName;
-        this.doorNumber = doorNumber;
         this.floorNumber = floorNumber;
         this.location = location;
         this.systemId = systemId;
@@ -174,14 +170,6 @@ public class SiteProductInventoryDetail {
 
     public void setBlockName(String blockName) {
         this.blockName = blockName;
-    }
-
-    public Integer getDoorNumber() {
-        return doorNumber;
-    }
-
-    public void setDoorNumber(Integer doorNumber) {
-        this.doorNumber = doorNumber;
     }
 
     public Integer getFloorNumber() {
@@ -306,7 +294,6 @@ public class SiteProductInventoryDetail {
                 ", squareName='" + squareName + '\'' +
                 ", blockId='" + blockId + '\'' +
                 ", blockName='" + blockName + '\'' +
-                ", doorNumber=" + doorNumber +
                 ", floorNumber=" + floorNumber +
                 ", location='" + location + '\'' +
                 ", systemId='" + systemId + '\'' +

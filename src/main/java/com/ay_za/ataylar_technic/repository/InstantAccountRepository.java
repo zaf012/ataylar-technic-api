@@ -28,9 +28,6 @@ public interface InstantAccountRepository extends JpaRepository<InstantAccount, 
     // Cari grup ID'sine göre hesapları getir
     List<InstantAccount> findByAccountGroupIdAndIsActiveTrue(String accountGroupId);
 
-    // Şirket adına göre arama (case-insensitive)
-    List<InstantAccount> findByFirmNameContainingIgnoreCaseAndIsActiveTrue(String firmName);
-
     // TC Kimlik numarasına göre arama
     Optional<InstantAccount> findByTcIdentityNoAndIsActiveTrue(String tcIdentityNo);
 
@@ -40,12 +37,6 @@ public interface InstantAccountRepository extends JpaRepository<InstantAccount, 
     // Kullanıcı adı veya email'e göre arama
     @Query("SELECT a FROM InstantAccount a WHERE (a.username = :identifier OR a.email = :identifier) AND a.isActive = true")
     Optional<InstantAccount> findByUsernameOrEmail(@Param("identifier") String identifier);
-
-    // Şirket adına göre arama
-    @Query("SELECT a FROM InstantAccount a WHERE " +
-            "(UPPER(a.firmName) LIKE UPPER(CONCAT('%', :searchTerm, '%'))) OR " +
-            "a.isActive = true")
-    List<InstantAccount> searchByCompany(@Param("searchTerm") String searchTerm);
 
     // Eksik bilgili hesapları getir (telefon veya email eksik)
     @Query("SELECT a FROM InstantAccount a WHERE (a.phone IS NULL OR a.phone = '' OR a.email IS NULL OR a.email = '') AND a.isActive = true")

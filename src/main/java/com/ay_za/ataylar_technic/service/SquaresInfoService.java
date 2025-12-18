@@ -55,7 +55,6 @@ public class SquaresInfoService implements SquaresInfoServiceImpl {
         }
 
         SquaresInfo squaresInfo = new SquaresInfo();
-        squaresInfo.setId(UUID.randomUUID().toString());
         squaresInfo.setSquareName(squaresInfoDto.getSquareName().trim());
         squaresInfo.setSiteId(squaresInfoDto.getSiteId().trim());
         squaresInfo.setSiteName(squaresInfoDto.getSiteName());

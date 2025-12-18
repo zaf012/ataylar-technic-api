@@ -1,18 +1,19 @@
 package com.ay_za.ataylar_technic.service;
 
 import com.ay_za.ataylar_technic.dto.InstantAccountDto;
-import com.ay_za.ataylar_technic.entity.*;
+import com.ay_za.ataylar_technic.dto.SitesInfoDto;
+import com.ay_za.ataylar_technic.entity.InstantAccount;
 import com.ay_za.ataylar_technic.mapper.InstantAccountMapper;
 import com.ay_za.ataylar_technic.repository.InstantAccountRepository;
-import com.ay_za.ataylar_technic.service.base.*;
+import com.ay_za.ataylar_technic.service.base.InstantAccountServiceImpl;
+import com.ay_za.ataylar_technic.service.base.InstantGroupServiceImpl;
+import com.ay_za.ataylar_technic.service.base.SitesInfoServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class InstantAccountService implements InstantAccountServiceImpl {
@@ -20,22 +21,15 @@ public class InstantAccountService implements InstantAccountServiceImpl {
 
     private final InstantAccountRepository instantAccountRepository;
     private final InstantGroupServiceImpl instantGroupServiceImpl;
-    private final InstantAccountMapper instantAccountMapper;
-    private final UserTypeServiceImpl userTypeServiceImpl;
-    private final FirmsInfoServiceImpl firmsInfoServiceImpl;
-    private final ProjectsInfoServiceImpl projectsInfoServiceImpl;
     private final SitesInfoServiceImpl sitesInfoServiceImpl;
+    private final InstantAccountMapper instantAccountMapper;
 
-    public InstantAccountService(InstantAccountRepository instantAccountRepository, InstantGroupServiceImpl instantGroupServiceImpl, InstantAccountMapper instantAccountMapper, UserTypeServiceImpl userTypeServiceImpl, FirmsInfoServiceImpl firmsInfoServiceImpl, ProjectsInfoServiceImpl projectsInfoServiceImpl, SitesInfoServiceImpl sitesInfoServiceImpl) {
+    public InstantAccountService(InstantAccountRepository instantAccountRepository, InstantGroupServiceImpl instantGroupServiceImpl, SitesInfoServiceImpl sitesInfoServiceImpl, InstantAccountMapper instantAccountMapper) {
         this.instantAccountRepository = instantAccountRepository;
         this.instantGroupServiceImpl = instantGroupServiceImpl;
-        this.instantAccountMapper = instantAccountMapper;
-        this.userTypeServiceImpl = userTypeServiceImpl;
-        this.firmsInfoServiceImpl = firmsInfoServiceImpl;
-        this.projectsInfoServiceImpl = projectsInfoServiceImpl;
         this.sitesInfoServiceImpl = sitesInfoServiceImpl;
+        this.instantAccountMapper = instantAccountMapper;
     }
-
 
     /**
      * Yeni hesap oluştur
@@ -47,36 +41,36 @@ public class InstantAccountService implements InstantAccountServiceImpl {
         // Temel validasyonlar
         validateAccountData(accountData);
 
-        accountData.setId(UUID.randomUUID().toString());
+        SitesInfoDto sitesInfoDto = new SitesInfoDto();
+        sitesInfoDto.setSiteName(accountData.getSiteName());
+
+        SitesInfoDto savedSite = sitesInfoServiceImpl.createSite(sitesInfoDto);
+
+        // 2. Generate edilen siteId'yi accountData'ya set et
+        accountData.setSiteId(savedSite.getId());
+        accountData.setSiteName(savedSite.getSiteName());
+
         accountData.setCreatedBy("admin");
         accountData.setActive(true);
-        accountData.setAccountGroupId(accountData.getAccountGroupId());
-        accountData.setAccountGroupName(accountData.getAccountGroupName());
-        accountData.setSiteId(accountData.getSiteId());
-        accountData.setSiteName(accountData.getSiteName());
-        accountData.setUserTypeId(accountData.getUserTypeId());
-        accountData.setUserTypeName(accountData.getUserTypeName());
-        accountData.setUsername(accountData.getUsername());
-        accountData.setPassword(accountData.getPassword());
-        accountData.setFirmId(accountData.getFirmId());
-        accountData.setFirmName(accountData.getFirmName());
-        accountData.setProjectId(accountData.getProjectId());
-        accountData.setProjectName(accountData.getProjectName());
-        accountData.setCompanyShortName(accountData.getCompanyShortName());
-        accountData.setPhoneCountryCode(accountData.getPhoneCountryCode());
-        accountData.setPhone(accountData.getPhone());
-        accountData.setGsmCountryCode(accountData.getGsmCountryCode());
-        accountData.setGsm(accountData.getGsm());
-        accountData.setAddress(accountData.getAddress());
-        accountData.setFax(accountData.getFax());
-        accountData.setEmail(accountData.getEmail());
-        accountData.setPttBox(accountData.getPttBox());
-        accountData.setPostalCode(accountData.getPostalCode());
-        accountData.setTaxNumber(accountData.getTaxNumber());
-        accountData.setTaxOffice(accountData.getTaxOffice());
-        accountData.setTcIdentityNo(accountData.getTcIdentityNo());
-        accountData.setBankAddress(accountData.getBankAddress());
-        accountData.setUserStatus(accountData.getUserStatus());
+        accountData.setAccountGroupId(accountData.getAccountGroupId() != null ? accountData.getAccountGroupId() : "");
+        accountData.setAccountGroupName(accountData.getAccountGroupName() != null ? accountData.getAccountGroupName() : "");
+        accountData.setUserTypeId(accountData.getUserTypeId() != null ? accountData.getUserTypeId() : 0);
+        accountData.setUserTypeName(accountData.getUserTypeName() != null ? accountData.getUserTypeName() : "");
+        accountData.setUsername(accountData.getUsername() != null ? accountData.getUsername() : "");
+        accountData.setPassword(accountData.getPassword() != null ? accountData.getPassword() : "");
+        accountData.setPhoneCountryCode(accountData.getPhoneCountryCode() != null ? accountData.getPhoneCountryCode() : "");
+        accountData.setPhone(accountData.getPhone() != null ? accountData.getPhone() : "");
+        accountData.setGsmCountryCode(accountData.getGsmCountryCode() != null ? accountData.getGsmCountryCode() : "");
+        accountData.setGsm(accountData.getGsm() != null ? accountData.getGsm() : "");
+        accountData.setAddress(accountData.getAddress() != null ? accountData.getAddress() : "");
+        accountData.setFax(accountData.getFax() != null ? accountData.getFax() : "");
+        accountData.setEmail(accountData.getEmail() != null ? accountData.getEmail() : "");
+        accountData.setPostalCode(accountData.getPostalCode() != null ? accountData.getPostalCode() : "");
+        accountData.setTaxNumber(accountData.getTaxNumber() != null ? accountData.getTaxNumber() : "");
+        accountData.setTaxOffice(accountData.getTaxOffice() != null ? accountData.getTaxOffice() : "");
+        accountData.setTcIdentityNo(accountData.getTcIdentityNo() != null ? accountData.getTcIdentityNo() : "");
+        accountData.setIban(accountData.getIban() != null ? accountData.getIban() : "");
+        accountData.setUserStatus(accountData.getUserStatus() != null ? accountData.getUserStatus() : true);
         accountData.setCreatedDate(LocalDateTime.now());
         accountData.setUpdatedDate(null);
         accountData.setUpdatedBy(null);
@@ -234,17 +228,6 @@ public class InstantAccountService implements InstantAccountServiceImpl {
     }
 
     /**
-     * Ad, soyad veya şirket adında arama
-     */
-    public List<InstantAccountDto> searchAccounts(String searchTerm) {
-        if (searchTerm == null || searchTerm.trim().isEmpty()) {
-            return getAllActiveAccounts();
-        }
-        List<InstantAccount> instantAccounts = instantAccountRepository.searchByCompany(searchTerm.trim());
-        return instantAccountMapper.convertAllToDTO(instantAccounts);
-    }
-
-    /**
      * Şifre güncelle
      */
     @Transactional
@@ -304,179 +287,29 @@ public class InstantAccountService implements InstantAccountServiceImpl {
     }
 
     private void updateAccountFields(InstantAccount existing, InstantAccountDto updated) {
-        existing.setAccountGroupId(updated.getAccountGroupId());
-        existing.setAccountGroupName(updated.getAccountGroupName());
-        existing.setSiteId(updated.getSiteId());
-        existing.setSiteName(updated.getSiteName());
-        existing.setUserTypeId(updated.getUserTypeId());
-        existing.setUserTypeName(updated.getUserTypeName());
-        existing.setUsername(updated.getUsername());
-        existing.setPassword(updated.getPassword());
-        existing.setFirmId(updated.getFirmId());
-        existing.setFirmName(updated.getFirmName());
-        existing.setProjectId(updated.getProjectId());
-        existing.setProjectName(updated.getProjectName());
-        existing.setCompanyShortName(updated.getCompanyShortName());
-        existing.setPhoneCountryCode(updated.getPhoneCountryCode());
-        existing.setPhone(updated.getPhone());
-        existing.setGsmCountryCode(updated.getGsmCountryCode());
-        existing.setGsm(updated.getGsm());
-        existing.setAddress(updated.getAddress());
-        existing.setFax(updated.getFax());
-        existing.setEmail(updated.getEmail());
-        existing.setPttBox(updated.getPttBox());
-        existing.setPostalCode(updated.getPostalCode());
-        existing.setTaxNumber(updated.getTaxNumber());
-        existing.setTaxOffice(updated.getTaxOffice());
-        existing.setTcIdentityNo(updated.getTcIdentityNo());
-        existing.setBankAddress(updated.getBankAddress());
-        existing.setUserStatus(updated.getUserStatus());
+        existing.setAccountGroupId(updated.getAccountGroupId() != null ? updated.getAccountGroupId() : "");
+        existing.setAccountGroupName(updated.getAccountGroupName() != null ? updated.getAccountGroupName() : "");
+        existing.setSiteId(updated.getSiteId() != null ? updated.getSiteId() : "");
+        existing.setSiteName(updated.getSiteName() != null ? updated.getSiteName() : "");
+        existing.setUserTypeId(updated.getUserTypeId() != null ? updated.getUserTypeId() : 0);
+        existing.setUserTypeName(updated.getUserTypeName() != null ? updated.getUserTypeName() : "");
+        existing.setUsername(updated.getUsername() != null ? updated.getUsername() : "");
+        existing.setPassword(updated.getPassword() != null ? updated.getPassword() : "");
+        existing.setPhoneCountryCode(updated.getPhoneCountryCode() != null ? updated.getPhoneCountryCode() : "");
+        existing.setPhone(updated.getPhone() != null ? updated.getPhone() : "");
+        existing.setGsmCountryCode(updated.getGsmCountryCode() != null ? updated.getGsmCountryCode() : "");
+        existing.setGsm(updated.getGsm() != null ? updated.getGsm() : "");
+        existing.setAddress(updated.getAddress() != null ? updated.getAddress() : "");
+        existing.setFax(updated.getFax() != null ? updated.getFax() : "");
+        existing.setEmail(updated.getEmail() != null ? updated.getEmail() : "");
+        existing.setPostalCode(updated.getPostalCode() != null ? updated.getPostalCode() : "");
+        existing.setTaxNumber(updated.getTaxNumber() != null ? updated.getTaxNumber() : "");
+        existing.setTaxOffice(updated.getTaxOffice() != null ? updated.getTaxOffice() : "");
+        existing.setTcIdentityNo(updated.getTcIdentityNo() != null ? updated.getTcIdentityNo() : "");
+        existing.setIban(updated.getIban() != null ? updated.getIban() : "");
+        existing.setUserStatus(updated.getUserStatus() != null ? updated.getUserStatus() : true);
         existing.setUpdatedBy("admin");
         existing.setUpdatedDate(LocalDateTime.now());
-    }
-
-
-    /**
-     * Dummy data ile hesap oluştur (Test amaçlı) - Güncellenmiş versiyon
-     */
-    @Transactional
-    public InstantAccountDto createAccount2(String createdBy) {
-        createdBy = "admin";
-
-        // Rastgele bir aktif grup ID'si al - güvenli yaklaşım
-        Optional<InstantGroup> randomGroupOpt = instantGroupServiceImpl.getRandomGroup();
-        if (randomGroupOpt.isEmpty()) {
-            throw new RuntimeException("Hiç grup bulunamadı. Önce grup oluşturun.");
-        }
-        InstantGroup randomGroup = randomGroupOpt.get();
-
-        // Rastgele UserType al - güvenli yaklaşım
-        Optional<UserType> randomUserTypeOpt = userTypeServiceImpl.getRandomUserType();
-        if (randomUserTypeOpt.isEmpty()) {
-            throw new RuntimeException("Hiç kullanıcı tipi bulunamadı. Önce user type oluşturun.");
-        }
-        UserType randomUserType = randomUserTypeOpt.get();
-
-        // Rastgele FirmsInfo al - güvenli yaklaşım
-        Optional<FirmsInfo> randomFirmOpt = firmsInfoServiceImpl.getRandomFirm();
-        if (randomFirmOpt.isEmpty()) {
-            throw new RuntimeException("Hiç firma bulunamadı. Önce firma oluşturun.");
-        }
-        FirmsInfo randomFirm = randomFirmOpt.get();
-
-        // Rastgele ProjectsInfo al - güvenli yaklaşım
-        Optional<ProjectsInfo> randomProjectOpt = projectsInfoServiceImpl.getRandomProject();
-        if (randomProjectOpt.isEmpty()) {
-            throw new RuntimeException("Hiç proje bulunamadı. Önce proje oluşturun.");
-        }
-        ProjectsInfo randomProject = randomProjectOpt.get();
-
-        // Rastgele SitesInfo al - güvenli yaklaşım
-        Optional<SitesInfo> randomSiteOpt = sitesInfoServiceImpl.getRandomSite();
-        if (randomSiteOpt.isEmpty()) {
-            throw new RuntimeException("Hiç site bulunamadı. Önce site oluşturun.");
-        }
-        SitesInfo randomSite = randomSiteOpt.get();
-
-
-        // Rastgele kullanıcı adı ve email oluştur
-        String randomNumber = String.valueOf(System.currentTimeMillis()).substring(7);
-
-        // Kişisel bilgiler
-        String[] firstNames = {"Ahmet", "Mehmet", "Ali", "Veli", "Hasan", "Hüseyin", "İbrahim", "Mustafa", "Osman", "Ömer"};
-        String[] lastNames = {"Yılmaz", "Kaya", "Demir", "Şahin", "Çelik", "Aydın", "Özkan", "Arslan", "Doğan", "Kılıç"};
-
-        int firstIndex = (int) (Math.random() * firstNames.length);
-        int lastIndex = (int) (Math.random() * lastNames.length);
-
-        String firstName = firstNames[firstIndex];
-        String lastName = lastNames[lastIndex];
-
-        InstantAccountDto instantAccountDto = new InstantAccountDto();
-
-        instantAccountDto.setAccountGroupId(randomGroup.getId());
-        instantAccountDto.setAccountGroupName(randomGroup.getGroupName());
-        instantAccountDto.setUserTypeId(randomUserType.getId());
-        instantAccountDto.setUserTypeName(randomUserType.getUserTypeName());
-        instantAccountDto.setSiteId(randomSite.getId());
-        instantAccountDto.setSiteName(randomSite.getSiteName());
-        instantAccountDto.setUsername("user" + randomNumber + "@example.com");
-        instantAccountDto.setPassword("password123");
-        instantAccountDto.setAuthorizedPersonnel(firstName + " " + lastName);
-
-        // Random seçilen firma ve proje bilgilerini kullan
-        instantAccountDto.setFirmId(randomFirm.getId());
-        instantAccountDto.setFirmName(randomFirm.getFirmName());
-        instantAccountDto.setProjectId(randomProject.getId());
-        instantAccountDto.setProjectName(randomProject.getProjectName());
-
-        instantAccountDto.setCompanyShortName(randomFirm.getFirmName().length() > 5 ? randomFirm.getFirmName().substring(0, 5) : randomFirm.getFirmName());
-        instantAccountDto.setPhoneCountryCode("+90");
-        instantAccountDto.setPhone("212" + String.format("%07d", (int) (Math.random() * 10000000)));
-        instantAccountDto.setGsmCountryCode("+90");
-        instantAccountDto.setGsm("5" + String.format("%09d", (int) (Math.random() * 1000000000)));
-        instantAccountDto.setEmail("user" + randomNumber + "@example.com");
-
-        // Adres bilgileri
-        String[] cities = {"İstanbul", "Ankara", "İzmir", "Bursa", "Antalya"};
-        String[] districts = {"Şişli", "Beşiktaş", "Kadıköy", "Üsküdar", "Fatih", "Beyoğlu", "Bakırköy"};
-        String[] neighborhoods = {"Merkez", "Çamlık", "Yenimahalle", "Kocatepe", "Bahçelievler"};
-
-
-        String city = cities[(int) (Math.random() * cities.length)];
-        String province = districts[(int) (Math.random() * districts.length)];
-        String district = districts[(int) (Math.random() * districts.length)];
-        String neighborhood = neighborhoods[(int) (Math.random() * neighborhoods.length)];
-
-        instantAccountDto.setAddress(neighborhood + " Mahallesi " +
-                (int) (Math.random() * 100 + 1) + ". Sokak No:" +
-                (int) (Math.random() * 50 + 1) + "/" +
-                (int) (Math.random() * 20 + 1));
-        instantAccountDto.setFax("212" + String.format("%07d", (int) (Math.random() * 10000000)));
-        instantAccountDto.setPttBox("PK " + (int) (Math.random() * 9999 + 1));
-        instantAccountDto.setPostalCode(String.format("%05d", (int) (Math.random() * 99999 + 1)));
-        instantAccountDto.setTaxNumber(String.format("%010d", (int) (Math.random() * 9999999999L + 1)));
-
-        // Vergi daireleri listesi
-        String[] taxOffices = {"Beyoğlu Vergi Dairesi", "Kadıköy Vergi Dairesi", "Şişli Vergi Dairesi",
-                "Beşiktaş Vergi Dairesi", "Ümraniye Vergi Dairesi", "Fatih Vergi Dairesi",
-                "Bakırköy Vergi Dairesi", "Üsküdar Vergi Dairesi", "Pendik Vergi Dairesi"};
-        instantAccountDto.setTaxOffice(taxOffices[(int) (Math.random() * taxOffices.length)]);
-
-        instantAccountDto.setTcIdentityNo(String.format("%011d", (int) (Math.random() * 99999999999L + 1)));
-        String[] banks = {"Ziraat Bankası", "İş Bankası", "Garanti BBVA", "Akbank", "Yapı Kredi"};
-
-        instantAccountDto.setBankAddress(banks[(int) (Math.random() * banks.length)] + " " + city + " " + province + " Şubesi");
-        instantAccountDto.setUserStatus(true);
-        instantAccountDto.setActive(true);
-        instantAccountDto.setCreatedBy(createdBy);
-
-        // createAccount metodunu kullan
-        return createAccount(instantAccountDto);
-    }
-
-    /**
-     * Bulk dummy hesap oluştur - Güncellenmiş versiyon
-     */
-    @Transactional
-    @Override
-    public List<InstantAccountDto> createDummyAccounts(int count, String createdBy) {
-        List<InstantAccountDto> accounts = new ArrayList<>();
-
-        for (int i = 0; i < count; i++) {
-            try {
-                InstantAccountDto accountDto = createAccount2(createdBy);
-                accounts.add(accountDto);
-
-                // Aynı kullanıcı adı çakışmasını önlemek için kısa bekleme
-                Thread.sleep(1);
-            } catch (Exception e) {
-                // Hata durumunda devam et
-                System.err.println("Dummy hesap oluşturulurken hata: " + e.getMessage());
-            }
-        }
-
-        return accounts;
     }
 }
 

@@ -38,7 +38,6 @@ public class InstantGroupService implements InstantGroupServiceImpl {
         }
 
         InstantGroup group = new InstantGroup();
-        group.setId(UUID.randomUUID().toString());
         group.setGroupName(groupName.trim());
         group.setCreatedBy(createdBy);
         InstantGroup saved = instantGroupRepository.save(group);

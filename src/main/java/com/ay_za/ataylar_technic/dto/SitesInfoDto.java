@@ -11,8 +11,6 @@ public class SitesInfoDto {
 
     private String id;
     private String siteName;
-    private String projectId;
-    private String projectName;
     private String description;
 
     @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
@@ -27,12 +25,10 @@ public class SitesInfoDto {
     public SitesInfoDto() {
     }
 
-    public SitesInfoDto(String id, String siteName, String projectId, String projectName, String description,
+    public SitesInfoDto(String id, String siteName, String description,
                         LocalDateTime createdDate, LocalDateTime updatedDate, String createdBy, String updatedBy) {
         this.id = id;
         this.siteName = siteName;
-        this.projectId = projectId;
-        this.projectName = projectName;
         this.description = description;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -54,22 +50,6 @@ public class SitesInfoDto {
 
     public void setSiteName(String siteName) {
         this.siteName = siteName;
-    }
-
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
     }
 
     public String getDescription() {
@@ -117,8 +97,6 @@ public class SitesInfoDto {
         return "SitesInfoDto{" +
                 "id='" + id + '\'' +
                 ", siteName='" + siteName + '\'' +
-                ", projectId='" + projectId + '\'' +
-                ", projectName='" + projectName + '\'' +
                 ", description='" + description + '\'' +
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +

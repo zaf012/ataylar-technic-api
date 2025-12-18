@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 @Service
 public class SystemInfoService implements SystemInfoServiceImpl {
 
+    //TODO : systeminfo ayrı bir tablo. çeklist ve arızalar ayrı bir tablo olacak. sistemleri çektiği yerlerde systeminfo dan alacak.
+
     private final SystemInfoMapper systemInfoMapper;
     private final SystemInfoRepository systemInfoRepository;
 
@@ -47,8 +49,6 @@ public class SystemInfoService implements SystemInfoServiceImpl {
     @Override
     @Transactional
     public SystemInfoDto createSystem(SystemInfoDto systemDto) {
-        // Sistem için ID oluştur
-        systemDto.setId(UUID.randomUUID().toString());
 
         systemDto.setSystemName(systemDto.getSystemName());
         systemDto.setSystemOrderNo(systemDto.getSystemOrderNo());
