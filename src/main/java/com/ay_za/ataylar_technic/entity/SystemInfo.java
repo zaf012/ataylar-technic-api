@@ -15,7 +15,7 @@ public class SystemInfo {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name = "system_name", nullable = false, length = 100)
+    @Column(name = "system_name", length = 100)
     private String systemName;
 
     @Column(name = "system_order_no", length = 100)
@@ -27,7 +27,7 @@ public class SystemInfo {
     /**
      * Çeklist/Arıza tanımlaması
      */
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
     @Column(name = "is_checklist")

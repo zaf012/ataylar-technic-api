@@ -173,18 +173,4 @@ public class SystemInfoController {
         List<SystemInfoDto> allRecords = systemInfoService.getAllBySystemName(systemName);
         return ResponseEntity.ok(allRecords);
     }
-
-    // ===== Dummy Data Endpoint =====
-
-    @PostMapping("/create-default-data")
-    @Operation(
-        summary = "Örnek sistem verileri oluştur",
-        description = "Sistemler ve bu sistemlere ait örnek çeklist/arıza maddelerini oluşturur. " +
-                     "Su Arıtmaları, Hava Perdeleri, Isı Geri Kazanım sistemleri vs. ile " +
-                     "her sistem için gerçekçi çeklist ve arıza maddeleri ekler."
-    )
-    public ResponseEntity<String> createDefaultData() {
-        String result = systemInfoService.createDefaultSystemsAndData();
-        return ResponseEntity.ok(result);
-    }
 }
