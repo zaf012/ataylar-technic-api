@@ -2,12 +2,21 @@ package com.ay_za.ataylar_technic.service.request;
 
 public class ChecklistOrFaultCreateAndUpdateRequest {
 
+    private String id; // Update için gerekli
     private String systemId;
     private Boolean isChecklist;
     private Boolean isFault;
     private Integer controlPointOrder;
     private Boolean controlPointIsActive;
     private String description;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getSystemId() {
         return systemId;

@@ -15,7 +15,7 @@ public class SystemInfo {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name = "system_name", length = 100)
+    @Column(name = "system_name", length = 200)
     private String systemName;
 
     @Column(name = "system_order_no", length = 100)
@@ -107,11 +107,11 @@ public class SystemInfo {
         this.systemOrderNo = systemOrderNo;
     }
 
-    public Boolean getActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(Boolean active) {
+    public void setIsActive(Boolean active) {
         isActive = active;
     }
 
@@ -123,19 +123,19 @@ public class SystemInfo {
         this.description = description;
     }
 
-    public Boolean getChecklist() {
+    public Boolean getIsChecklist() {
         return isChecklist;
     }
 
-    public void setChecklist(Boolean checklist) {
+    public void setIsChecklist(Boolean checklist) {
         isChecklist = checklist;
     }
 
-    public Boolean getFault() {
+    public Boolean getIsFault() {
         return isFault;
     }
 
-    public void setFault(Boolean fault) {
+    public void setIsFault(Boolean fault) {
         isFault = fault;
     }
 

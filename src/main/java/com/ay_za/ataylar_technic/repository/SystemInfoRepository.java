@@ -66,4 +66,54 @@ public interface SystemInfoRepository extends JpaRepository<SystemInfo, String> 
     @Query("SELECT MAX(s.controlPointOrder) FROM SystemInfo s WHERE s.systemName = :systemName AND s.description IS NOT NULL")
     Integer findMaxControlPointOrderBySystemName(@Param("systemName") String systemName);
 
+    // ===== VALIDATION QUERIES =====
+
+    /**
+     * systemName ve systemOrderNo kombinasyonu unique mi kontrol et
+     * Sistem tanımları için (description NULL veya boş olanlar)
+     */
+    @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM SystemInfo s " +
+           "WHERE s.systemName = :systemName AND s.systemOrderNo = :systemOrderNo " +
+           "AND (s.description IS NULL OR s.description = '')")
+    boolean existsBySystemNameAndSystemOrderNo(
+            @Param("systemName") String systemName,
+            @Param("systemOrderNo") Integer systemOrderNo
+    );
+
+    /**
+     * Güncelleme için - başka bir kayıtta aynı systemName+systemOrderNo var mı kontrol et
+     */
+    @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM SystemInfo s " +
+           "WHERE s.systemName = :systemName AND s.systemOrderNo = :systemOrderNo " +
+           "AND s.id != :excludeId AND (s.description IS NULL OR s.description = '')")
+    boolean existsBySystemNameAndSystemOrderNoExcludingId(
+            @Param("systemName") String systemName,
+            @Param("systemOrderNo") Integer systemOrderNo,
+            @Param("excludeId") String excludeId
+    );
+
+    /**
+     * Aynı sistemde aynı controlPointOrder var mı kontrol et
+     * Çeklist/Arıza maddeleri için (description dolu olanlar)
+     */
+    @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM SystemInfo s " +
+           "WHERE s.systemName = :systemName AND s.controlPointOrder = :controlPointOrder " +
+           "AND s.description IS NOT NULL AND s.description != ''")
+    boolean existsBySystemNameAndControlPointOrder(
+            @Param("systemName") String systemName,
+            @Param("controlPointOrder") Integer controlPointOrder
+    );
+
+    /**
+     * Güncelleme için - başka bir kayıtta aynı sistem+controlPointOrder var mı kontrol et
+     */
+    @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM SystemInfo s " +
+           "WHERE s.systemName = :systemName AND s.controlPointOrder = :controlPointOrder " +
+           "AND s.id != :excludeId AND s.description IS NOT NULL AND s.description != ''")
+    boolean existsBySystemNameAndControlPointOrderExcludingId(
+            @Param("systemName") String systemName,
+            @Param("controlPointOrder") Integer controlPointOrder,
+            @Param("excludeId") String excludeId
+    );
+
 }

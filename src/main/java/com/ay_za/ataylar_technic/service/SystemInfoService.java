@@ -9,7 +9,6 @@ import com.ay_za.ataylar_technic.service.request.ChecklistOrFaultCreateAndUpdate
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,19 +44,29 @@ public class SystemInfoService implements SystemInfoServiceImpl {
     @Override
     @Transactional
     public SystemInfoDto createSystem(SystemInfoDto systemDto) {
+        // Validation: systemName ve systemOrderNo zorunlu
+        validateSystemName(systemDto.getSystemName());
+        validateSystemOrderNo(systemDto.getSystemOrderNo());
 
-        systemDto.setSystemName(systemDto.getSystemName());
-        systemDto.setSystemOrderNo(systemDto.getSystemOrderNo());
-        systemDto.setIsActive(systemDto.getIsActive());
-        systemDto.setDescription(systemDto.getDescription());
-        systemDto.setIsChecklist(systemDto.getIsChecklist());
-        systemDto.setIsFault(systemDto.getIsFault());
-        systemDto.setControlPointOrder(systemDto.getControlPointOrder());
-        systemDto.setControlPointIsActive(systemDto.getIsActive());
-        systemDto.setCreatedDate(LocalDateTime.now());
-        systemDto.setUpdatedDate(LocalDateTime.now());
-        systemDto.setCreatedBy("Admin");
-        systemDto.setUpdatedBy("Admin");
+        // Validation: Aynı systemName ve systemOrderNo kombinasyonu var mı kontrol et
+        if (systemInfoRepository.existsBySystemNameAndSystemOrderNo(
+                systemDto.getSystemName(), systemDto.getSystemOrderNo())) {
+            throw new RuntimeException(String.format(
+                    "Bu sistem adı ve sıra numarası zaten mevcut: %s - %d",
+                    systemDto.getSystemName(), systemDto.getSystemOrderNo()
+            ));
+        }
+
+        // Sistem tanımı için gerekli alanları set et
+        systemDto.setCreatedBy("Admin"); // TODO: SecurityContext'ten al
+        systemDto.setIsActive(systemDto.getIsActive() != null ? systemDto.getIsActive() : true);
+
+        // Sistem tanımları için description, checklist, fault NULL olmalı
+        systemDto.setDescription(null);
+        systemDto.setIsChecklist(null);
+        systemDto.setIsFault(null);
+        systemDto.setControlPointOrder(null);
+        systemDto.setControlPointIsActive(null);
 
         SystemInfo savedSystem = systemInfoRepository.save(systemInfoMapper.convertToEntity(systemDto));
         return systemInfoMapper.convertToDTO(savedSystem);
@@ -66,24 +75,40 @@ public class SystemInfoService implements SystemInfoServiceImpl {
     @Override
     @Transactional
     public SystemInfoDto updateSystem(SystemInfoDto systemDto) {
-        SystemInfo existingSystem = systemInfoRepository.findSystemInfoById(systemDto.getId());
+        // Validation: ID zorunlu
+        if (systemDto.getId() == null || systemDto.getId().isEmpty()) {
+            throw new RuntimeException("Sistem ID boş olamaz");
+        }
 
+        SystemInfo existingSystem = systemInfoRepository.findSystemInfoById(systemDto.getId());
         if (existingSystem == null) {
             throw new RuntimeException("Sistem bulunamadı: " + systemDto.getId());
         }
 
+        // Validation
+        validateSystemName(systemDto.getSystemName());
+        validateSystemOrderNo(systemDto.getSystemOrderNo());
+
+        // systemName veya systemOrderNo değişmiş mi kontrol et
+        boolean nameOrOrderChanged = !existingSystem.getSystemName().equals(systemDto.getSystemName())
+                || !existingSystem.getSystemOrderNo().equals(systemDto.getSystemOrderNo());
+
+        if (nameOrOrderChanged) {
+            // Başka bir kayıtta aynı kombinasyon var mı kontrol et
+            if (systemInfoRepository.existsBySystemNameAndSystemOrderNoExcludingId(
+                    systemDto.getSystemName(), systemDto.getSystemOrderNo(), systemDto.getId())) {
+                throw new RuntimeException(String.format(
+                        "Bu sistem adı ve sıra numarası başka bir kayıtta mevcut: %s - %d",
+                        systemDto.getSystemName(), systemDto.getSystemOrderNo()
+                ));
+            }
+        }
+
+        // Alanları güncelle
         existingSystem.setSystemName(systemDto.getSystemName());
         existingSystem.setSystemOrderNo(systemDto.getSystemOrderNo());
-        existingSystem.setActive(systemDto.getIsActive());
-        existingSystem.setDescription(systemDto.getDescription());
-        existingSystem.setChecklist(systemDto.getIsChecklist());
-        existingSystem.setFault(systemDto.getIsFault());
-        existingSystem.setControlPointOrder(systemDto.getControlPointOrder());
-        existingSystem.setControlPointIsActive(systemDto.getControlPointIsActive());
-        existingSystem.setCreatedDate(systemDto.getCreatedDate());
-        existingSystem.setUpdatedDate(LocalDateTime.now());
-        existingSystem.setCreatedBy(systemDto.getCreatedBy());
-        existingSystem.setUpdatedBy("Admin");
+        existingSystem.setIsActive(systemDto.getIsActive() != null ? systemDto.getIsActive() : existingSystem.getIsActive());
+        existingSystem.setUpdatedBy("Admin"); // TODO: SecurityContext'ten al
 
         SystemInfo updatedSystem = systemInfoRepository.save(existingSystem);
         return systemInfoMapper.convertToDTO(updatedSystem);
@@ -145,64 +170,122 @@ public class SystemInfoService implements SystemInfoServiceImpl {
     @Transactional
     @Override
     public SystemInfoDto createFaultOrChecklist(ChecklistOrFaultCreateAndUpdateRequest request) {
-        // Önce sistem ID'si ile sistemi bul
+        // Validation: systemId zorunlu
+        if (request.getSystemId() == null || request.getSystemId().isEmpty()) {
+            throw new RuntimeException("Sistem ID boş olamaz");
+        }
+
+        // Önce sistem ID'si ile sistemi bul (validasyon için)
         SystemInfo systemInfo = systemInfoRepository.findById(request.getSystemId())
                 .orElseThrow(() -> new RuntimeException("Sistem bulunamadı: " + request.getSystemId()));
 
-        systemInfo.setDescription(request.getDescription());
-        systemInfo.setChecklist(request.getChecklist());
-        systemInfo.setFault(request.getFault());
-        systemInfo.setControlPointOrder(request.getControlPointOrder());
-        systemInfo.setControlPointIsActive(request.getControlPointIsActive() != null ? request.getControlPointIsActive() : true);
-        systemInfo.setCreatedDate(LocalDateTime.now());
-        systemInfo.setUpdatedDate(LocalDateTime.now());
-        systemInfo.setCreatedBy("Admin");
-        systemInfo.setUpdatedBy("Admin");
+        // Validation: description zorunlu
+        validateDescription(request.getDescription());
 
-        SystemInfo savedFaultOrChecklistPoint = systemInfoRepository.save(systemInfo);
-        return systemInfoMapper.convertToDTO(savedFaultOrChecklistPoint);
+        // Validation: controlPointOrder zorunlu
+        validateControlPointOrder(request.getControlPointOrder());
+
+        // Validation: isChecklist veya isFault birisi true olmalı
+        if (!Boolean.TRUE.equals(request.getChecklist()) && !Boolean.TRUE.equals(request.getFault())) {
+            throw new RuntimeException("Çeklist veya Arıza seçeneklerinden birisi seçilmelidir");
+        }
+
+        // Validation: Aynı sistemde aynı controlPointOrder var mı kontrol et
+        if (systemInfoRepository.existsBySystemNameAndControlPointOrder(
+                systemInfo.getSystemName(), request.getControlPointOrder())) {
+            throw new RuntimeException(String.format(
+                    "Bu sistemde (%s) aynı kontrol noktası sırası zaten mevcut: %d",
+                    systemInfo.getSystemName(), request.getControlPointOrder()
+            ));
+        }
+
+        // YENİ SystemInfo nesnesi oluştur (mevcut kaydı DEĞİŞTİRME!)
+        SystemInfo newChecklistOrFault = new SystemInfo();
+
+        // Sistem bilgilerini kopyala
+        newChecklistOrFault.setSystemName(systemInfo.getSystemName());
+        newChecklistOrFault.setSystemOrderNo(systemInfo.getSystemOrderNo());
+        newChecklistOrFault.setIsActive(systemInfo.getIsActive());
+
+        // Çeklist/Arıza bilgilerini set et
+        newChecklistOrFault.setDescription(request.getDescription());
+        newChecklistOrFault.setIsChecklist(request.getChecklist());
+        newChecklistOrFault.setIsFault(request.getFault());
+        newChecklistOrFault.setControlPointOrder(request.getControlPointOrder());
+        newChecklistOrFault.setControlPointIsActive(request.getControlPointIsActive() != null ? request.getControlPointIsActive() : true);
+
+        // Audit alanları
+        newChecklistOrFault.setCreatedBy("Admin"); // TODO: SecurityContext'ten al
+
+        // Kaydet
+        SystemInfo savedChecklistOrFault = systemInfoRepository.save(newChecklistOrFault);
+        return systemInfoMapper.convertToDTO(savedChecklistOrFault);
     }
 
     // Güncelleme metodları
     @Transactional
     @Override
     public SystemInfoDto updateChecklistOrFault(ChecklistOrFaultCreateAndUpdateRequest request) {
-        SystemInfo existingChecklistOrFault = systemInfoRepository.findById(request.getSystemId())
-                .orElseThrow(() -> new RuntimeException("Çeklist/Arıza kaydı bulunamadı: " + request.getSystemId()));
+        // Validation: ID gerekli
+        if (request.getId() == null || request.getId().isEmpty()) {
+            throw new RuntimeException("Çeklist/Arıza ID'si boş olamaz");
+        }
 
+        SystemInfo existingChecklistOrFault = systemInfoRepository.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("Çeklist/Arıza kaydı bulunamadı: " + request.getId()));
+
+        // Validation
+        validateDescription(request.getDescription());
+        validateControlPointOrder(request.getControlPointOrder());
+
+        // controlPointOrder değişmiş mi kontrol et
+        if (!existingChecklistOrFault.getControlPointOrder().equals(request.getControlPointOrder())) {
+            // Başka bir kayıtta aynı sistem ve controlPointOrder var mı kontrol et
+            if (systemInfoRepository.existsBySystemNameAndControlPointOrderExcludingId(
+                    existingChecklistOrFault.getSystemName(),
+                    request.getControlPointOrder(),
+                    request.getId())) {
+                throw new RuntimeException(String.format(
+                        "Bu sistemde (%s) aynı kontrol noktası sırası başka bir kayıtta mevcut: %d",
+                        existingChecklistOrFault.getSystemName(),
+                        request.getControlPointOrder()
+                ));
+            }
+        }
+
+        // Alanları güncelle
         existingChecklistOrFault.setDescription(request.getDescription());
-        existingChecklistOrFault.setChecklist(request.getChecklist());
-        existingChecklistOrFault.setFault(request.getFault());
+        existingChecklistOrFault.setIsChecklist(request.getChecklist());
+        existingChecklistOrFault.setIsFault(request.getFault());
         existingChecklistOrFault.setControlPointOrder(request.getControlPointOrder());
         existingChecklistOrFault.setControlPointIsActive(request.getControlPointIsActive() != null ? request.getControlPointIsActive() : true);
-        existingChecklistOrFault.setUpdatedDate(LocalDateTime.now());
-        existingChecklistOrFault.setUpdatedBy("Admin");
+        existingChecklistOrFault.setUpdatedBy("Admin"); // TODO: SecurityContext'ten al
 
         SystemInfo updatedChecklistOrFault = systemInfoRepository.save(existingChecklistOrFault);
         return systemInfoMapper.convertToDTO(updatedChecklistOrFault);
     }
 
     // Silme metodları
-    @Override // TODO : silme metodları güncellenecek.
+    @Override
     @Transactional
     public void deleteChecklist(String id) {
         SystemInfo checklist = systemInfoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Çeklist bulunamadı: " + id));
 
-        if (!Boolean.TRUE.equals(checklist.getChecklist())) {
+        if (!Boolean.TRUE.equals(checklist.getIsChecklist())) {
             throw new RuntimeException("Bu kayıt bir çeklist değil");
         }
 
         systemInfoRepository.deleteById(id);
     }
 
-    @Override // TODO : silme metodları güncellenecek.
+    @Override
     @Transactional
     public void deleteFault(String id) {
         SystemInfo fault = systemInfoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Arıza bulunamadı: " + id));
 
-        if (!Boolean.TRUE.equals(fault.getFault())) {
+        if (!Boolean.TRUE.equals(fault.getIsFault())) {
             throw new RuntimeException("Bu kayıt bir arıza değil");
         }
 
@@ -237,5 +320,43 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         return allRecords.stream()
                 .map(systemInfoMapper::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    // ===== Private Helper Methods =====
+
+    private void validateSystemName(String systemName) {
+        if (systemName == null || systemName.trim().isEmpty()) {
+            throw new RuntimeException("Sistem adı boş olamaz");
+        }
+        if (systemName.length() > 200) {
+            throw new RuntimeException("Sistem adı 200 karakterden uzun olamaz");
+        }
+    }
+
+    private void validateSystemOrderNo(Integer systemOrderNo) {
+        if (systemOrderNo == null) {
+            throw new RuntimeException("Sistem sıra numarası boş olamaz");
+        }
+        if (systemOrderNo < 0) {
+            throw new RuntimeException("Sistem sıra numarası negatif olamaz");
+        }
+    }
+
+    private void validateDescription(String description) {
+        if (description == null || description.trim().isEmpty()) {
+            throw new RuntimeException("Açıklama boş olamaz");
+        }
+        if (description.length() > 500) {
+            throw new RuntimeException("Açıklama 500 karakterden uzun olamaz");
+        }
+    }
+
+    private void validateControlPointOrder(Integer controlPointOrder) {
+        if (controlPointOrder == null) {
+            throw new RuntimeException("Kontrol noktası sırası boş olamaz");
+        }
+        if (controlPointOrder < 0) {
+            throw new RuntimeException("Kontrol noktası sırası negatif olamaz");
+        }
     }
 }
