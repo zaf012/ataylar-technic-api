@@ -89,8 +89,12 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         validateSystemName(systemDto.getSystemName());
         validateSystemOrderNo(systemDto.getSystemOrderNo());
 
+        // Eski sistem adını sakla (çeklist/arıza güncellemesi için)
+        String oldSystemName = existingSystem.getSystemName();
+        boolean systemNameChanged = !oldSystemName.equals(systemDto.getSystemName());
+
         // systemName veya systemOrderNo değişmiş mi kontrol et
-        boolean nameOrOrderChanged = !existingSystem.getSystemName().equals(systemDto.getSystemName())
+        boolean nameOrOrderChanged = systemNameChanged
                 || !existingSystem.getSystemOrderNo().equals(systemDto.getSystemOrderNo());
 
         if (nameOrOrderChanged) {
@@ -111,6 +115,12 @@ public class SystemInfoService implements SystemInfoServiceImpl {
         existingSystem.setUpdatedBy("Admin"); // TODO: SecurityContext'ten al
 
         SystemInfo updatedSystem = systemInfoRepository.save(existingSystem);
+
+        // Sistem adı değiştiyse, bu sistem adını kullanan çeklist/arıza maddelerini de güncelle
+        if (systemNameChanged) {
+            updateChecklistAndFaultSystemNames(oldSystemName, systemDto.getSystemName());
+        }
+
         return systemInfoMapper.convertToDTO(updatedSystem);
     }
 
@@ -323,6 +333,30 @@ public class SystemInfoService implements SystemInfoServiceImpl {
     }
 
     // ===== Private Helper Methods =====
+
+    /**
+     * Belirli bir sistem adını kullanan tüm çeklist ve arıza maddelerinin sistem adını günceller
+     */
+    private void updateChecklistAndFaultSystemNames(String oldSystemName, String newSystemName) {
+        // Eski sistem adına sahip tüm çeklist ve arıza maddelerini bul
+        List<SystemInfo> checklistsAndFaults = systemInfoRepository.findAllBySystemName(oldSystemName);
+
+        // Sadece çeklist ve arıza maddelerini filtrele (description dolu olanlar)
+        List<SystemInfo> itemsToUpdate = checklistsAndFaults.stream()
+                .filter(item -> item.getDescription() != null && !item.getDescription().trim().isEmpty())
+                .collect(Collectors.toList());
+
+        // Her birinin sistem adını güncelle
+        if (!itemsToUpdate.isEmpty()) {
+            itemsToUpdate.forEach(item -> {
+                item.setSystemName(newSystemName);
+                item.setUpdatedBy("Admin"); // TODO: SecurityContext'ten al
+            });
+
+            // Toplu güncelleme
+            systemInfoRepository.saveAll(itemsToUpdate);
+        }
+    }
 
     private void validateSystemName(String systemName) {
         if (systemName == null || systemName.trim().isEmpty()) {

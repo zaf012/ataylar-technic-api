@@ -26,7 +26,7 @@ public class ProductInventoryDetail {
     @Column(name = "category_name", nullable = false, length = 200)
     private String categoryName;
 
-    @Column(name = "market_code", nullable = false, unique = true, length = 100)
+    @Column(name = "market_code", length = 255)
     private String marketCode;
 
     @Column(name = "brand_name", length = 200)
