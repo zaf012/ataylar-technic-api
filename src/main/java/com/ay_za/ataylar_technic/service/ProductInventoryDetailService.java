@@ -43,11 +43,6 @@ public class ProductInventoryDetailService {
         // Gerekli alanları kontrol et
         validateProductDetail(dto);
 
-        // Market kodunun daha önce kullanılıp kullanılmadığını kontrol et
-        if (repository.existsByMarketCode(dto.getMarketCode())) {
-            throw new IllegalArgumentException("Bu market kodu daha önce kullanılmış: " + dto.getMarketCode());
-        }
-
         ProductInventoryCategoryDto categoryById = productInventoryCategoryServiceImpl.getById(dto.getCategoryId());
 
         if (categoryById == null) {
@@ -81,11 +76,6 @@ public class ProductInventoryDetailService {
         // Gerekli alanları kontrol et
         validateProductDetail(dto);
 
-        // Market kodunun başka bir kayıt tarafından kullanılıp kullanılmadığını kontrol et
-        if (repository.existsByMarketCodeAndIdNot(dto.getMarketCode(), id)) {
-            throw new IllegalArgumentException("Bu market kodu başka bir ürün tarafından kullanılıyor: " + dto.getMarketCode());
-        }
-
         // Kategori kontrolü ve kategori adını set et
         ProductInventoryCategory category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Kategori bulunamadı: " + dto.getCategoryId()));
@@ -113,16 +103,6 @@ public class ProductInventoryDetailService {
     public ProductInventoryDetailDto getProductDetailById(String id) {
         ProductInventoryDetail entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ürün detayı bulunamadı: " + id));
-        return mapper.toDto(entity);
-    }
-
-    /**
-     * Market koduna göre ürün detayı getir
-     */
-    @Transactional(readOnly = true)
-    public ProductInventoryDetailDto getProductDetailByMarketCode(String marketCode) {
-        ProductInventoryDetail entity = repository.findByMarketCode(marketCode)
-                .orElseThrow(() -> new ResourceNotFoundException("Ürün detayı bulunamadı. Market kodu: " + marketCode));
         return mapper.toDto(entity);
     }
 
@@ -232,10 +212,6 @@ public class ProductInventoryDetailService {
     private void validateProductDetail(ProductInventoryDetailDto dto) {
         if (dto.getCategoryId() == null || dto.getCategoryId().trim().isEmpty()) {
             throw new IllegalArgumentException("Kategori ID'si boş olamaz");
-        }
-
-        if (dto.getMarketCode() == null || dto.getMarketCode().trim().isEmpty()) {
-            throw new IllegalArgumentException("Market kodu boş olamaz");
         }
     }
 }

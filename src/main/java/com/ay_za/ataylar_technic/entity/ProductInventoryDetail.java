@@ -11,8 +11,7 @@ import java.time.LocalDateTime;
  * Kategorilere bağlı ürün detay bilgilerini tutar
  */
 @Entity
-@Table(name = "product_inventory_detail",
-       uniqueConstraints = @UniqueConstraint(columnNames = "market_code"))
+@Table(name = "product_inventory_detail")
 public class ProductInventoryDetail {
 
     @Id
@@ -26,7 +25,7 @@ public class ProductInventoryDetail {
     @Column(name = "category_name", nullable = false, length = 200)
     private String categoryName;
 
-    @Column(name = "market_code", length = 255)
+    @Column(name = "market_code")
     private String marketCode;
 
     @Column(name = "brand_name", length = 200)

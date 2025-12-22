@@ -60,17 +60,6 @@ public class ProductInventoryDetailController {
     }
 
     /**
-     * Market koduna göre ürün detayı getir
-     */
-    @GetMapping("/market-code/{marketCode}")
-    @Operation(summary = "Market koduna göre ürün detayı getir", description = "Belirtilen market koduna sahip ürün detayını getirir")
-    public ResponseEntity<ProductInventoryDetailDto> getProductDetailByMarketCode(
-            @Parameter(description = "Market Kodu") @PathVariable String marketCode) {
-        ProductInventoryDetailDto dto = service.getProductDetailByMarketCode(marketCode);
-        return ResponseEntity.ok(dto);
-    }
-
-    /**
      * Tüm ürün detaylarını getir
      */
     @GetMapping
