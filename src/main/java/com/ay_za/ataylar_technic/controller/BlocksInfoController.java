@@ -3,6 +3,7 @@ package com.ay_za.ataylar_technic.controller;
 import com.ay_za.ataylar_technic.dto.BlocksInfoDto;
 import com.ay_za.ataylar_technic.entity.BlocksInfo;
 import com.ay_za.ataylar_technic.service.BlocksInfoService;
+import com.ay_za.ataylar_technic.service.base.BlocksInfoServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,9 +22,11 @@ import java.util.HashMap;
 public class BlocksInfoController {
 
     private final BlocksInfoService blocksInfoService;
+    private final BlocksInfoServiceImpl blocksInfoServiceImpl;
 
-    public BlocksInfoController(BlocksInfoService blocksInfoService) {
+    public BlocksInfoController(BlocksInfoService blocksInfoService, BlocksInfoServiceImpl blocksInfoServiceImpl) {
         this.blocksInfoService = blocksInfoService;
+        this.blocksInfoServiceImpl = blocksInfoServiceImpl;
     }
 
     /**
@@ -190,6 +193,22 @@ public class BlocksInfoController {
             response.put("success", false);
             response.put("message", "Örnek bloklar oluşturulurken hata oluştu: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
+     * Site adına göre blok isimlerini getir
+     */
+    @GetMapping("/by-site-name/{siteName}")
+    @Operation(summary = "Site adına göre blok isimlerini getir",
+               description = "Belirtilen site adına ait tüm blok isimlerini liste olarak getirir")
+    public ResponseEntity<List<String>> getBlockNamesBySiteName(
+            @Parameter(description = "Site adı") @PathVariable String siteName) {
+        try {
+            List<String> blockNames = blocksInfoServiceImpl.getBlockNamesBySiteName(siteName);
+            return ResponseEntity.ok(blockNames);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }

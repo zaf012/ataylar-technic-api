@@ -19,4 +19,6 @@ public interface BlocksInfoServiceImpl {
     List<BlocksInfoDto> getAllBlocks();
 
     Optional<BlocksInfo> getRandomBlock();
+
+    List<String> getBlockNamesBySiteName(String siteName);
 }

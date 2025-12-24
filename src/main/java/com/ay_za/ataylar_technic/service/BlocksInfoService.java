@@ -290,4 +290,39 @@ public class BlocksInfoService implements BlocksInfoServiceImpl {
     public Optional<BlocksInfo> getBlockEntityById(String id) {
         return blocksInfoRepository.findById(id);
     }
+
+    /**
+     * Site adına göre tüm blok isimlerini getir
+     *
+     * @param siteName Site adı
+     * @return Site adına ait tüm blok isimleri (List<String>)
+     */
+    @Override
+    public List<String> getBlockNamesBySiteName(String siteName) {
+        if (siteName == null || siteName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Site adı boş olamaz");
+        }
+
+        // 1. Site adına göre site bilgisini al
+        List<SquaresInfoDto> squares = squaresInfoService.getSquaresBySiteName(siteName.trim());
+
+        if (squares.isEmpty()) {
+            // Site bulunamadı veya bu siteye ait ada yok
+            return new ArrayList<>();
+        }
+
+        // 2. Tüm ada ID'lerini topla
+        List<String> squareIds = squares.stream()
+                .map(SquaresInfoDto::getId)
+                .toList();
+
+        // 3. Bu ada ID'lerine sahip tüm blokları getir ve sadece blok isimlerini döndür
+        List<String> blockNames = new ArrayList<>();
+        for (String squareId : squareIds) {
+            List<BlocksInfo> blocks = blocksInfoRepository.findBySquareIdOrderByBlockNameAsc(squareId);
+            blocks.forEach(block -> blockNames.add(block.getBlockName()));
+        }
+
+        return blockNames;
+    }
 }
