@@ -44,6 +44,9 @@ public class MaintenancePdfRecordService implements MaintenancePdfRecordServiceI
     @Override
     public void savePdfMetadata(MaintenanceChecklistModel report, String fileName,
                                 String filePath, long fileSize) {
+
+        Integer lastReportNo = pdfRecordRepository.findMaxReportNo();
+
         MaintenancePdfRecord record = new MaintenancePdfRecord();
         record.setCustomerFirmName(report.getCustomerFirmName());
         record.setCustomerAddress(report.getCustomerAddress());
@@ -59,7 +62,9 @@ public class MaintenancePdfRecordService implements MaintenancePdfRecordServiceI
         record.setFilePath(filePath);
         record.setFileSizeBytes(fileSize);
         record.setCreatedAt(LocalDateTime.now());
+        record.setReportNo(lastReportNo != null ? lastReportNo + 1 : 1);
         record.setCreatedBy("SYSTEM"); // İleride kullanıcı bilgisi eklenebilir
+
 
         pdfRecordRepository.save(record);
     }
@@ -147,5 +152,11 @@ public class MaintenancePdfRecordService implements MaintenancePdfRecordServiceI
                 .findBySystemNameContainingIgnoreCase(systemName);
         return pdfRecordMapper.toDtoList(records);
     }
+
+    @Override
+    public Integer getLastReportNo() {
+        return pdfRecordRepository.findMaxReportNo();
+    }
+
 }
 

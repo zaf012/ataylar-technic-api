@@ -32,6 +32,7 @@ public class MaintenancePdfRecordMapper {
         dto.setFileSizeBytes(entity.getFileSizeBytes());
         dto.setCreatedAt(entity.getCreatedAt());
         dto.setCreatedBy(entity.getCreatedBy());
+        dto.setReportNo(entity.getReportNo());
 
         return dto;
     }
@@ -58,6 +59,7 @@ public class MaintenancePdfRecordMapper {
         entity.setFileSizeBytes(dto.getFileSizeBytes());
         entity.setCreatedAt(dto.getCreatedAt());
         entity.setCreatedBy(dto.getCreatedBy());
+        entity.setReportNo(dto.getReportNo());
 
         return entity;
     }

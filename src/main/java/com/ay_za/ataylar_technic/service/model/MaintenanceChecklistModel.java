@@ -1,6 +1,7 @@
 package com.ay_za.ataylar_technic.service.model;
 
 import com.ay_za.ataylar_technic.dto.SystemInfoDto;
+import com.ay_za.ataylar_technic.enums.ServiceScope;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,9 +36,20 @@ public class MaintenanceChecklistModel {
     private String image2;
     private String image3;
     private List<SystemInfoDto> systemInfoDtoList = new ArrayList<>();
+    private String periodicMaintenanceContract;
+    private String onsiteIntervention;
+    private String warrantyCoverage;
+    private String periodicMaintenance;
+    private String nonWarrantyCoverage;
+    private String damageAssessment;
+    private String fault;
+    private String workshop;
+    private String reportNo;
     // Frontend'den hangi item'ların checked/unchecked olduğunu gönderebilmesi için
     // Key: systemOrderNo (veya başka unique identifier), Value: true ise checked, false ise unchecked
     private Map<Integer, Boolean> checkedItems = new HashMap<>();
+
+    private List<ServiceScope> serviceScopes = new ArrayList<>();
 
     public String getDescription() {
         return description;
@@ -247,11 +259,91 @@ public class MaintenanceChecklistModel {
         this.systemInfoDtoList = systemInfoDtoList;
     }
 
+    public String getPeriodicMaintenanceContract() {
+        return periodicMaintenanceContract;
+    }
+
+    public void setPeriodicMaintenanceContract(String periodicMaintenanceContract) {
+        this.periodicMaintenanceContract = periodicMaintenanceContract;
+    }
+
+    public String getOnsiteIntervention() {
+        return onsiteIntervention;
+    }
+
+    public void setOnsiteIntervention(String onsiteIntervention) {
+        this.onsiteIntervention = onsiteIntervention;
+    }
+
+    public String getWarrantyCoverage() {
+        return warrantyCoverage;
+    }
+
+    public void setWarrantyCoverage(String warrantyCoverage) {
+        this.warrantyCoverage = warrantyCoverage;
+    }
+
+    public String getPeriodicMaintenance() {
+        return periodicMaintenance;
+    }
+
+    public void setPeriodicMaintenance(String periodicMaintenance) {
+        this.periodicMaintenance = periodicMaintenance;
+    }
+
+    public String getNonWarrantyCoverage() {
+        return nonWarrantyCoverage;
+    }
+
+    public void setNonWarrantyCoverage(String nonWarrantyCoverage) {
+        this.nonWarrantyCoverage = nonWarrantyCoverage;
+    }
+
+    public String getDamageAssessment() {
+        return damageAssessment;
+    }
+
+    public void setDamageAssessment(String damageAssessment) {
+        this.damageAssessment = damageAssessment;
+    }
+
+    public String getFault() {
+        return fault;
+    }
+
+    public void setFault(String fault) {
+        this.fault = fault;
+    }
+
+    public String getWorkshop() {
+        return workshop;
+    }
+
+    public void setWorkshop(String workshop) {
+        this.workshop = workshop;
+    }
+
+    public String getReportNo() {
+        return reportNo;
+    }
+
+    public void setReportNo(String reportNo) {
+        this.reportNo = reportNo;
+    }
+
     public Map<Integer, Boolean> getCheckedItems() {
         return checkedItems;
     }
 
     public void setCheckedItems(Map<Integer, Boolean> checkedItems) {
         this.checkedItems = checkedItems;
+    }
+
+    public List<ServiceScope> getServiceScopes() {
+        return serviceScopes;
+    }
+
+    public void setServiceScopes(List<ServiceScope> serviceScopes) {
+        this.serviceScopes = serviceScopes;
     }
 }

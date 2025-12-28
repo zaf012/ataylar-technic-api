@@ -61,6 +61,9 @@ public class MaintenancePdfRecord {
     @Column(name = "created_by", length = 100)
     private String createdBy;
 
+    @Column(name = "report_no", nullable = false)
+    private Integer reportNo;
+
     // Constructors
     public MaintenancePdfRecord() {
     }
@@ -192,6 +195,14 @@ public class MaintenancePdfRecord {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public Integer getReportNo() {
+        return reportNo;
+    }
+
+    public void setReportNo(Integer reportNo) {
+        this.reportNo = reportNo;
     }
 }
 

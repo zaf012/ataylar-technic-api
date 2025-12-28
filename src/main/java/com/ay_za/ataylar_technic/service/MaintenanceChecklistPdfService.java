@@ -1,6 +1,7 @@
 package com.ay_za.ataylar_technic.service;
 
 import com.ay_za.ataylar_technic.dto.SystemInfoDto;
+import com.ay_za.ataylar_technic.enums.ServiceScope;
 import com.ay_za.ataylar_technic.service.base.MaintenanceChecklistPdfServiceImpl;
 import com.ay_za.ataylar_technic.service.base.MaintenancePdfRecordServiceImpl;
 import com.ay_za.ataylar_technic.service.base.SystemInfoServiceImpl;
@@ -15,6 +16,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -46,6 +48,7 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
 
 
     @Override
+    @Transactional
     public FileResponseVM exportPdf(MaintenanceChecklistModel report) throws IOException {
 
         if (Objects.isNull(report)) {
@@ -53,35 +56,19 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
         }
 
         List<SystemInfoDto> checklistsBySystemName = systemInfoServiceImpl.getChecklistsBySystemName(report.getSystemName());
+        Integer lastReportNo = maintenancePdfRecordServiceImpl.getLastReportNo();
+        int currentYear = LocalDate.now().getYear();
+        String formattedReportNo = String.format("%d/%06d", currentYear, lastReportNo + 1);
 
-        report.setDescription(report.getDescription());
-        report.setCustomerFirmName(report.getCustomerFirmName());
-        report.setCustomerAddress(report.getCustomerAddress());
-        report.setAuthorizedPersonnel(report.getAuthorizedPersonnel());
-        report.setTelNo(report.getTelNo());
-        report.setSystemName(report.getSystemName());
-        report.setGsmNo(report.getGsmNo());
-        report.setEmail(report.getEmail());
-        report.setProductSerialNo(report.getProductSerialNo());
-        report.setProductBrand(report.getProductBrand());
-        report.setProductModel(report.getProductModel());
-        report.setProductPurpose(report.getProductPurpose());
-        report.setServiceCase(report.getServiceCase());
-        report.setBlockName(report.getBlockName());
-        report.setFloor(report.getFloor());
-        report.setLocation(report.getLocation());
+        this.formatServiceScopes(report);
+
         report.setServiceDate(DateUtil.trDateFormat.format(LocalDate.parse(report.getServiceDate())));
         report.setEntryTime(TimeHelper.toHourMinuteSecondFormat(report.getEntryTime()));
         report.setExitTime(TimeHelper.toHourMinuteSecondFormat(report.getExitTime()));
-        report.setServiceCarPlate(report.getServiceCarPlate());
-        report.setServiceCarKm(report.getServiceCarKm());
-        report.setServicePersonnel(report.getServicePersonnel());
-        report.setImage1(report.getImage1());
-        report.setImage2(report.getImage2());
-        report.setImage3(report.getImage3());
         report.setSystemInfoDtoList(checklistsBySystemName);
+        report.setReportNo(formattedReportNo);
 
-        String dateInTrFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String dateInTrFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
 
         ByteArrayOutputStream byteArrayOutputStream = this.buildPdfForMaintenanceChecklist(report);
 
@@ -102,6 +89,25 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
         fileResponseVM.setFileContent(byteArrayOutputStream.toByteArray());
 
         return fileResponseVM;
+    }
+
+    private void formatServiceScopes(MaintenanceChecklistModel report) {
+        report.setPeriodicMaintenanceContract(
+                report.getServiceScopes().contains(ServiceScope.PERIODIC_MAINTENANCE_CONTRACT) ? "X" : "");
+        report.setOnsiteIntervention(
+                report.getServiceScopes().contains(ServiceScope.ONSITE_INTERVENTION) ? "X" : "");
+        report.setWarrantyCoverage(
+                report.getServiceScopes().contains(ServiceScope.WARRANTY_COVERAGE) ? "X" : "");
+        report.setPeriodicMaintenance(
+                report.getServiceScopes().contains(ServiceScope.PERIODIC_MAINTENANCE) ? "X" : "");
+        report.setNonWarrantyCoverage(
+                report.getServiceScopes().contains(ServiceScope.NON_WARRANTY_COVERAGE) ? "X" : "");
+        report.setDamageAssessment(
+                report.getServiceScopes().contains(ServiceScope.DAMAGE_ASSESSMENT) ? "X" : "");
+        report.setFault(
+                report.getServiceScopes().contains(ServiceScope.FAULT) ? "X" : "");
+        report.setWorkshop(
+                report.getServiceScopes().contains(ServiceScope.WORKSHOP) ? "X" : "");
     }
 
     public ByteArrayOutputStream buildPdfForMaintenanceChecklist(MaintenanceChecklistModel report)
@@ -171,6 +177,17 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
             parameters.put("image1", report.getImage1() != null ? report.getImage1() : "");
             parameters.put("image2", report.getImage2() != null ? report.getImage2() : "");
             parameters.put("image3", report.getImage3() != null ? report.getImage3() : "");
+            parameters.put("reportNo", report.getReportNo() != null ? report.getReportNo() : "");
+
+
+            parameters.put("periodicMaintenanceContract", report.getPeriodicMaintenanceContract() != null ? report.getPeriodicMaintenanceContract() : "");
+            parameters.put("onsiteIntervention", report.getOnsiteIntervention() != null ? report.getOnsiteIntervention() : "");
+            parameters.put("warrantyCoverage", report.getWarrantyCoverage() != null ? report.getWarrantyCoverage() : "");
+            parameters.put("periodicMaintenance", report.getPeriodicMaintenance() != null ? report.getPeriodicMaintenance() : "");
+            parameters.put("nonWarrantyCoverage", report.getNonWarrantyCoverage() != null ? report.getNonWarrantyCoverage() : "");
+            parameters.put("damageAssessment", report.getDamageAssessment() != null ? report.getDamageAssessment() : "");
+            parameters.put("fault", report.getFault() != null ? report.getFault() : "");
+            parameters.put("workshop", report.getWorkshop() != null ? report.getWorkshop() : "");
         }
 
         JasperPrint jasperPrint =

@@ -90,5 +90,7 @@ public interface MaintenancePdfRecordServiceImpl {
      * @return PDF kayıtları listesi
      */
     List<MaintenancePdfRecordDto> getPdfsBySystem(String systemName);
+
+    Integer getLastReportNo();
 }
 

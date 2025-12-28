@@ -21,6 +21,7 @@ public class MaintenancePdfRecordDto {
     private Long fileSizeBytes;
     private LocalDateTime createdAt;
     private String createdBy;
+    private Integer reportNo;
 
     // Constructors
     public MaintenancePdfRecordDto() {
@@ -153,6 +154,14 @@ public class MaintenancePdfRecordDto {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public Integer getReportNo() {
+        return reportNo;
+    }
+
+    public void setReportNo(Integer reportNo) {
+        this.reportNo = reportNo;
     }
 }
 

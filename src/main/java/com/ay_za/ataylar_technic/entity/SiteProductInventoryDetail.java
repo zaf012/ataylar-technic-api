@@ -62,6 +62,9 @@ public class SiteProductInventoryDetail {
     @Column(name = "product_name", length = 500)
     private String productName;
 
+    @Column(name = "brand_name", length = 500)
+    private String brandName;
+
     @Column(name = "qr_code", nullable = false, unique = true, length = 12)
     private String qrCode;
 
@@ -89,7 +92,7 @@ public class SiteProductInventoryDetail {
     public SiteProductInventoryDetail(String id, String siteId, String siteName, String squareId, String squareName,
                                      String blockId, String blockName, Integer floorNumber,
                                      String location, String systemId, String systemName, String categoryId,
-                                     String categoryName, String productInventoryDetailId, String productName,
+                                     String categoryName, String productInventoryDetailId, String productName, String brandName,
                                      String qrCode, Boolean active, LocalDateTime createdDate, LocalDateTime updatedDate,
                                      String createdBy, String updatedBy) {
         this.id = id;
@@ -107,6 +110,7 @@ public class SiteProductInventoryDetail {
         this.categoryName = categoryName;
         this.productInventoryDetailId = productInventoryDetailId;
         this.productName = productName;
+        this.brandName = brandName;
         this.qrCode = qrCode;
         this.active = active;
         this.createdDate = createdDate;
@@ -236,6 +240,14 @@ public class SiteProductInventoryDetail {
         this.productName = productName;
     }
 
+    public String getBrandName() {
+        return brandName;
+    }
+
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
+    }
+
     public String getQrCode() {
         return qrCode;
     }
@@ -302,6 +314,7 @@ public class SiteProductInventoryDetail {
                 ", categoryName='" + categoryName + '\'' +
                 ", productInventoryDetailId='" + productInventoryDetailId + '\'' +
                 ", productName='" + productName + '\'' +
+                ", brandName='" + brandName + '\'' +
                 ", qrCode='" + qrCode + '\'' +
                 ", active=" + active +
                 ", createdDate=" + createdDate +

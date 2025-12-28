@@ -39,7 +39,8 @@ public class MySQLToH2DataLoader implements ApplicationRunner {
             "product_inventory_category",
             "product_inventory_detail",
             "site_product_inventory_detail",
-            "maintenance_pdf_records"
+            "maintenance_pdf_records",
+            "service_cases"
     );
 
     public MySQLToH2DataLoader(JdbcTemplate h2JdbcTemplate) {

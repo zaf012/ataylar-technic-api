@@ -47,5 +47,12 @@ public interface MaintenancePdfRecordRepository extends JpaRepository<Maintenanc
      * En son oluşturulan kayıtları listeler
      */
     List<MaintenancePdfRecord> findTop10ByOrderByCreatedAtDesc();
+
+    /**
+     * En son oluşturulan kaydın rapor no'sunu getirir
+     */
+    @Query("SELECT COALESCE(MAX(m.reportNo), 0) FROM MaintenancePdfRecord m")
+    Integer findMaxReportNo();
+
 }
 

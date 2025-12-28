@@ -109,6 +109,7 @@ public class SiteProductInventoryDetailService implements SiteProductInventoryDe
         existingEntity.setCategoryName(dto.getCategoryName());
         existingEntity.setProductInventoryDetailId(dto.getProductInventoryDetailId());
         existingEntity.setProductName(dto.getProductName());
+        existingEntity.setBrandName(dto.getBrandName());
         existingEntity.setActive(dto.getActive() != null ? dto.getActive() : true);
         existingEntity.setUpdatedBy("System"); // TODO: SecurityContext'ten kullanıcı bilgisi alınacak
 
