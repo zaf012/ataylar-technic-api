@@ -90,7 +90,7 @@
             <staticText>
                 <reportElement x="190" y="38" width="204" height="15" uuid="05e2148e-40a4-479c-b203-73ef413ea026"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="10" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="10" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[PERİYODİK BAKIM ÇEKLİST FORMU]]></text>
             </staticText>
@@ -150,7 +150,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Müşterinin Adı]]></text>
             </staticText>
@@ -159,7 +159,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Müşterinin Adresi]]></text>
             </staticText>
@@ -168,7 +168,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Yetkili Kişi]]></text>
             </staticText>
@@ -177,7 +177,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[İletişim Telefonu]]></text>
             </staticText>
@@ -186,7 +186,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Cihaz Seri No.]]></text>
             </staticText>
@@ -195,7 +195,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Cihazın Kullanım Amacı]]></text>
             </staticText>
@@ -204,7 +204,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Blok Adı]]></text>
             </staticText>
@@ -213,7 +213,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Servis Tarihi]]></text>
             </staticText>
@@ -222,14 +222,14 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Servis Araç Plakası]]></text>
             </staticText>
             <textField>
                 <reportElement x="130" y="52" width="400" height="22" uuid="8c08d408-8e93-482d-af97-a910a893c9e0"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{customerFirmName}]]></textFieldExpression>
             </textField>
@@ -238,7 +238,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Sistem Adı]]></text>
             </staticText>
@@ -247,7 +247,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[GSM No.]]></text>
             </staticText>
@@ -256,7 +256,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Cihaz Markası]]></text>
             </staticText>
@@ -265,7 +265,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Bulunduğu Kat]]></text>
             </staticText>
@@ -274,7 +274,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Giriş Saati]]></text>
             </staticText>
@@ -283,7 +283,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Araç Km.]]></text>
             </staticText>
@@ -292,7 +292,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[e-mail Adresi]]></text>
             </staticText>
@@ -301,7 +301,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Cihaz Modeli]]></text>
             </staticText>
@@ -310,7 +310,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Lokasyon]]></text>
             </staticText>
@@ -319,7 +319,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Çıkış Saati]]></text>
             </staticText>
@@ -328,161 +328,161 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Servis Teknisyeni]]></text>
             </staticText>
             <textField>
                 <reportElement x="130" y="74" width="400" height="22" uuid="1d360a80-c5ac-4b35-8c63-27d11d9192ea"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{customerAddress}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="130" y="96" width="90" height="22" uuid="9bc89ce9-a19a-4e47-ab1b-61fd641e4bf9"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{authorizedPersonnel}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="130" y="120" width="90" height="22" uuid="518ceddc-b429-4d97-9fab-4e99904a94b9"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{telNo}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="130" y="140" width="90" height="22" uuid="32414e30-71d6-4854-b28b-6f56c3841328"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{productSerialNo}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="396" y="164" width="152" height="20" uuid="1a3d98b6-333a-4686-a6c5-ac13e3b81241"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{productPurpose}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="130" y="163" width="148" height="22" uuid="57a00f2b-c9ae-4025-91f4-a9c737906134"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{systemName}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="286" y="96" width="242" height="22" uuid="42fae89c-1bdc-4548-a057-1c1e39cc6225"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{email}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="286" y="140" width="96" height="22" uuid="2cb6a291-0296-4d8b-b541-c648fb5ac2ff"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{productBrand}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="286" y="120" width="96" height="22" uuid="90f03e3d-ed4f-4a26-9bfe-bcae7704826f"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{gsmNo}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="479" y="140" width="72" height="22" uuid="4ec902fe-819f-46fb-bb20-35c2e98e3eb5"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{productModel}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="419" y="43" width="132" height="9" uuid="ba8cbabd-2fe8-46a6-9b01-c124cc9eca86"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="5" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="5" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA["Hizmet Koşulu : " + $P{serviceCase}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="479" y="187" width="72" height="22" uuid="eac8da82-aad7-49b5-8ec5-91059f61a987"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{location}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="479" y="207" width="72" height="22" uuid="b362a8db-054a-470b-adfa-d8a464aae402"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{exitTime}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="479" y="228" width="72" height="22" uuid="11663183-16b5-40a6-aad0-067d9c8cbc9f"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{servicePersonnel}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="313" y="183" width="77" height="22" uuid="37972e98-b4b0-4e66-922b-4b3b454c9d7d"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{floor}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="313" y="207" width="77" height="22" uuid="2de54c84-085e-40c4-9645-30ff56842dd5"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{entryTime}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="313" y="228" width="77" height="22" uuid="8103b778-6bd7-4aca-8641-771773b46424"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{serviceCarKm}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="130" y="183" width="90" height="22" uuid="521793d7-4b88-47b1-a56c-8d2143abc009"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{blockName}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="130" y="207" width="90" height="22" uuid="f4586948-ee28-47d1-9021-d3ec692e5f45"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{serviceDate}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="130" y="228" width="90" height="22" uuid="b323f993-990a-4eb0-a4a2-28441ecab47c"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{serviceCarPlate}]]></textFieldExpression>
             </textField>
             <staticText>
                 <reportElement x="193" y="252" width="176" height="13" uuid="219de0e8-d364-441a-96a0-3463fbce0cd4"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="11" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="11" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[PERİYODİK BAKIM ÇEKLİSTİ]]></text>
             </staticText>
             <textField>
                 <reportElement x="419" y="34" width="132" height="9" uuid="1ac9f557-a8cd-437b-ab0b-916b8fb432e4"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="5" isBold="true" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="5" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA["SeriNo.Per       : " + $P{reportNo}]]></textFieldExpression>
             </textField>
@@ -495,56 +495,56 @@
             <staticText>
                 <reportElement x="145" y="4" width="84" height="10" uuid="a34cc861-3e5e-4819-b7aa-66f53a52e0cc"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Periyodik Bakım Sözleşmeli]]></text>
             </staticText>
             <staticText>
                 <reportElement x="145" y="23" width="66" height="10" uuid="8648eb6c-5926-400b-b6c0-48d53bf24e6c"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Yerinde Müdahale]]></text>
             </staticText>
             <staticText>
                 <reportElement x="248" y="4" width="38" height="10" uuid="7842a32f-719a-4b0b-9ad1-d7960abbf7ea"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Garanti İçi]]></text>
             </staticText>
             <staticText>
                 <reportElement x="319" y="4" width="47" height="10" uuid="3ae7f086-7f62-415c-9e5b-09ec5bf35a37"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Garanti Dışı]]></text>
             </staticText>
             <staticText>
                 <reportElement x="391" y="4" width="26" height="10" uuid="a07f6c60-a1b0-4701-9520-eb9c06e9a50c"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Arıza]]></text>
             </staticText>
             <staticText>
                 <reportElement x="248" y="23" width="55" height="10" uuid="111a258e-2668-4086-8f84-c5388477469b"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Periyodik Bakım]]></text>
             </staticText>
             <staticText>
                 <reportElement x="319" y="23" width="48" height="10" uuid="77ea2619-e46c-4ebf-809e-46cd7b61e397"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Hasar Tespit]]></text>
             </staticText>
             <staticText>
                 <reportElement x="391" y="23" width="26" height="10" uuid="3c860735-a8d7-4ec1-a45e-5e7c8be0ceda"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Atölye]]></text>
             </staticText>
@@ -591,56 +591,56 @@
             <textField>
                 <reportElement x="133" y="4" width="10" height="10" uuid="e75b52d5-9511-4b50-a24b-a48a849b8b50"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7"/>
+                    <font fontName="DejaVu Sans" size="7"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{periodicMaintenanceContract}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="133" y="24" width="10" height="10" uuid="f2e6e7e7-7e60-41fa-adab-a6e44c380c68"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7"/>
+                    <font fontName="DejaVu Sans" size="7"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{onsiteIntervention}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="235" y="4" width="10" height="10" uuid="13f2a350-3e57-4ee2-8478-8cb590a6d29b"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7"/>
+                    <font fontName="DejaVu Sans" size="7"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{warrantyCoverage}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="235" y="24" width="10" height="10" uuid="aec10489-ae70-4f51-a24d-03397e824b52"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7"/>
+                    <font fontName="DejaVu Sans" size="7"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{periodicMaintenance}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="306" y="4" width="10" height="10" uuid="3d89b214-1a41-4439-ac2c-cc5b3328b5e2"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7"/>
+                    <font fontName="DejaVu Sans" size="7"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{nonWarrantyCoverage}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="306" y="23" width="10" height="10" uuid="f5ff686b-79fd-4130-9e99-cdfb4af44dcf"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7"/>
+                    <font fontName="DejaVu Sans" size="7"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{damageAssessment}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="378" y="4" width="10" height="10" uuid="22ba0d93-9ed1-47db-af9e-78c817689b26"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7"/>
+                    <font fontName="DejaVu Sans" size="7"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{fault}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="378" y="23" width="10" height="10" uuid="bfff91f7-20a7-4c6b-b5a9-9f4ffb175d7f"/>
                 <textElement>
-                    <font fontName="Times New Roman" size="7"/>
+                    <font fontName="DejaVu Sans" size="7"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{workshop}]]></textFieldExpression>
             </textField>
@@ -675,7 +675,7 @@
                             <staticText>
                                 <reportElement x="0" y="0" width="470" height="11" uuid="9830cdf1-94ad-4053-99ad-11f4228c0caf"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                                 </textElement>
                                 <text><![CDATA[İşlem Maddeleri]]></text>
                             </staticText>
@@ -686,7 +686,7 @@
                             <textField>
                                 <reportElement x="0" y="0" width="470" height="11" uuid="130bb4a8-a4f9-47d0-ba5a-de5f2d2edfd8"/>
                                 <textElement verticalAlignment="Middle">
-                                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                                 </textElement>
                                 <textFieldExpression><![CDATA[" " +$F{item}]]></textFieldExpression>
                             </textField>
@@ -698,7 +698,7 @@
                             <staticText>
                                 <reportElement x="0" y="0" width="40" height="11" uuid="40c1b6ec-a426-4376-b135-ad6199756ce2"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                                 </textElement>
                                 <text><![CDATA[Evet]]></text>
                             </staticText>
@@ -707,7 +707,7 @@
                             <textField>
                                 <reportElement x="0" y="0" width="40" height="11" uuid="d1798586-2654-48ba-b76a-dd7aeaeef906"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                                 </textElement>
                                 <textFieldExpression><![CDATA[$F{checked}]]></textFieldExpression>
                             </textField>
@@ -719,7 +719,7 @@
                             <staticText>
                                 <reportElement x="0" y="0" width="41" height="11" uuid="4d6f4fc5-9c01-41cb-95e1-0e63a2d32a33"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                                 </textElement>
                                 <text><![CDATA[Hayır]]></text>
                             </staticText>
@@ -728,7 +728,7 @@
                             <textField>
                                 <reportElement x="0" y="0" width="41" height="11" uuid="0d000a75-459a-4fe6-95ef-9b5e22025c8a"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle">
-                                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                                 </textElement>
                                 <textFieldExpression><![CDATA[$F{unchecked}]]></textFieldExpression>
                             </textField>
@@ -765,7 +765,7 @@
             <textField>
                 <reportElement x="0" y="68" width="550" height="32" uuid="f0cf5ed4-ecbc-4e47-bee5-cb4aa9822527"/>
                 <textElement verticalAlignment="Top">
-                    <font fontName="Times New Roman" size="8" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="8" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[" Açıklama :  " + $P{description}]]></textFieldExpression>
             </textField>
@@ -778,7 +778,7 @@
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <textElement textAlignment="Center" verticalAlignment="Top">
-                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[SERVİS MÜHENDİSİ]]></text>
             </staticText>
@@ -788,7 +788,7 @@
             <staticText>
                 <reportElement x="0" y="147" width="550" height="68" uuid="086fe356-d4d8-4f3b-b529-4f25aeef58f4"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[Ataylar Teknik Servis ve Bakım Onarım Hizmetleri Ticaret A.Ş.
 
@@ -811,7 +811,7 @@ www.ataylarteknik.com.tr info@ataylarteknik.com.tr servis@ataylarteknik.com.tr]]
             <staticText>
                 <reportElement x="4" y="252" width="537" height="18" uuid="bf6dc8db-354f-4277-9636-c5fa7ee5634b"/>
                 <textElement verticalAlignment="Middle">
-                    <font fontName="Times New Roman" size="9" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="9" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[30 gün içerisinde alınmayan cihazlardan firmamız mesul değildir !!!]]></text>
             </staticText>
@@ -821,7 +821,7 @@ www.ataylarteknik.com.tr info@ataylarteknik.com.tr servis@ataylarteknik.com.tr]]
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <textElement textAlignment="Center" verticalAlignment="Top">
-                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[SERVİS YETKİLİSİ]]></text>
             </staticText>
@@ -831,7 +831,7 @@ www.ataylarteknik.com.tr info@ataylarteknik.com.tr servis@ataylarteknik.com.tr]]
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <textElement textAlignment="Center" verticalAlignment="Top">
-                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[MÜŞTERİ YETKİLİSİ]]></text>
             </staticText>
@@ -841,7 +841,7 @@ www.ataylarteknik.com.tr info@ataylarteknik.com.tr servis@ataylarteknik.com.tr]]
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <textElement textAlignment="Center" verticalAlignment="Top">
-                    <font fontName="Times New Roman" size="7" pdfEncoding="Cp1254"/>
+                    <font fontName="DejaVu Sans" size="7" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
                 </textElement>
                 <text><![CDATA[MÜŞTERİ TEKNİSYENİ]]></text>
             </staticText>
