@@ -97,21 +97,21 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
 
     private void formatServiceScopes(MaintenanceChecklistModel report) {
         report.setPeriodicMaintenanceContract(
-                report.getServiceScopes().contains(ServiceScope.PERIODIC_MAINTENANCE_CONTRACT) ? "X" : "");
+                report.getServiceScopes().contains(ServiceScope.PERIODIC_MAINTENANCE_CONTRACT) ? "✓" : "");
         report.setOnsiteIntervention(
-                report.getServiceScopes().contains(ServiceScope.ONSITE_INTERVENTION) ? "X" : "");
+                report.getServiceScopes().contains(ServiceScope.ONSITE_INTERVENTION) ? "✓" : "");
         report.setWarrantyCoverage(
-                report.getServiceScopes().contains(ServiceScope.WARRANTY_COVERAGE) ? "X" : "");
+                report.getServiceScopes().contains(ServiceScope.WARRANTY_COVERAGE) ? "✓" : "");
         report.setPeriodicMaintenance(
-                report.getServiceScopes().contains(ServiceScope.PERIODIC_MAINTENANCE) ? "X" : "");
+                report.getServiceScopes().contains(ServiceScope.PERIODIC_MAINTENANCE) ? "✓" : "");
         report.setNonWarrantyCoverage(
-                report.getServiceScopes().contains(ServiceScope.NON_WARRANTY_COVERAGE) ? "X" : "");
+                report.getServiceScopes().contains(ServiceScope.NON_WARRANTY_COVERAGE) ? "✓" : "");
         report.setDamageAssessment(
-                report.getServiceScopes().contains(ServiceScope.DAMAGE_ASSESSMENT) ? "X" : "");
+                report.getServiceScopes().contains(ServiceScope.DAMAGE_ASSESSMENT) ? "✓" : "");
         report.setFault(
-                report.getServiceScopes().contains(ServiceScope.FAULT) ? "X" : "");
+                report.getServiceScopes().contains(ServiceScope.FAULT) ? "✓" : "");
         report.setWorkshop(
-                report.getServiceScopes().contains(ServiceScope.WORKSHOP) ? "X" : "");
+                report.getServiceScopes().contains(ServiceScope.WORKSHOP) ? "✓" : "");
     }
 
     public ByteArrayOutputStream buildPdfForMaintenanceChecklist(MaintenanceChecklistModel report)
@@ -182,7 +182,6 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
             parameters.put("image2", report.getImage2() != null ? report.getImage2() : "");
             parameters.put("image3", report.getImage3() != null ? report.getImage3() : "");
             parameters.put("reportNo", report.getReportNo() != null ? report.getReportNo() : "");
-
 
             parameters.put("periodicMaintenanceContract", report.getPeriodicMaintenanceContract() != null ? report.getPeriodicMaintenanceContract() : "");
             parameters.put("onsiteIntervention", report.getOnsiteIntervention() != null ? report.getOnsiteIntervention() : "");

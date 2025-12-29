@@ -26,6 +26,7 @@ public class SiteProductInventoryDetailDto {
     private String productInventoryDetailId;
     private String productName;
     private String brandName;
+    private String productPurpose;
     private String qrCode;
 
     @JsonProperty("active")
@@ -48,7 +49,7 @@ public class SiteProductInventoryDetailDto {
                                         String blockId, String blockName, Integer floorNumber,
                                         String location, String systemId, String systemName, String categoryId,
                                         String categoryName, String productInventoryDetailId, String productName, String brandName,
-                                        String qrCode, Boolean active, LocalDateTime createdDate, LocalDateTime updatedDate,
+                                        String productPurpose, String qrCode, Boolean active, LocalDateTime createdDate, LocalDateTime updatedDate,
                                         String createdBy, String updatedBy) {
         this.id = id;
         this.siteId = siteId;
@@ -66,6 +67,7 @@ public class SiteProductInventoryDetailDto {
         this.productInventoryDetailId = productInventoryDetailId;
         this.productName = productName;
         this.brandName = brandName;
+        this.productPurpose = productPurpose;
         this.qrCode = qrCode;
         this.active = active;
         this.createdDate = createdDate;
@@ -203,6 +205,14 @@ public class SiteProductInventoryDetailDto {
         this.brandName = brandName;
     }
 
+    public String getProductPurpose() {
+        return productPurpose;
+    }
+
+    public void setProductPurpose(String productPurpose) {
+        this.productPurpose = productPurpose;
+    }
+
     public String getQrCode() {
         return qrCode;
     }
@@ -270,6 +280,7 @@ public class SiteProductInventoryDetailDto {
                 ", productInventoryDetailId='" + productInventoryDetailId + '\'' +
                 ", productName='" + productName + '\'' +
                 ", brandName='" + brandName + '\'' +
+                ", productPurpose='" + productPurpose + '\'' +
                 ", qrCode='" + qrCode + '\'' +
                 ", active=" + active +
                 ", createdDate=" + createdDate +

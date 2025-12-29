@@ -38,6 +38,7 @@ public class SiteProductInventoryDetailMapper {
         dto.setProductInventoryDetailId(entity.getProductInventoryDetailId());
         dto.setProductName(entity.getProductName());
         dto.setBrandName(entity.getBrandName());
+        dto.setProductPurpose(entity.getProductPurpose());
         dto.setQrCode(entity.getQrCode());
         dto.setActive(entity.getActive());
         dto.setCreatedDate(entity.getCreatedDate());
@@ -73,6 +74,7 @@ public class SiteProductInventoryDetailMapper {
         entity.setProductInventoryDetailId(dto.getProductInventoryDetailId());
         entity.setProductName(dto.getProductName());
         entity.setBrandName(dto.getBrandName());
+        entity.setProductPurpose(dto.getProductPurpose());
         entity.setQrCode(dto.getQrCode());
         entity.setActive(dto.getActive());
         entity.setCreatedDate(dto.getCreatedDate());

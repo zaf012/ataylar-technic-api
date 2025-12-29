@@ -65,6 +65,9 @@ public class SiteProductInventoryDetail {
     @Column(name = "brand_name", length = 500)
     private String brandName;
 
+    @Column(name = "product_purpose", length = 500)
+    private String productPurpose;
+
     @Column(name = "qr_code", nullable = false, unique = true, length = 12)
     private String qrCode;
 
@@ -93,7 +96,7 @@ public class SiteProductInventoryDetail {
                                      String blockId, String blockName, Integer floorNumber,
                                      String location, String systemId, String systemName, String categoryId,
                                      String categoryName, String productInventoryDetailId, String productName, String brandName,
-                                     String qrCode, Boolean active, LocalDateTime createdDate, LocalDateTime updatedDate,
+                                     String productPurpose, String qrCode, Boolean active, LocalDateTime createdDate, LocalDateTime updatedDate,
                                      String createdBy, String updatedBy) {
         this.id = id;
         this.siteId = siteId;
@@ -111,6 +114,7 @@ public class SiteProductInventoryDetail {
         this.productInventoryDetailId = productInventoryDetailId;
         this.productName = productName;
         this.brandName = brandName;
+        this.productPurpose = productPurpose;
         this.qrCode = qrCode;
         this.active = active;
         this.createdDate = createdDate;
@@ -248,6 +252,14 @@ public class SiteProductInventoryDetail {
         this.brandName = brandName;
     }
 
+    public String getProductPurpose() {
+        return productPurpose;
+    }
+
+    public void setProductPurpose(String productPurpose) {
+        this.productPurpose = productPurpose;
+    }
+
     public String getQrCode() {
         return qrCode;
     }
@@ -315,6 +327,7 @@ public class SiteProductInventoryDetail {
                 ", productInventoryDetailId='" + productInventoryDetailId + '\'' +
                 ", productName='" + productName + '\'' +
                 ", brandName='" + brandName + '\'' +
+                ", productPurpose='" + productPurpose + '\'' +
                 ", qrCode='" + qrCode + '\'' +
                 ", active=" + active +
                 ", createdDate=" + createdDate +
