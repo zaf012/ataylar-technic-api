@@ -14,6 +14,8 @@ import com.ay_za.ataylar_technic.util.TimeHelper;
 import com.ay_za.ataylar_technic.vm.FileResponseVM;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,8 @@ import java.util.*;
 
 @Service
 public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfServiceImpl {
+
+    private static final Logger logger = LoggerFactory.getLogger(MaintenanceChecklistPdfService.class);
 
     private final SystemInfoServiceImpl systemInfoServiceImpl;
     private final MaintenancePdfRecordServiceImpl maintenancePdfRecordServiceImpl;
@@ -220,13 +224,28 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
     private String savePdfToFileSystem(ByteArrayOutputStream pdfStream, String fileName) throws IOException {
         Path directory = Paths.get(pdfStoragePath);
 
-        // Klasör yoksa oluştur
+        // Klasör var mı kontrol et
         if (!Files.exists(directory)) {
-            Files.createDirectories(directory);
+            try {
+                Files.createDirectories(directory);
+                logger.info("PDF storage directory created: {}", directory.toAbsolutePath());
+            } catch (IOException e) {
+                logger.error("Failed to create PDF storage directory: {}. Error: {}",
+                    directory.toAbsolutePath(), e.getMessage());
+                throw new IOException("PDF klasörü oluşturulamadı: " + directory.toAbsolutePath() +
+                    ". Lütfen klasör izinlerini kontrol edin.", e);
+            }
+        }
+
+        // Klasöre yazma izni var mı kontrol et
+        if (!Files.isWritable(directory)) {
+            logger.error("PDF storage directory is not writable: {}", directory.toAbsolutePath());
+            throw new IOException("PDF klasörüne yazma izni yok: " + directory.toAbsolutePath() +
+                ". Lütfen klasör izinlerini kontrol edin. (chmod 775 veya chown komutu ile düzeltebilirsiniz)");
         }
 
         // Timestamp ekle (dosya adı unique olsun)
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss"));
         String uniqueFileName = fileName.replace(".pdf", "_" + timestamp + ".pdf");
 
         Path filePath = directory.resolve(uniqueFileName);
@@ -234,6 +253,10 @@ public class MaintenanceChecklistPdfService implements MaintenanceChecklistPdfSe
         // PDF'i dosyaya yaz
         try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
             pdfStream.writeTo(fos);
+            logger.info("PDF successfully saved to: {}", filePath.toAbsolutePath());
+        } catch (IOException e) {
+            logger.error("Failed to write PDF file: {}. Error: {}", filePath.toAbsolutePath(), e.getMessage());
+            throw new IOException("PDF dosyası kaydedilemedi: " + e.getMessage(), e);
         }
 
         return filePath.toAbsolutePath().toString();
