@@ -2,10 +2,10 @@
 <fontFamilies>
     <!-- Times New Roman Font -->
     <fontFamily name="Times New Roman">
-        <normal>pdf-templates/fonts/times.ttf</normal>
-        <bold>pdf-templates/fonts/times.ttf</bold>
-        <italic>pdf-templates/fonts/times.ttf</italic>
-        <boldItalic>pdf-templates/fonts/times.ttf</boldItalic>
+        <normal>times.ttf</normal>
+        <bold>times.ttf</bold>
+        <italic>times.ttf</italic>
+        <boldItalic>times.ttf</boldItalic>
         <pdfEncoding>Cp1254</pdfEncoding>
         <pdfEmbedded>true</pdfEmbedded>
     </fontFamily>
